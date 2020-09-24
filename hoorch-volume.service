@@ -1,0 +1,14 @@
+[Unit]
+Description=Hoorch
+After=multi-user.target
+After=sound.target
+
+[Service]
+Type=idle
+User=pi
+Group=pi
+ExecStart=/usr/bin/python3 /home/pi/hoorch/adjust_volume.py
+
+
+[Install]
+WantedBy=multi-user.target
