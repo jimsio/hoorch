@@ -9,12 +9,13 @@ import random
 import copy
 import threading
 import re
+import sys
 
 defined_figures = rfidreaders.gamer_figures
 
 def check_end():
 	if "ENDE" in rfidreaders.tags:
-		return
+		sys.exit()
 
 	end_timer = threading.Timer(0.5,check_end).start()
 
@@ -102,7 +103,15 @@ def start():
 				audio.play_full("TTS",190) #Du hast für die Antwort 6 Sekunden Zeit
 						
 				audio.play_file("sounds","waiting.mp3") # play wait sound 6 sec
-				leds.rotate_one_round(1.11)
+				#leds.rotate_one_round(1.11)
+				
+				#leds blink at tens and unit fields
+				for k in range(5):
+					leds.led_value[i+1] = 0
+					leds.led_value[ud] = 100
+					time.sleep(0.5)
+					leds.led_value[ud] = 0
+					leds.led_value[i+1] = 100
 				
 				#if "ENDE" in rfidreaders.tags:
 				#	return
@@ -115,7 +124,7 @@ def start():
 				
 				#old: if unit != None and unit.isdigit() and tens.isdigit():
 				
-				#rexex (start with character, zero or more characters, end with single digit) : ^[a-z]*[0-9]$ 	
+				#rexex (start with capital character, zero or more characters, end with single digit) : ^[A-z]*[0-9]$ 	
 				#search with regex if unit and tens look like Hahn1 
 				if unit != None and re.search("^[A-z]*[0-9]$", unit) and re.search("^[A-z]*[0-9]$", tens):
 				
