@@ -15,7 +15,9 @@ COMITUP_CONF="/etc/comitup.conf"
 
 echo "installing packages"
 apt install python3-pip
-apt install sox libsox-fmt-mp3 espeak
+apt install sox
+apt install libsox-fmt-mp3
+apt install espeak
 #not needed: apt install xrdp
 
 echo "installing python packages"

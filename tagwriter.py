@@ -28,10 +28,11 @@ spi.configure(baudrate=12000000)
 spi.unlock()
 
 reader.append(PN532_SPI(spi, reader1_pin, debug=False))
-ic, ver, rev, support = reader[0].get_firmware_version()
+ic, ver, rev, support = reader[0].firmware_version
 reader[0].SAM_configuration()
 
 #TODO
+#https://circuitpython.readthedocs.io/projects/pn532/en/latest/api.html
 ''' for mifare (maybe card)
 authenticated = pn532.mifare_classic_authenticate_block(uid, 4, MIFARE_CMD_AUTH_B, key)
 if not authenticated:
@@ -134,6 +135,7 @@ def write_single():
 	
 	else:
 		print("no tag on rfid reader")
+		audio.espeaker("Du hast keinen Täg auf das Spielfeld platziert. Täg wurde nicht beschrieben.")
 
 def write_set():
 	audio.espeaker("Wir beschreiben das gesamte Spieleset. Stelle die Figuren bei Aufruf auf Spielfeld 1")
@@ -161,61 +163,70 @@ def write_set():
 				audio.espeaker("Figur stehen lassen")
 				
 				while not tag_uid:
-					tag_uid = reader[0].read_passive_target(timeout=0.05)
+					tag_uid = reader[0].read_passive_target(timeout=1.0)
 				
-				#write
-				message = lang+figure+endofmessage
-				print("message: " +str(message))
-				chunks, chunk_size = len(message), 4
-				send = [message[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
-				print(send)
-				
-				for i, s in enumerate(send):
-					while len(s) != 4:
-						s += "#"
-					j = reader[0].ntag2xx_write_block(7+i,s.encode())
-					#print("j: " + str(j))
-					
-				time.sleep(1)
-			
-				#read for verification
-				read_message = ""
-				
-				breaker = False
-				
-				for i in range(7,14):
-					block = reader[0].ntag2xx_read_block(i)
-					print(block)
-					for character in block:
-						if character != ord(endofmessage):
-							read_message += chr(character)
-						else:
-							breaker = True
-							break
-					
-					if breaker:
-						break
-				
-				#remove unicode control characters from read string
-				read_message = "".join(ch for ch in read_message if unicodedata.category(ch)[0]!="C")
-				
-				# enFRAGEZEICHEN#
-				message = message[2:-1]
-				#read_message has no #/endofmessage at end, this was checked during reading
-				read_message = read_message[2:]
-				
-				valid = message == read_message
-				print("valid " + str(valid))
-			
 				for counter, number in enumerate(tag_uid):
 					if counter < 4:
 						id_readable += str(number)+"-"
 					else:
 						id_readable = id_readable[:-1]
 						break
+						
+				#reader has issues with reading mifare cards, stick with the tag_uid
+				if id_readable.endswith("-"):
+					print("mifare chip!")
+					id_readable = id_readable[:-1]
+					mifare = True
 			
 				print(id_readable)
-			
+				
+				if not mifare:
+					#write
+					message = lang+figure+endofmessage
+					print("message: " +str(message))
+					chunks, chunk_size = len(message), 4
+					send = [message[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
+					print(send)
+					
+					for i, s in enumerate(send):
+						while len(s) != 4:
+							s += "#"
+						j = reader[0].ntag2xx_write_block(7+i,s.encode())
+						#print("j: " + str(j))
+						
+					time.sleep(1)
+				
+					#read for verification
+					read_message = ""
+					
+					breaker = False
+					
+					for i in range(7,14):
+						block = reader[0].ntag2xx_read_block(i)
+						print(block)
+						for character in block:
+							if character != ord(endofmessage):
+								read_message += chr(character)
+							else:
+								breaker = True
+								break
+						
+						if breaker:
+							break
+					
+					#remove unicode control characters from read string
+					read_message = "".join(ch for ch in read_message if unicodedata.category(ch)[0]!="C")
+					
+					# enFRAGEZEICHEN#
+					message = message[2:-1]
+					#read_message has no #/endofmessage at end, this was checked during reading
+					read_message = read_message[2:]
+					
+					valid = message == read_message
+					print("valid " + str(valid))
+				
+				else:
+					valid = True
 			
 			figure_database.append([id_readable, figure])
 			print("added figure to figure db")
@@ -234,3 +245,5 @@ def write_set():
 if __name__ == "__main__":
 	if len(sys.argv) > 1:
 		write_single()
+	else:
+		write_set()

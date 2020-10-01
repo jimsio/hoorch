@@ -5,7 +5,6 @@
 
 import audio
 import RPi.GPIO as GPIO
-#import subprocess
 import os
 import time
 import leds
@@ -27,7 +26,7 @@ threshold_time = 3
 
 while True:
 	if (GPIO.input(pin_nr)) == GPIO.LOW:
-		print("pressed")
+		#print("pressed")
 		if pressed == False:
 			start_pressed = time.time()
 			pressed	= True
@@ -36,8 +35,7 @@ while True:
 				print("shutdown")
 				audio.play_full("TTS",3) #Tschüss ich schalte mich jetzt aus
 				leds.reset()
-				#os.system("shutdown -P now")
-				#subprocess.call(['shutdown', '-P', 'now'], shell=False)
+				os.system("shutdown -P now")
 				
 	else:
 		#print("unpressed")

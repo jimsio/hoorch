@@ -37,7 +37,7 @@ def init():
 	#start random blinker
 	leds.random_timer = True
 	
-	audio.play("TTS",65) #Erklärung
+	#audio.play("TTS",65) #Erklärung
 		
 	#initialize readers
 	rfidreaders.init()

@@ -58,7 +58,7 @@ def init():
 	readers.append(PN532_SPI(spi, reader6_pin, debug=False))
 
 	for r in range(0,6):
-		#ic, ver, rev, support = readers[r].get_firmware_version()
+		#ic, ver, rev, support = readers[r].firmware_version
 		#print('Found Reader '+str(r)+' with firmware version: {0}.{1}'.format(ver, rev, support))
 		readers[r].SAM_configuration()
 		print('Initialized and configured RFID/NFC reader '+str(r))

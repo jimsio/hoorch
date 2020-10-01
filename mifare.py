@@ -30,7 +30,7 @@ spi.unlock()
 
 reader1_pin = DigitalInOut(board.D24)
 pn532_reader = PN532_SPI(spi, reader1_pin, debug=False)
-ic, ver, rev, support = pn532_reader.get_firmware_version()
+ic, ver, rev, support = pn532_reader.firmware_version
 pn532_reader.SAM_configuration()
 
 print("Found PN532 mifare with firmware version: {0}.{1}".format(ver, rev))
