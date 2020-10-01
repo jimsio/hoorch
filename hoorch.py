@@ -11,7 +11,7 @@ import leds
 import csv
 import tierlaute
 import geschichten_aufnehmen
-import kakophonie
+#import kakophonie
 import tier_orchester
 import geschichten_abspielen
 import einmaleins

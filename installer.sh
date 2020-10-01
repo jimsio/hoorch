@@ -2,19 +2,25 @@
 # installer.sh will install the necessary packages and config files for HOORCH
 # https://core-electronics.com.au/tutorials/create-an-installer-script-for-raspberry-pi.html
 # Kernel 4.19.97-v8+
+#sudo rpi-update 993f47507f287f5da56495f718c2d0cd05ccbc19
+#sudo reboot
 
 CONFIG="/boot/config.txt"
 COMITUP_CONF="/etc/comitup.conf"
 
 # Install packages
+#echo "updating system. this may take some time..."
+#apt update
+#apt upgrade -y
+
 echo "installing packages"
-apt update
-apt upgrade -y
+apt install python3-pip
+apt install sox libsox-fmt-mp3 espeak
+#not needed: apt install xrdp
+
+echo "installing python packages"
 pip3 install --upgrade setuptools
 pip3 install RPI.GPIO adafruit-circuitpython-pn532 adafruit-blinka pygame
-apt install sox libsox-fmt-mp3 espeak
-#not needed:
-#apt install xrdp
 
 #enable SPI
 sed -i "s/#dtparam=spi=on/dtparam=spi=on/g" $CONFIG 
@@ -73,7 +79,7 @@ sed -i "s/# ap_name: comitup-<nn>/ap_name: hoorch-<nn>/g" $COMITUP_CONF
 #comment out references to /etc/network/interfaces - https://github.com/davesteele/comitup/wiki/Installing-Comitup
 sed -i "s/source-directory/#source-directory/g" "/etc/network/interfaces"
 
-echo "copying hoorch files"
+echo "copying HOORCH files"
 
 #copy service-files to /etc/systemd/system
 cp *.service /etc/systemd/system
