@@ -28,7 +28,7 @@ spi.configure(baudrate=12000000)
 spi.unlock()
 
 reader.append(PN532_SPI(spi, reader1_pin, debug=False))
-ic, ver, rev, support = reader[0].firmware_version
+#ic, ver, rev, support = reader[0].firmware_version
 reader[0].SAM_configuration()
 
 #TODO
@@ -64,11 +64,13 @@ endofmessage = "#" #chr(35)
 figure_database = []
 
 
-def write_single():
-	
-	message = sys.argv[1]
+
+def write_single(message):
+	#mifare = False
 	
 	audio.espeaker("Schreibe "+str(message)+" auf den Täg. Bitte Täg auf Spielfeld 1 platzieren")
+	leds.reset() #reset leds
+	leds.led_value = [1,0,0,0,0,0]
 	time.sleep(2)
 	tag_uid = reader[0].read_passive_target(timeout=0.05)
 	
@@ -121,7 +123,7 @@ def write_single():
 		
 		#remove unicode control characters (\t) from read string
 		read_message = "".join(ch for ch in read_message if unicodedata.category(ch)[0]!="C")
-		#remove "en" at beginning ?
+		#remove "en" at beginning
 		read_message = read_message[2:]
 		
 		print("wrote "+read_message+" to tag")
@@ -142,6 +144,8 @@ def write_set():
 	leds.reset() #reset leds
 	leds.led_value = [1,0,0,0,0,0]
 	
+	mifare = False
+	
 	for figure in figures:
 		#remove /n at the end - file figure_ids.txt needs an empty line at the end
 		figure = figure[:figure.find("\n")]
@@ -153,11 +157,12 @@ def write_set():
 		
 		else:
 			valid = False
-			tag_uid = None
-			id_readable = ""
 			
 			while not valid:
 			
+				tag_uid = None
+				id_readable = ""
+
 				audio.espeaker("Nächster Figur:")
 				audio.espeaker(figure)
 				audio.espeaker("Figur stehen lassen")
@@ -165,6 +170,7 @@ def write_set():
 				while not tag_uid:
 					tag_uid = reader[0].read_passive_target(timeout=1.0)
 				
+
 				for counter, number in enumerate(tag_uid):
 					if counter < 4:
 						id_readable += str(number)+"-"
@@ -186,44 +192,63 @@ def write_set():
 					print("message: " +str(message))
 					chunks, chunk_size = len(message), 4
 					send = [message[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
-					print(send)
+					#print(send)
 					
 					for i, s in enumerate(send):
 						while len(s) != 4:
 							s += "#"
-						j = reader[0].ntag2xx_write_block(7+i,s.encode())
-						#print("j: " + str(j))
 						
-					time.sleep(1)
+						k = 0
+						
+						while not reader[0].ntag2xx_write_block(7+i,s.encode()):
+							print("Failed to write {0} to at block {1}.".format(s, 7+i))
+							
+							k += 1
+							
+							if k == 6:
+								print("To many false writings. Terminate for this tag block. try-block will start loop for this tag again")
+								break
+
+					time.sleep(0.5)
 				
 					#read for verification
 					read_message = ""
 					
 					breaker = False
 					
-					for i in range(7,14):
-						block = reader[0].ntag2xx_read_block(i)
-						print(block)
-						for character in block:
-							if character != ord(endofmessage):
-								read_message += chr(character)
-							else:
-								breaker = True
+					try:
+						for i in range(7,14):
+							block = reader[0].ntag2xx_read_block(i)
+							print(block)
+							for character in block:
+								if character != ord(endofmessage):
+									read_message += chr(character)
+								else:
+									breaker = True
+									break
+							
+							if breaker:
 								break
+					
+						#remove unicode control characters from read string
+						read_message = "".join(ch for ch in read_message if unicodedata.category(ch)[0]!="C")
 						
-						if breaker:
-							break
-					
-					#remove unicode control characters from read string
-					read_message = "".join(ch for ch in read_message if unicodedata.category(ch)[0]!="C")
-					
-					# enFRAGEZEICHEN#
-					message = message[2:-1]
-					#read_message has no #/endofmessage at end, this was checked during reading
-					read_message = read_message[2:]
-					
+						# enFRAGEZEICHEN#
+						message = message[2:-1]
+						#read_message has no #/endofmessage at end, this was checked during reading
+						read_message = read_message[2:]
+						
+
+					#if tag was removed before it was properly read
+					except TypeError:
+						print("Error while reading RFID-tag content. Tag was probably removed before reading was completed.")
+						#audio.espeaker("Täg konnte nicht gelesen werden. Lass ihn länger auf dem Feld stehen!")
+						audio.play_full("TTS",199) #Die Figur konnte nicht erkannt werden. Lass sie länger auf dem Feld stehen.
+
+	
 					valid = message == read_message
 					print("valid " + str(valid))
+					
 				
 				else:
 					valid = True
@@ -244,6 +269,6 @@ def write_set():
 
 if __name__ == "__main__":
 	if len(sys.argv) > 1:
-		write_single()
+		write_single(sys.argv[1])
 	else:
 		write_set()

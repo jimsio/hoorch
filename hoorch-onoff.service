@@ -3,7 +3,9 @@ Description=Hoorch switch off GPIO checker
 After=multi-user.target
 
 [Service]
+User=root
 Type=idle
+WorkingDirectory=/home/pi/hoorch/
 ExecStart=/usr/bin/python3 /home/pi/hoorch/switch_off.py
 
 [Install]

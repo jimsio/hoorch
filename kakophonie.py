@@ -18,7 +18,7 @@ def start():
 	leds.reset() #reset leds
 		
 	if not pygame.mixer.get_init():
-		pygame.mixer.init()
+		pygame.mixer.init(buffer=4096)
 		pygame.mixer.set_num_channels(6)
 		for s in range(0,6):
 			phones.append(pygame.mixer.Sound("data/phonie/00"+str(s+1)+".ogg"))
@@ -38,7 +38,6 @@ def start():
 					found_digits.append(tag[-1]) #get digit
 				
 		for i in range(0,6):
-			#if str(i+1) not in rfidreaders.tags:
 			if str(i+1) not in found_digits:
 				phones[i].set_volume(0)
 			else: 

@@ -12,15 +12,18 @@ import re
 import sys
 
 defined_figures = rfidreaders.gamer_figures
+#end_timer = None
 
-def check_end():
+'''def check_end():
 	if "ENDE" in rfidreaders.tags:
-		sys.exit()
+		print("sys.exit")
+		end_timer.cancel()
+		sys.exit("End game")
 
-	end_timer = threading.Timer(0.5,check_end).start()
-
+	end_timer = threading.Timer(0.3,check_end).start()
+'''
 def start():
-	check_end()
+	#check_end()
 
 	audio.play_full("TTS",85) #Wir üben jetzt das Einmaleins.
 	leds.reset() #reset leds
@@ -50,12 +53,15 @@ def start():
 	
 	audio.play_full("TTS",5+figure_count) # Es spielen x Figuren mit
 
+	if "ENDE" in rfidreaders.tags:
+		return
+
 	rounds = 3 # 1-5 rounds possible
 	audio.play_full("TTS",20+rounds) #Wir spielen 1-5 Runden
 	points = [0,0,0,0,0,0]
 	
-	#if "ENDE" in rfidreaders.tags:
-	#	return
+	if "ENDE" in rfidreaders.tags:
+		return
 	
 	isthefirst = True
 	for r in range(0,rounds):
@@ -67,15 +73,16 @@ def start():
 				
 				if r == 0 and isthefirst == True: #first round
 					isthefirst = False
-					audio.play_full("TTS",12+i) #Es beginnt die Spielfigur auf Spielfeld x
+					if figure_count > 1:
+						audio.play_full("TTS",12+i) #Es beginnt die Spielfigur auf Spielfeld x
 					audio.play_full("TTS",89) #Stelle die Zehnerstelle links neben deine Figur und die Einerstelle rechts, wo die Lämpchen leuchten.
 				elif figure_count == 1:
 					audio.play_full("TTS",67) # Du bist nochmal dran
 				else:
 					audio.play_full("TTS",48+i) # Die nächste Spielfigur steht auf Spielfeld x
 
-				#if "ENDE" in rfidreaders.tags:
-				#	return
+				if "ENDE" in rfidreaders.tags:
+					return
 				
 				num1 = random.randint(1,9)
 				num2 = random.randint(1,9)
@@ -97,24 +104,27 @@ def start():
 				leds.led_value[ud] = 100
 				leds.led_value[i+1] = 100
 
-				#if "ENDE" in rfidreaders.tags:
-				#	return
+				if "ENDE" in rfidreaders.tags:
+					return
 
-				audio.play_full("TTS",190) #Du hast für die Antwort 6 Sekunden Zeit
-						
-				audio.play_file("sounds","waiting.mp3") # play wait sound 6 sec
-				#leds.rotate_one_round(1.11)
+				audio.play_full("TTS",190) #Du hast für die Antwort 12 Sekunden Zeit
 				
-				#leds blink at tens and unit fields
-				for k in range(5):
-					leds.led_value[i+1] = 0
-					leds.led_value[ud] = 100
-					time.sleep(0.5)
-					leds.led_value[ud] = 0
-					leds.led_value[i+1] = 100
+				#blink / wait for 12 seconds
+				for b in range(2):
+					audio.play_file("sounds","waiting.mp3") # play wait sound 6 sec
+					#leds.rotate_one_round(1.11)
+					
+					#leds blink at tens and unit fields
+					for k in range(6):
+						leds.led_value[i+1] = 0
+						leds.led_value[ud] = 100
+						time.sleep(1)
+						leds.led_value[ud] = 0
+						leds.led_value[i+1] = 100
+						time.sleep(1)
 				
-				#if "ENDE" in rfidreaders.tags:
-				#	return
+					if "ENDE" in rfidreaders.tags:
+						return
 				
 				tens = copy.deepcopy(rfidreaders.tags[i+1]) #zehnerstelle
 				unit = copy.deepcopy(rfidreaders.tags[ud]) #Einerstelle
@@ -124,7 +134,7 @@ def start():
 				
 				#old: if unit != None and unit.isdigit() and tens.isdigit():
 				
-				#rexex (start with capital character, zero or more characters, end with single digit) : ^[A-z]*[0-9]$ 	
+				#regex (start with capital character, zero or more characters, end with single digit) : ^[A-z]*[0-9]$ 	
 				#search with regex if unit and tens look like Hahn1 
 				if unit != None and re.search("^[A-z]*[0-9]$", unit) and re.search("^[A-z]*[0-9]$", tens):
 				
@@ -150,8 +160,8 @@ def start():
 				else:
 					audio.play_full("TTS",191) #Du hast keine Zahlen hingestellt
 				
-				#if "ENDE" in rfidreaders.tags:
-				#	return
+				if "ENDE" in rfidreaders.tags:
+					return
 		
 
 	# tell the points
@@ -165,5 +175,8 @@ def start():
 			print("Du hast "+str(points[i])+" Antworten richtig")
 			audio.play_full("TTS",68+points[i])
 			time.sleep(1)
+			
+			if "ENDE" in rfidreaders.tags:
+				return
 	
 	leds.reset()

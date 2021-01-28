@@ -31,9 +31,9 @@ readers = []
 tags = []
 timer = [0,0,0,0,0,0]
 
-figures_db = {} #figure database is a dictionary with tag id and tag name stored, based on predefined figure_db.txt which is created when configuring hoorch for the first time
+figures_db = {} #figure database is a dictionary with tag id and tag name stored, based on predefined figure_db.txt. figure_db.txt is created when configuring HOORCH for the first time
 gamer_figures = [] #ritter, koenigin,...
-animal_figures = [] #Loewe, Elefant, ...
+animal_figures = [] #Loewe2, Elefant1, ...
 
 endofmessage = "#" #chr(35)
 
@@ -118,14 +118,19 @@ def continuous_read():
 				#print("mifare chip!")#
 				id_readable = id_readable[:-1]
 				mifare = True
-					
+			
+			#check if tag id in figure db
 			try:
 				tag_name = figures_db[id_readable]
 			
+			#if not in figure db read the content of the tag to get tag name
 			except:
 				
 				#reader has issues with reading mifare cards, stick with the tag_uid, dont read the tag content
-				if not mifare:
+				if mifare:
+					tag_name = id_readable
+				else:
+					
 					#id_readable is not in figures_db, read tag to get the tag name
 					read_message = ""
 					
@@ -145,10 +150,11 @@ def continuous_read():
 							if breaker:
 								break
 					
-					#if tag was removed before completely read
+					#if tag was removed before it was properly read
 					except TypeError:
 						print("Error while reading RFID-tag content. Tag was probably removed before reading was completed.")
-						audio.espeaker("Täg konnte nicht gelesen werden. Lass ihn länger auf dem Feld stehen!")
+						#audio.espeaker("Täg konnte nicht gelesen werden. Lass ihn länger auf dem Feld stehen!")
+						audio.play_full("TTS",199) #Die Figur konnte nicht erkannt werden. Lass sie länger auf dem Feld stehen.
 						break
 					
 					#remove unicode control characters from read string
@@ -163,7 +169,11 @@ def continuous_read():
 						figures_db[id_readable] = tag_name
 					
 					elif tag_name.startswith("ADMIN"):
-						tag_name = tag_name[6:]
+						tag_name = "ADMIN"
+						
+						#deprecated:
+						#NFC tools on android: write text to tag: ADMIN;WIFI# - ADMIN will be removed by rfidreaders.py
+						#tag_name = tag_name[6:]
 						# remove ADMIN; to get WIFIstart
 					else:
 						#else set the unknown figure as a gamer figures, with the id_readable as tag_name
@@ -176,7 +186,7 @@ def continuous_read():
 			tag_name = None
 		
 		# keep tags in array for 1 seconds to even out reading errors
-		if tag_name == None and timer[index] < time.time() :
+		if tag_name is None and timer[index] < time.time() :
 			tags[index] = tag_name #None
 			timer[index] = 0 #reset timer to 0
 		
@@ -186,4 +196,4 @@ def continuous_read():
 	
 	print(tags	)
 	#rfidreaders_timer = threading.Timer(0.01,continuous_read).start()
-	rfidreaders_timer = threading.Timer(0.5,continuous_read).start()
+	rfidreaders_timer = threading.Timer(1.0,continuous_read).start()

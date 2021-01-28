@@ -30,9 +30,9 @@ def start():
 			if animal not in defined_animals:
 				animal = None
 			if animal is not None:
-				print(animal)
+				#print(animal)
 				if not audio.file_is_playing(animal+".mp3"):
 					audio.play_file("animal_sounds",animal+".mp3")
 					playing_animals[i] = animal
 
-	time.sleep(0.2)
+		time.sleep(0.2)

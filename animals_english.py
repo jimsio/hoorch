@@ -38,13 +38,14 @@ def start():
 				break
 				
 			for i, animal in enumerate(figures_on_board):
-				animal = animal[:-1] #remove digit at end
-				if animal in defined_animals:
-					leds.led_value[i] = 1
-					if not audio.file_is_playing(animal+".mp3"):
-						audio.play_file("TTS/animals_en",animal+".mp3")
-						time.sleep(2)
-					leds.reset()
+				if animal is not None:
+					animal = animal[:-1] #remove digit at end
+					if animal in defined_animals:
+						leds.led_value[i] = 1
+						if not audio.file_is_playing(animal+".mp3"):
+							audio.play_file("TTS/animals_en",animal+".mp3")
+							time.sleep(2)
+						leds.reset()
 	
 	else:
 		for i,p in enumerate(players):
@@ -73,7 +74,8 @@ def start():
 					
 					if r == 0 and isthefirst == True: #first round
 						isthefirst = False
-						audio.play_full("TTS",12+i) #Es beginnt die Spielfigur auf Spielfeld x
+						if figure_count > 1:
+							audio.play_full("TTS",12+i) #Es beginnt die Spielfigur auf Spielfeld x
 						audio.play_full("TTS",194) #Ich spiele dir jetzt die englischen Namen eines Tiers vor. Wenn du das Tier weisst, tausche deine Spielfigur gegen den Tier-Spielstein aus.
 					elif figure_count == 1:
 						audio.play_full("TTS",67) # Du bist nochmal dran
@@ -96,29 +98,32 @@ def start():
 							time.sleep(3)
 
 						figure_on_field = copy.deepcopy(rfidreaders.tags[i])
-						figure_on_field = figure_on_field[:-1] #remove digit at end
 						
-						if figure_on_field != None and figure_on_field != p and figure_on_field in defined_animals:
-							audio.kill_sounds()
-							
-							if figure_on_field == animal:
-								time.sleep(0.2)
-								audio.play_full("TTS",27)
-								print("richtig")
-								audio.play_file("sounds","winner.mp3")
-								time.sleep(0.2)
-								points[i] += 1
-								print("Du hast schon "+str(points[i])+" richtige Antworten")
-								rfidreaders.tags[i] = None
-								break
-							else:
-								time.sleep(0.2)
-								audio.play_full("TTS",26)
-								print("falsch")
-								audio.play_file("sounds","loser.mp3")
-								time.sleep(0.2)
-								rfidreaders.tags[i] = None
-								break
+						if figure_on_field is not None:
+							figure_on_field = figure_on_field[:-1] #remove digit at end
+						
+						#if figure_on_field != None and figure_on_field != p and figure_on_field in defined_animals:
+							if figure_on_field != p and figure_on_field in defined_animals:
+								audio.kill_sounds()
+								
+								if figure_on_field == animal:
+									time.sleep(0.2)
+									audio.play_full("TTS",27)
+									print("richtig")
+									audio.play_file("sounds","winner.mp3")
+									time.sleep(0.2)
+									points[i] += 1
+									print("Du hast schon "+str(points[i])+" richtige Antworten")
+									rfidreaders.tags[i] = None
+									break
+								else:
+									time.sleep(0.2)
+									audio.play_full("TTS",26)
+									print("falsch")
+									audio.play_file("sounds","loser.mp3")
+									time.sleep(0.2)
+									rfidreaders.tags[i] = None
+									break
 	
 	if not isthefirst:
 	

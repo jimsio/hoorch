@@ -57,7 +57,8 @@ def start():
 				
 				if r == 0 and isthefirst == True: #first round
 					isthefirst = False
-					audio.play_full("TTS",12+i) #Es beginnt die Spielfigur auf Spielfeld x
+					if figure_count > 1:
+						audio.play_full("TTS",12+i) #Es beginnt die Spielfigur auf Spielfeld x
 					audio.play_full("TTS",19) #Ich spiele dir jetzt die Laute eines Tiers vor. Wenn du das Tier erkennst, tausche deine Spielfigur gegen den Tier-Spielstein.
 				elif figure_count == 1:
 					audio.play_full("TTS",67) # Du bist nochmal dran

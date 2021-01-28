@@ -1,10 +1,10 @@
 [Unit]
-Description=Hoorch main
-After=multi-user.target
+Description=Hoorch Main Program
+After=basic.target
 After=sound.target
 
 [Service]
-User=root
+User=pi
 Type=simple
 Environment="DISPLAY=:0"
 Environment="XAUTHORITY=/home/pi/.Xauthority"
@@ -13,4 +13,4 @@ WorkingDirectory=/home/pi/hoorch/
 ExecStart=/usr/bin/python3 /home/pi/hoorch/hoorch.py
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=basic.target

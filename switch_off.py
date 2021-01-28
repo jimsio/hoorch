@@ -26,7 +26,6 @@ threshold_time = 3
 
 while True:
 	if (GPIO.input(pin_nr)) == GPIO.LOW:
-		#print("pressed")
 		if pressed == False:
 			start_pressed = time.time()
 			pressed	= True
@@ -38,5 +37,4 @@ while True:
 				os.system("shutdown -P now")
 				
 	else:
-		#print("unpressed")
 		pressed = False

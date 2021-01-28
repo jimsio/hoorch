@@ -9,7 +9,7 @@ from shlex import split
 print("starting adjust volume")
 
 #set start value of audio output
-os.system("amixer -q -c 0 sset 'PCM',0 86%") #=56 in alsamixer
+os.system("amixer -q -c 0 sset 'Headphone',0 86%") #=56 in alsamixer
 
 vol_up_pin = 36 # volume up
 vol_down_pin = 38 # volume down
@@ -20,7 +20,7 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(vol_up_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(vol_down_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-cmd = "amixer -c 0 sget 'PCM',0"
+cmd = "amixer -c 0 sget 'Headphone',0"
 cmd = split(cmd)
 
 def volume_up(pin):
@@ -31,11 +31,11 @@ def volume_up(pin):
 	
 	if cv <= 85:
 		print("volume up")
-		os.system("amixer -q -c 0 sset 'PCM',0 5db+")
+		os.system("amixer -q -c 0 sset 'Headphone',0 5db+")
 	
 def volume_down(pin):
 	print("volume down")
-	os.system("amixer -q -c 0 sset 'PCM',0 5db-")
+	os.system("amixer -q -c 0 sset 'Headphone',0 5db-")
 
 GPIO.add_event_detect(vol_up_pin, GPIO.FALLING, callback=volume_up, bouncetime = 400)
 GPIO.add_event_detect(vol_down_pin, GPIO.FALLING, callback=volume_down, bouncetime = 400)

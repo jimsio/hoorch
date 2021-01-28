@@ -36,7 +36,7 @@ def reset():
 	led_value = [0,0,0,0,0,0]
 
 def check_status():
-	leds_timer = threading.Timer(0.01,check_status).start()
+	leds_timer = threading.Timer(0.05,check_status).start()
 	for i in range(0,6):
 		GPIO.output(led_pins[i], led_value[i])
 	
@@ -48,6 +48,13 @@ def rotate_one_round(time_per_led):
 		led_value[i] = 1
 		time.sleep(time_per_led)
 		reset()
+
+def randomer():
+	global random_timer
+	threading.Timer(0.25,randomer).start()
+	if random_timer:
+		for index,i in enumerate(led_value):
+			led_value[index] = random.randint(0,1)
 
 
 #not used
@@ -64,10 +71,9 @@ def rotate_timer(time_until_end, start_position):
 		led_value[x] = 0
 		time.sleep(time_per_led)
 	
-
+#not used
 #rotate leds
 rotate_led = 0
-#not used
 def rotate():
 	global rotate_led
 	global rotate_timer
@@ -80,11 +86,4 @@ def rotate():
 	rotate_led += 1
 	if rotate_led > 5:
 		rotate_led = 0
-
-
-def randomer():
-	global random_timer
-	threading.Timer(0.25,randomer).start()
-	if random_timer:
-		for index,i in enumerate(led_value):
-			led_value[index] = random.randint(0,1)
+		

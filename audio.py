@@ -58,18 +58,28 @@ def record_story(folder, audiofile):
 	#sox −−norm=−3 infile outfile
 
 def error_recording(folder, audiofile):
+	figure_dir = path+"figures/"+folder
+	
 	#if file exists
-	if os.path.isfile(path+"figures/"+folder+"/"+audiofile+".mp3"):
+	if os.path.isfile(figure_dir+"/"+audiofile+".mp3"):
 		#if file is smaller than 50kB, delete it
-		if os.path.getsize(path+"figures/"+folder+"/"+audiofile+".mp3") < 50000:
-			os.remove(path+"figures/"+folder+"/"+audiofile+".mp3")
-
+		if os.path.getsize(figure_dir+"/"+audiofile+".mp3") < 50000:
+			os.remove(figure_dir+"/"+audiofile+".mp3")
+			
+			files = os.listdir(figure_dir)
 			#if directory is empty:
-			if not os.listdir(path+"figures/"+folder):
+			if not files:
 				#delete the folder
-				os.rmdir(path+"figures/"+folder)
+				os.rmdir(figure_dir)
+			
+			#if not empty, meaning there is still one or more files
+			else:
+				#rename the latest file back to koenigin.mp3 i.e.
+				sorted_files = sorted(files)
+				os.rename(figure_dir+"/"+sorted_files[0],figure_dir+"/"+audiofile+".mp3")
 			
 			return True
+			
 	
 	#if directory is empty:
 	if not os.listdir(path+"figures/"+folder):
