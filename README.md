@@ -1,7 +1,7 @@
 # HOORCH
 an educational multimedia box
 
-[HOORCH Logo](./graphics/pic_hoorch_logo_small.png)
+![HOORCH Logo](./graphics/pic_hoorch_logo_small.png)
 
 HOORCH is a multimedia box for primary school students. HOORCH is a dialect saying that means something like "listen up!".
 It consists of a Raspberry Pi 3A+ , 6 RFID-Readers, a microphone, speakers and several LEDs and buttons. It is housed in a laser cutted box with a transparent board top.
