@@ -35,25 +35,51 @@ pn532_reader.SAM_configuration()
 
 print("Found PN532 mifare with firmware version: {0}.{1}".format(ver, rev))
 
-print("Waiting for RFID/NFC card to write to!")
+print("Waiting for RFID/NFC card to read!")
 
 key = b"\xFF\xFF\xFF\xFF\xFF\xFF"
 
 tag_uid = None
+last_block = 8
+endofmessage = "#"
 
 while True:
 	# Check if a card is available to read
 	tag_uid = pn532_reader.read_passive_target(timeout=1.0)
 	print(".", end="")
-	
+
 	if tag_uid is not None:
 		id_readable = ""
 		for counter, number in enumerate(tag_uid):
 			id_readable += str(number)+"-"
 		id_readable = id_readable[:-1]
 		print("tag_uid readable: " + str(id_readable))
-		time.sleep(3)
-    
+		time.sleep(1)
+		break
+
+while True:
+	#read from tag - has issues, reading error occurs quite often...
+	read_message = ""
+
+	for i in range(4,last_block+1):
+		while not pn532_reader.mifare_classic_authenticate_block(tag_uid, i, MIFARE_CMD_AUTH_B, key):
+			print("authentication error")
+			time.sleep(1)
+
+		print("authentication successful")
+		block = pn532_reader.mifare_classic_read_block(i)
+		print(block)
+"""
+		for character in block:
+			if character != ord(endofmessage):
+				read_message += chr(character)
+				print(read_message)
+			else:
+				break
+
+	read_message = "".join(ch for ch in read_message if unicodedata.category(ch)[0]!="C")
+	print(read_message)"""
+
 """	if tag_uid is not None:
 		break
 
@@ -90,31 +116,11 @@ for i, s in enumerate(send):
 
 	while len(s) != 16:
 		s += chr(0)
-		
+
 	while not pn532_reader.mifare_classic_write_block(4+i, s.encode()):
 		print("writing error")
 		time.sleep(2)
-	
+
 	last_block = 4+i
 
-
-#read from tag - has issues, reading error occurs quite often...
-read_message = ""
-
-for i in range(4,last_block+1):
-	while not pn532_reader.mifare_classic_authenticate_block(tag_uid, i, MIFARE_CMD_AUTH_B, key):
-		print("authentication error")
-		time.sleep(2)
-		
-	block = pn532_reader.mifare_classic_read_block(i)
-
-	for character in block:
-		if character != ord(endofmessage):
-			read_message += chr(character)
-			print(read_message)
-		else:
-			break
-
-read_message = "".join(ch for ch in read_message if unicodedata.category(ch)[0]!="C")
-print(read_message)
 """

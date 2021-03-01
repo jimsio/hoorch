@@ -9,12 +9,13 @@ path = "./data/"
 
 
 def init():
-	#set environment variable for sox rec 
+	#set environment variable for sox rec
 	os.environ['AUDIODRIVER'] = "alsa"
-	
+
 	#set mic record level to 95% (92 in alsamixer)
 	os.system("amixer -q -c 1 sset 'Mic',0 95%")
 
+#non-blocking play
 def play(folder, audiofile):
 	subprocess.Popen("play "+path+"/"+folder+"/"+"{:03d}".format(audiofile)+".mp3"+"  2>/dev/null",shell=True, stdout=None, stderr=None)
 	#print("playing TTS number "+str(audiofile))
@@ -24,7 +25,7 @@ def play_full(folder, audiofile):
 	waitingtime = float(subprocess.run(['soxi','-D',file_path], stdout=subprocess.PIPE).stdout.decode('utf-8'))
 	subprocess.Popen("play "+file_path+" 2>/dev/null",shell=True, stdout=None, stderr=None)
 	time.sleep(waitingtime)
-	
+
 #for sounds (animals, systemsounds) in /data and subsequent folders
 def play_file(folder, audiofile):
 	subprocess.Popen("play "+path+folder+"/"+audiofile+"  2>/dev/null",shell=True, stdout=None, stderr=None)
@@ -37,10 +38,10 @@ def play_story(figure_id):
 
 def kill_sounds():
 	subprocess.Popen("killall play",shell=True, stdout=None, stderr=None)
-	
+
 def file_is_playing(audiofile):
 	output = subprocess.run(['ps','ax'], stdout=subprocess.PIPE).stdout.decode('utf-8')
-	
+
 	if audiofile in output:
 		#print("file is playing")
 		return True
@@ -48,9 +49,9 @@ def file_is_playing(audiofile):
 		#print("file is not playing")
 		return False
 
-def record_story(folder, audiofile):
-	subprocess.Popen("AUDIODEV=hw:1 rec "+path+"figures/"+folder+"/"+audiofile+".mp3"+" ", shell=True, stdout=None, stderr=None)
-	
+def record_story(figure):
+	subprocess.Popen("AUDIODEV=hw:1 rec "+path+"figures/"+figure+"/"+figure+".mp3"+" ", shell=True, stdout=None, stderr=None)
+
 	#TODO-maybe normalize, so volume boost at play_story can be removed -needs to be in other function because rec gets aborted
 	#infile = path+"figures/"+folder+"/"+audiofile+".mp3"
 	#outfile = path+"figures/"+folder+"/"+audiofile+"_normalized.mp3"
@@ -59,40 +60,84 @@ def record_story(folder, audiofile):
 
 def error_recording(folder, audiofile):
 	figure_dir = path+"figures/"+folder
-	
-	#if file exists
+
+	#if file (koenigin.mp3 i.e.) exists
 	if os.path.isfile(figure_dir+"/"+audiofile+".mp3"):
 		#if file is smaller than 50kB, delete it
 		if os.path.getsize(figure_dir+"/"+audiofile+".mp3") < 50000:
 			os.remove(figure_dir+"/"+audiofile+".mp3")
-			
+
 			files = os.listdir(figure_dir)
 			#if directory is empty:
 			if not files:
 				#delete the folder
 				os.rmdir(figure_dir)
-			
+
 			#if not empty, meaning there is still one or more files
 			else:
 				#rename the latest file back to koenigin.mp3 i.e.
 				sorted_files = sorted(files)
 				os.rename(figure_dir+"/"+sorted_files[0],figure_dir+"/"+audiofile+".mp3")
-			
+
 			return True
-			
-	
-	#if directory is empty:
-	if not os.listdir(path+"figures/"+folder):
-		#delete the folder
-		os.rmdir(path+"figures/"+folder)
-		return True
+	#if file does not exist
 	else:
-		return False
-		
-def stop_recording():
+		#if directory is empty (or if there is still a file like koenigin2021-02-01-10-26.mp3)
+		if not os.listdir(figure_dir):
+			#delete the folder
+			os.rmdir(figure_dir)
+			#if not empty, meaning there is still one or more files
+		else:
+			#rename the latest file back to koenigin.mp3 i.e.
+			os.rename(figure_dir+"/"+sorted_files[0],figure_dir+"/"+figure_id+".mp3")
+
+		return True
+
+
+
+def stop_recording(figure_id):
 	subprocess.Popen("killall rec",shell=True, stdout=None, stderr=None)
-	
+
+	figure_dir = path+"figures/"+figure_id
+
+	#if file (koenigin.mp3 i.e.) exists (could not have been saved due to error in rec)
+	if os.path.isfile(figure_dir+"/"+figure_id+".mp3"):
+		#if file is smaller than 50kB, delete it
+		if os.path.getsize(figure_dir+"/"+figure_id+".mp3") < 50000:
+			os.remove(figure_dir+"/"+figure_id+".mp3")
+
+			files_in_dir = os.listdir(figure_dir)
+
+			#if directory is empty:
+			if not files_in_dir:
+				#delete the folder
+				os.rmdir(figure_dir)
+
+			#if not empty, meaning there is still one or more files (like koenigin2021-02-01-10-26.mp3)
+			else:
+				#rename the latest file back to koenigin.mp3 i.e.
+				sorted_files = sorted(files_in_dir)
+				os.rename(figure_dir+"/"+sorted_files[0],figure_dir+"/"+figure_id+".mp3")
+
+			return True
+
+	#if file does not exist
+	else:
+		files_in_dir = os.listdir(figure_dir)
+
+		#if directory is empty (or if there is still a file like koenigin2021-02-01-10-26.mp3)
+		if not files_in_dir:
+			#delete the folder
+			os.rmdir(figure_dir)
+
+		#if not empty, meaning there is still one or more files (like koenigin2021-02-01-10-26.mp3)
+		else:
+			#rename the latest file back to koenigin.mp3 i.e.
+			sorted_files = sorted(files_in_dir)
+			os.rename(figure_dir+"/"+sorted_files[0],figure_dir+"/"+figure_id+".mp3")
+
+		return True
+
 def espeaker(words):
 	os.system("espeak -v de+f2 -p 30 -g 12 -s 180 --stdout \""+str(words)+"\" | aplay -D 'default'")
 	#espeak -v de+f2 -p 30 -g 12 -s 150 --stdout "apfelbaum" | aplay -D 'default'
-	

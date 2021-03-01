@@ -24,10 +24,10 @@ import tagwriter
 
 def init():
 	print ("initializiation of hardware")
-	
+
 	#initialize audio
 	audio.init()
-	
+
 	audio.play_full("TTS",1)
 
 	#initialize leds
@@ -37,13 +37,13 @@ def init():
 	if not os.path.exists("./figure_db.txt"):
 		leds.random_timer = False
 		tagwriter.write_set()
-	
+
 	#start random blinker
 	leds.random_timer = True
 
 	#initialize readers
 	rfidreaders.init()
-	
+
 
 #check_pause()
 
@@ -59,36 +59,36 @@ def init():
 		#leds.led_value[index] = 1
 		#time.sleep(0.5)
 		#leds.reset()
-		
+
 		#pause_timer1 = threading.Timer(0.01,check_pause).start()
 
 	#pause_timer = threading.Timer(2.0,check_pause).start()
 
-	
+
 def main():
 	print ("start main loop")
 	shutdown_time = 300 #seconds until shutdown if no interaction happened
 	shutdown_counter = time.time()+shutdown_time
-		
+
 	greet_time = time.time()
-	
-	
-	#while True:
-	while shutdown_counter > time.time():
-		
+
+
+	while True:
+	#while shutdown_counter > time.time():
+
 		leds.random_timer = True
-		
+
 		if greet_time < time.time():
 			audio.play_full("TTS",2) #Welches Spiel wollt ihr spielen?
 			greet_time = time.time()+30
-		
+
 		## Erklärung
 		if "FRAGEZEICHEN" in rfidreaders.tags:
 			print("Hoorch Erklärung")
 			leds.random_timer = False
 			audio.play_full("TTS",65) #Erklärung
 			shutdown_counter = time.time()+shutdown_time
-		
+
 		## Games
 		if "Aufnehmen" in rfidreaders.tags:
 			print("Geschichten aufnehmen")
@@ -98,7 +98,7 @@ def main():
 			geschichten_aufnehmen.start()
 			audio.play_full("TTS",54) #Das Spiel ist zu Ende
 			shutdown_counter = time.time()+shutdown_time
-			
+
 		if "Abspielen" in rfidreaders.tags:
 			print("Geschichte abspielen")
 			leds.random_timer = False
@@ -126,7 +126,7 @@ def main():
 			kakophonie.start()
 			audio.play_full("TTS",54) #Das Spiel ist zu Ende
 			shutdown_counter = time.time()+shutdown_time
-	
+
 		if "Einmaleins" in rfidreaders.tags:
 			print("Einmaleins")
 			leds.random_timer = False
@@ -145,16 +145,16 @@ def main():
 		if "ADMIN" in rfidreaders.tags:
 			admin.main()
 			shutdown_counter = time.time()+shutdown_time
-		
+
 		time.sleep(0.3)
-	
+
 	#shutdown
 	print("shutdown")
 	audio.play_full("TTS",196) #Du hast mich lange nicht verwendet. Ich schalte mich zum Stromsparen jetzt aus.
 	leds.random_timer = False
 	leds.led_value = [1,1,1,1,1,1]
 	#os.system("shutdown -P now")
-			
+
 
 if __name__ == "__main__":
 	init()

@@ -45,10 +45,10 @@ def init():
 	spi.try_lock()
 	spi.configure(baudrate=12000000)
 	#spi.configure(baudrate=1000)
-	
+
 	spi.unlock()
 	#print(spi.frequency)
-	
+
 	global readers
 	readers.append(PN532_SPI(spi, reader1_pin, debug=False))
 	readers.append(PN532_SPI(spi, reader2_pin, debug=False))
@@ -73,7 +73,7 @@ def init():
 		file = open(path, mode="r", encoding="utf-8")
 		figures_id_name = file.readlines()
 		file.close()
-		
+
 		section = 0
 
 		for uid_name in figures_id_name:
@@ -83,25 +83,25 @@ def init():
 			else:
 				(key, val) = uid_name.split(";")
 				figures_db[key] = val[:val.find("\n")]
-			
+
 				if section == 2:
 					gamer_figures.append(uid_name[uid_name.find(";")+1:uid_name.find("\n")])
 				elif section == 3:
 					animal_figures.append(uid_name[uid_name.find(";")+1:uid_name.find("\n")-1])
-				
+
 	continuous_read()
-	
+
 
 
 def continuous_read():
 	global readers
 	global tags
 	global gamer_figures
-	
+
 	for index, r in enumerate(readers):
-		
+
 		mifare = False
-		
+
 		tag_uid = r.read_passive_target(timeout=0.2)
 		if tag_uid:
 			#convert byte_array tag_uid to string id_readable: 4-7-26-160
@@ -112,30 +112,30 @@ def continuous_read():
 				else:
 					id_readable = id_readable[:-1]
 					break
-			
+
 			#reader has issues with reading mifare cards, stick with the tag_uid
 			if id_readable.endswith("-"):
 				#print("mifare chip!")#
 				id_readable = id_readable[:-1]
 				mifare = True
-			
+
 			#check if tag id in figure db
 			try:
 				tag_name = figures_db[id_readable]
-			
-			#if not in figure db read the content of the tag to get tag name
+
+			#id_readable is not in figures_db
 			except:
-				
+
 				#reader has issues with reading mifare cards, stick with the tag_uid, dont read the tag content
 				if mifare:
 					tag_name = id_readable
 				else:
-					
-					#id_readable is not in figures_db, read tag to get the tag name
+
+					#read tag content to get the tag name
 					read_message = ""
-					
+
 					breaker = False
-					
+
 					try:
 						for i in range(7,14):
 							block = r.ntag2xx_read_block(i)
@@ -146,54 +146,50 @@ def continuous_read():
 								else:
 									breaker = True
 									break
-							
+
 							if breaker:
 								break
-					
+
 					#if tag was removed before it was properly read
 					except TypeError:
 						print("Error while reading RFID-tag content. Tag was probably removed before reading was completed.")
 						#audio.espeaker("Täg konnte nicht gelesen werden. Lass ihn länger auf dem Feld stehen!")
 						audio.play_full("TTS",199) #Die Figur konnte nicht erkannt werden. Lass sie länger auf dem Feld stehen.
 						break
-					
+
 					#remove unicode control characters from read string
 					read_message = "".join(ch for ch in read_message if unicodedata.category(ch)[0]!="C")
-					
-					# enADMIN;WIFIstart - remove en at beginning
+
+					# enADMIN; - remove en at beginning
 					tag_name = read_message[2:]
-					
+
 					#if a figure (i.e. Affe,1 or koenigin) from another game (i.e. as a replacement of a lost one) that is already defined in this game is used
 					#add another key value pair to the figures_db database
 					if tag_name in figures_db:
 						figures_db[id_readable] = tag_name
-					
-					elif tag_name.startswith("ADMIN"):
-						tag_name = "ADMIN"
-						
-						#deprecated:
-						#NFC tools on android: write text to tag: ADMIN;WIFI# - ADMIN will be removed by rfidreaders.py
-						#tag_name = tag_name[6:]
-						# remove ADMIN; to get WIFIstart
+
+					#elif tag_name.startswith("ADMIN"):
+					#	tag_name = "ADMIN"
+
 					else:
 						#else set the unknown figure as a gamer figures, with the id_readable as tag_name
 						tag_name = id_readable
 						gamer_figures.append(tag_name)
 						print("added new unknown gamer figure to the temporary gamer_figure list")
-			
+
 
 		else:
 			tag_name = None
-		
+
 		# keep tags in array for 1 seconds to even out reading errors
 		if tag_name is None and timer[index] < time.time() :
 			tags[index] = tag_name #None
 			timer[index] = 0 #reset timer to 0
-		
-		if tag_name is not None:		
+
+		if tag_name is not None:
 			timer[index] = time.time()+1
 			tags[index] = tag_name
-	
+
 	print(tags	)
 	#rfidreaders_timer = threading.Timer(0.01,continuous_read).start()
 	rfidreaders_timer = threading.Timer(1.0,continuous_read).start()
