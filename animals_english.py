@@ -11,13 +11,20 @@ import copy
 
 defined_figures = rfidreaders.gamer_figures
 defined_animals = rfidreaders.animal_figures
-animals_played = [] #store the already played animals to avoid repetition - stay with 3 rounds then
 
 def start():
+	animals_played = [] #store the already played animals to avoid repetition
+
 	audio.play_full("TTS",192) #Wir lernen jetzt Tiernamen auf Englisch.
 	leds.reset() #reset leds
 
+	if "ENDE" in rfidreaders.tags:
+		return
+
 	audio.play_full("TTS",193) #Wenn ihr die Tiernamen auf Englisch lernen wollt, stellt die Fragezeichenfigur auf ein Spielfeld. Wenn ihr sie in einem Spiel erraten wollt, stellt eure Spielfiguren auf die Spielfelder.
+
+	if "ENDE" in rfidreaders.tags:
+		return
 
 	audio.play_file("sounds","waiting.mp3") # play wait sound
 	leds.rotate_one_round(1.11)
@@ -27,6 +34,10 @@ def start():
 
 	isthefirst = True
 
+	if "ENDE" in rfidreaders.tags:
+		return
+
+	#learn english names of animals
 	if "FRAGEZEICHEN" in players:
 		audio.play_full("TTS",192)
 		audio.play_full("TTS",195) # Stelle einen Tier-Spielstein auf ein Spielfeld, ich sage dir dann den englischen Namen.
@@ -48,6 +59,7 @@ def start():
 							time.sleep(2)
 						leds.reset()
 
+	#play guessing game
 	else:
 		for i,p in enumerate(players):
 			if p not in defined_figures:
@@ -62,7 +74,7 @@ def start():
 
 		audio.play_full("TTS",5+figure_count) # Es spielen x Figuren mit
 
-		rounds = 3 # 1-5 rounds possible - stay with 3 rounds otherwise animals_played doesnt work, 3*6 = 18
+		rounds = 3 # 1-5 rounds possible
 		audio.play_full("TTS",20+rounds) #Wir spielen 1-5 Runden
 		points = [0,0,0,0,0,0]
 
@@ -83,10 +95,16 @@ def start():
 					else:
 						audio.play_full("TTS",48+i) # Die nächste Spielfigur steht auf Spielfeld x
 
+					#20 different animals, up to 6 players, up to 5 rounds, need to empty animals_played when 20 reached
+					if len(animals_played) == 20:
+						animals_played = animals_played[-1]
+					#very first round, add dummy animal
+					elif len(animals_played) == 0:
+						animals_played.append("dummy_animal")
+
 					animal = random.choice(defined_animals)
 					while animal in animals_played:
 						animal = random.choice(defined_animals)
-					animals_played.append(animal)
 
 					audio.play_file("TTS/animals_en",animal+".mp3")
 					time.sleep(2)
@@ -107,8 +125,8 @@ def start():
 						if figure_on_field is not None:
 							figure_on_field = figure_on_field[:-1] #remove digit at end
 
-						#if figure_on_field != None and figure_on_field != p and figure_on_field in defined_animals:
-							if figure_on_field != p and figure_on_field in defined_animals:
+							#avoid player figure, last animal (if remained on field) and any other figure than animals
+							if figure_on_field != p and figure_on_field != animals_played[-1] and figure_on_field in defined_animals:
 								audio.kill_sounds()
 
 								if figure_on_field == animal:
@@ -129,6 +147,9 @@ def start():
 									time.sleep(0.2)
 									rfidreaders.tags[i] = None
 									break
+
+					#add the current animal to the already played list
+					animals_played.append(animal)
 
 	if not isthefirst:
 
