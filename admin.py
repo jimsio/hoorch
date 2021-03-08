@@ -6,6 +6,7 @@ import time
 import os
 import subprocess
 import datetime
+import re
 
 def main():
 	# 2 minutes until exit if no user interaction occurs
@@ -107,7 +108,7 @@ def wifi():
 
 		#connected to a wifi
 		else:
-			audio.espeaker("Wifi verbunden.")
+			audio.espeaker("Weifei verbunden.")
 			ip_adress = output.split(" ",1)
 			print(ip_adress)
 
@@ -122,10 +123,10 @@ def wifi():
 			while True:
 				if "JA" in rfidreaders.tags:
 					#os.system("rfkill block wifi")
-					audio.espeaker("Wifi wurde gestoppt")
+					audio.espeaker("Weifei wurde gestoppt")
 					break
 
 				elif "NEIN" in rfidreaders.tags or "ENDE" in rfidreaders.tags:
 					break
 
-	audio.espeaker("Wifi-Konfiguration beendet")
+	audio.espeaker("Weifei-Konfiguration beendet")
