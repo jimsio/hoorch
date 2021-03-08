@@ -1,4 +1,8 @@
-figure_db.txt
+# txt files containig the ids and names of game figures
+figure_db*
+
+# recorded stories
+data/figures/**
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
