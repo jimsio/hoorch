@@ -139,5 +139,5 @@ def stop_recording(figure_id):
 		return True
 
 def espeaker(words):
-	os.system("espeak -v de+f2 -p 30 -g 12 -s 180 --stdout \""+str(words)+"\" | aplay -D 'default'")
+	os.system("espeak -v de+f2 -p 30 -g 12 -s 170 --stdout \""+str(words)+"\" | aplay -D 'default'")
 	#espeak -v de+f2 -p 30 -g 12 -s 150 --stdout "apfelbaum" | aplay -D 'default'

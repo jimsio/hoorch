@@ -7,20 +7,25 @@ import os
 import subprocess
 import datetime
 import re
+import dbus
+
 
 def main():
+
+	breaker = False
+
 	# 2 minutes until exit if no user interaction occurs
 	audio.espeaker("Sie befinden sich im Admin-Menü.")
 	audio.espeaker("Verwenden Sie die Zahlenkarten um Einstellungen vorzunehmen.")
 	audio.espeaker("1 - WeiFei-Konfiguration.")
 	audio.espeaker("2 - Software aktualisieren.")
 	audio.espeaker("3 - Spielfiguren-Set löschen.")
-	#audio.espeaker("4 - Start server - brauchen wir das?")
+	audio.espeaker("4 - Alle Geschichten archivieren")
 	audio.espeaker("Ende-Täg zum Beenden.")
 
 	admin_exit_counter = time.time() + 120
 
-	while admin_exit_counter > time.time() or not "ENDE" in rfidreaders.tags:
+	while admin_exit_counter > time.time():
 
 		for tag_name in rfidreaders.tags:
 			if tag_name != None and re.search("^[A-z]*[0-9]$", tag_name):
@@ -37,13 +42,28 @@ def main():
 					new_set()
 
 				elif op == 4:
-					#start server
-					start_server()
+					#archive all figure stories
+					archive_stories()
 					admin_exit_counter = time.time() + 120
+			elif tag_name == "ENDE":
+				breaker = True
+				break
 
-def start_server():
-	#needed???
-	pass
+		if breaker:
+			break
+
+	audio.espeaker("Admin-Menü beendet.")
+
+
+def archive_stories():
+	recordings_list = os.listdir("./data/figures/")
+
+	for folder in recordings_list:
+		if folder+".mp3" in os.listdir("./data/figures/"+folder+"/"):
+			#print(folder+".mp3")
+			os.rename("./data/figures/"+folder+"/"+folder+".mp3","./data/figures/"+folder+"/"+folder+"{0}.mp3".format(datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
+
+	audio.espeaker("Alle Geschichten wurden archiviert.")
 
 def new_set():
 	#delete figure_db.txt, restart hoorch
@@ -53,16 +73,23 @@ def new_set():
 
 def git():
 	#git update, restart hoorch
-	output = subprocess.run(['hostname','-I'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+	bus = dbus.SystemBus()
+	#get comitup dbus object - https://davesteele.github.io/comitup/man/comitup.8.html
+	nm = bus.get_object('com.github.davesteele.comitup', '/com/github/davesteele/comitup')
 
-	#not connected to a wifi
-	if output is None:
+	tpl = nm.state()
+
+	#state is either 'HOTSPOT', 'CONNECTING', or 'CONNECTED'
+	state = str(tpl[0])
+
+	if state == "HOTSPOT":
 		audio.espeaker("Weifei nicht verbunden.")
 		audio.espeaker("Öffne zuerst mit der Zahlenkarte 1 die WeiFei Konfiguration.")
 
-	else:
+	elif state == "CONNECTED":
 		audio.espeaker("Aktualisierung wird gestartet. Dies kann einige Minuten dauern. Hoorch startet anschließend neu.")
 		subprocess.run(['git','pull'], stdout=subprocess.PIPE)
+		audio.espeaker("Aktualisierung beendet. Ich starte jetzt neu.")
 		os.system("reboot")
 
 def wifi():
@@ -96,19 +123,32 @@ def wifi():
 				break
 	#wifi on
 	else:
-		output = subprocess.run(['hostname','-I'], stdout=subprocess.PIPE).stdout.decode('utf-8')
 
-		#not connected to a wifi
-		if output is None:
-			audio.espeaker("Keine Verbindung zu einem WeiFei.")
-			audio.espeaker("Verbinde dich am Handy mit dem Hotspot namens hooorch minus und dann drei Zahlen. Öffne dann im Brauser hooorch minus und die drei Zahlen Punkt local")
-			audio.espeaker("Stelle dort dein lokales WeiFei ein")
-			#https://davesteele.github.io/comitup/man/comitup-cli.pdf maybe
-			#comitup.state()
+		bus = dbus.SystemBus()
+		#get comitup dbus object - https://davesteele.github.io/comitup/man/comitup.8.html
+		nm = bus.get_object('com.github.davesteele.comitup', '/com/github/davesteele/comitup')
+
+		tpl = nm.state()
+
+		#state is either 'HOTSPOT', 'CONNECTING', or 'CONNECTED'
+		state = str(tpl[0])
+
+		#connection - ssid name for the current connection on the wifi device
+		connection = tpl[1]
+
+		#accesspoint hostname
+		info = nm.get_info()
+		hostname = str(info["apname"])
+
+		if state == "HOTSPOT":
+			audio.espeaker("Keine Verbindung zum Internet.")
+			audio.espeaker("Verbinde dich am Handy mit dem Hotspot namens {0}. Öffne dann im Brauser {0} Punkt local".format(hostname))
+			audio.espeaker("Stelle dort dein lokales WeLan und Passwort ein")
 
 		#connected to a wifi
-		else:
-			audio.espeaker("Weifei verbunden.")
+		elif state == "CONNECTED":
+			audio.espeaker("Mit WeiFei {0} verbunden.".format(connection))
+			output = subprocess.run(['hostname','-I'], stdout=subprocess.PIPE).stdout.decode('utf-8')
 			ip_adress = output.split(" ",1)
 			print(ip_adress)
 
@@ -128,5 +168,11 @@ def wifi():
 
 				elif "NEIN" in rfidreaders.tags or "ENDE" in rfidreaders.tags:
 					break
+
+		#connecting
+		else:
+			audio.espeaker("Internet in wenigen Augenblicken verfügbar. Bitte warten.")
+			time.sleep(2)
+
 
 	audio.espeaker("Weifei-Konfiguration beendet")

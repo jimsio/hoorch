@@ -62,28 +62,9 @@ def start():
 			recordings_list = os.listdir("./data/figures/")
 			figure_dir = "./data/figures/"+figure_id
 
-			#if figure_id+'.mp3' in figure_dir:
-			if figure_id not in recordings_list:
-				print("no current story")
-				os.mkdir(figure_dir)
+			#when figure folder and i.e. roboter.mp3 exist
+			if figure_id in recordings_list and figure_id+'.mp3' in os.listdir(figure_dir):
 
-				audio.play_full("TTS",56) #Die Aufnahme beginnt in 3 Sekunden! Wenn du fertig bist, nimm deine Spielfigur vom Spielfeld"
-				#leds.rotate_one_round(0.4)
-				audio.play_full("TTS",66) # 3 2 1 Los
-				#time.sleep(1)
-				leds.led_value[i] = 100
-
-				#most recent story has only figure_id as filename, record_story(figure_id, filename)
-				audio.record_story(figure_id)
-
-				record_timer = time.time()+600 #600 sekunden(60*10min) counter until stop
-				while True:
-					if rfidreaders.tags[i] is None or record_timer < time.time() or "ENDE" in rfidreaders.tags:
-						error_recording = audio.stop_recording(figure_id)
-						audio.play_full("TTS",57) #Aufnahme ist zu Ende"
-						break
-
-			else:
 				audio.play_full("TTS",84) #Diese Figur hat schon eine Geschichte gespeichert...
 				#files = os.listdir(figure_dir)
 				audio.play_story(figure_id)
@@ -95,7 +76,7 @@ def start():
 					if rfidreaders.tags[i] == "JA":
 						audio.kill_sounds()
 
-						audio.play_full("TTS",200) #Stelle deine Figur wieder auf dein Spielfeld.
+						audio.play_full("TTS",200) #Stelle deine Figur auf dein Spielfeld.
 
 						#rename old story
 						archived_file = figure_id+datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
@@ -106,7 +87,7 @@ def start():
 						audio.play_full("TTS",66) # 3 2 1 Los
 						leds.led_value[i] = 100
 
-						#most recent story has only figure_id as filename, record_story(figure_id,)
+						#most recent story has only figure_id as filename, record_story(figure_id)
 						audio.record_story(figure_id)
 
 						record_timer = time.time()+600 #600 sekunden(60*10min) counter until stop
@@ -122,12 +103,33 @@ def start():
 						new_recording = False
 						break
 
+			else:
+				print("no story recorded yet")
+
+				if figure_id not in recordings_list:
+					os.mkdir(figure_dir)
+
+				audio.play_full("TTS",56) #Die Aufnahme beginnt in 3 Sekunden! Wenn du fertig bist, nimm deine Spielfigur vom Spielfeld"
+				#leds.rotate_one_round(0.4)
+				audio.play_full("TTS",66) # 3 2 1 Los
+				#time.sleep(1)
+				leds.led_value[i] = 100
+
+				#most recent story has only figure_id as filename, record_story(figure_id)
+				audio.record_story(figure_id)
+
+				record_timer = time.time()+600 #600 sekunden(=10min) counter until stop
+				while True:
+					if rfidreaders.tags[i] is None or record_timer < time.time() or "ENDE" in rfidreaders.tags:
+						error_recording = audio.stop_recording(figure_id)
+						audio.play_full("TTS",57) #Aufnahme ist zu Ende"
+						break
+
 
 			if new_recording:
 
 				if error_recording:
 					print("error while recording!")
-					#audio.espeaker("Bei der Aufname ist ein Fehler passiert. Lass die Figur beim nächsten mal länger stehen")
 					audio.play_full("TTS",197) # Bei der Aufname ist ein Fehler passiert. Lass die Figur beim nächsten mal länger stehen
 					continue
 
