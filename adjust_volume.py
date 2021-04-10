@@ -18,6 +18,11 @@ vol_down_pin = 38 # volume down
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 
+#new hoorch v4 mic+amp
+#GPIO.setmode(GPIO.BCM)
+#vol_up_pin = 2
+#vol_down_pin = 3
+
 GPIO.setup(vol_up_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(vol_down_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 

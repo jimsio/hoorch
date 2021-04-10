@@ -21,7 +21,60 @@ pip3 install RPI.GPIO adafruit-circuitpython-pn532 board pygame
 python3 -m pip install --force-reinstall adafruit-blinka
 
 #enable SPI
-sed -i "s/#dtparam=spi=on/dtparam=spi=on/g" $CONFIG 
+sed -i "s/#dtparam=spi=on/dtparam=spi=on/g" $CONFIG
+
+#create asound.conf
+#https://learn.adafruit.com/adafruit-max98357-i2s-class-d-mono-amp/raspberry-pi-usage
+
+cat > ~/asound.conf << 'EOL'
+pcm.speakerbonnet {
+   type hw card 0
+}
+
+pcm.dmixer {
+   type dmix
+   ipc_key 1024
+   ipc_perm 0666
+   slave {
+     pcm "speakerbonnet"
+     period_time 0
+     period_size 1024
+     buffer_size 8192
+     rate 44100
+     channels 2
+   }
+}
+
+ctl.dmixer {
+    type hw card 0
+}
+
+pcm.softvol {
+    type softvol
+    slave.pcm "dmixer"
+    control.name "PCM"
+    control.card 0
+}
+
+ctl.softvol {
+    type hw card 0
+}
+
+pcm.!default {
+    type             plug
+    slave.pcm       "softvol"
+}
+EOL
+
+mv ~/asound.conf /etc/asound.conf
+
+#disable audio / for i2s speaker
+#sed -i "s/dtparam=audio=on/#dtparam=audio=on/g" $CONFIG
+
+#add the two lines for i2s speaker
+#sh -c "echo 'dtparam=act_led_trigger=none' >> /boot/config.txt"
+#dtoverlay=hifiberry-dac
+#dtoverlay=i2s-mmap
 
 #disable hdmi (enable: -p) - to safe power
 /opt/vc/bin/tvservice -o
@@ -83,8 +136,8 @@ mv /etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.co
 #systemctl disable systemd.resolved
 
 #rename the comitup-wifi-name to hoorch-<nn> - https://davesteele.github.io/comitup/man/comitup-conf.5.html
-#sed -i "s/# ap_name: comitup-<nn>/ap_name: hoorch-<nn>/g" $COMITUP_CONF 
-sed -i "s/# ap_name: comitup-<nnn>/ap_name: hoorch-<nnn>/g" "/etc/comitup.conf"  
+#sed -i "s/# ap_name: comitup-<nn>/ap_name: hoorch-<nn>/g" $COMITUP_CONF
+sed -i "s/# ap_name: comitup-<nnn>/ap_name: hoorch-<nnn>/g" "/etc/comitup.conf"
 
 #comment out references to /etc/network/interfaces - https://github.com/davesteele/comitup/wiki/Installing-Comitup
 sed -i "s/source-directory/#source-directory/g" "/etc/network/interfaces"

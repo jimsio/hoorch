@@ -42,7 +42,8 @@ def start():
 					found_digits.append(tag[-1]) #get digit
 
 		#reduce amp flickering when too loud
-		if len(found_digits) <= 3:
+		#if len(found_digits) <= 3:
+		if len(found_digits) <= 6: #for new RED amp
 			volume = 1
 		else:
 			volume = 0.3

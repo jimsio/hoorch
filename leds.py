@@ -8,16 +8,14 @@ import random
 
 #LEDS
 
-#todo GPIO.setwarnings(False)
-#todo GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM) #= GPIO pins (BCM)
+GPIO.setwarnings(False)
 
-#led_pins = [board.D23, board.D18, board.D17, board.D12, board.D7, board.D8]
-#TODO: use BOARD numbers
 led_pins = [23,18,17,12,7,8]#= GPIO pins (BCM)
 led = []
 led_value = [0,0,0,0,0,0]
 
-rotate_timer = None
+#rotate_timer = None
 random_timer = False
 
 
@@ -39,7 +37,7 @@ def check_status():
 	leds_timer = threading.Timer(0.05,check_status).start()
 	for i in range(0,6):
 		GPIO.output(led_pins[i], led_value[i])
-	
+
 #rotate through all leds one whole circle/round, time per led in seconds
 def rotate_one_round(time_per_led):
 	global led_value
@@ -58,19 +56,19 @@ def randomer():
 
 
 #not used
-#TODO : implement as threaded timer - so it can be stopped 
+#TODO : implement as threaded timer - so it can be stopped
 def rotate_timer(time_until_end, start_position):
 	time_per_led = time_until_end / 6
 	global led_value
 	led_value = [1,1,1,1,1,1]
-	
+
 	for x in range(0,5):
 		position = start_position+x
 		if position > 5:
 			position -= 5
 		led_value[x] = 0
 		time.sleep(time_per_led)
-	
+
 #not used
 #rotate leds
 rotate_led = 0
@@ -81,9 +79,8 @@ def rotate():
 	for index,i in enumerate(led_value):
 		if index is rotate_led:
 			led_value[index] = 1
-		else: 
+		else:
 			led_value[index] = 0
 	rotate_led += 1
 	if rotate_led > 5:
 		rotate_led = 0
-		

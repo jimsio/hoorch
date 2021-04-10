@@ -58,43 +58,6 @@ def record_story(figure):
 	#subprocess.Popen("sox --norm=-3 "+infile+" "+outfile+" 2>/dev/null",shell=True, stdout=None, stderr=None)
 	#sox −−norm=−3 infile outfile
 
-def error_recording(folder, audiofile):
-	figure_dir = path+"figures/"+folder
-
-	#if file (koenigin.mp3 i.e.) exists
-	if os.path.isfile(figure_dir+"/"+audiofile+".mp3"):
-		#if file is smaller than 50kB, delete it
-		if os.path.getsize(figure_dir+"/"+audiofile+".mp3") < 50000:
-			os.remove(figure_dir+"/"+audiofile+".mp3")
-
-			files = os.listdir(figure_dir)
-			#if directory is empty:
-			if not files:
-				#delete the folder
-				os.rmdir(figure_dir)
-
-			#if not empty, meaning there is still one or more files
-			else:
-				#rename the latest file back to koenigin.mp3 i.e.
-				sorted_files = sorted(files)
-				os.rename(figure_dir+"/"+sorted_files[0],figure_dir+"/"+audiofile+".mp3")
-
-			return True
-	#if file does not exist
-	else:
-		#if directory is empty (or if there is still a file like koenigin2021-02-01-10-26.mp3)
-		if not os.listdir(figure_dir):
-			#delete the folder
-			os.rmdir(figure_dir)
-			#if not empty, meaning there is still one or more files
-		else:
-			#rename the latest file back to koenigin.mp3 i.e.
-			os.rename(figure_dir+"/"+sorted_files[0],figure_dir+"/"+figure_id+".mp3")
-
-		return True
-
-
-
 def stop_recording(figure_id):
 	subprocess.Popen("killall rec",shell=True, stdout=None, stderr=None)
 

@@ -76,7 +76,7 @@ def start():
 					if rfidreaders.tags[i] == "JA":
 						audio.kill_sounds()
 
-						audio.play_full("TTS",200) #Stelle deine Figur auf dein Spielfeld.
+						audio.play_full("TTS",200) #Stelle deine Figur wieder auf dein Spielfeld.
 
 						#rename old story
 						archived_file = figure_id+datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
