@@ -26,47 +26,47 @@ sed -i "s/#dtparam=spi=on/dtparam=spi=on/g" $CONFIG
 #create asound.conf
 #https://learn.adafruit.com/adafruit-max98357-i2s-class-d-mono-amp/raspberry-pi-usage
 
-cat > ~/asound.conf << 'EOL'
-pcm.speakerbonnet {
-   type hw card 0
-}
-
-pcm.dmixer {
-   type dmix
-   ipc_key 1024
-   ipc_perm 0666
-   slave {
-     pcm "speakerbonnet"
-     period_time 0
-     period_size 1024
-     buffer_size 8192
-     rate 44100
-     channels 2
-   }
-}
-
-ctl.dmixer {
-    type hw card 0
-}
-
-pcm.softvol {
-    type softvol
-    slave.pcm "dmixer"
-    control.name "PCM"
-    control.card 0
-}
-
-ctl.softvol {
-    type hw card 0
-}
-
-pcm.!default {
-    type             plug
-    slave.pcm       "softvol"
-}
-EOL
-
-mv ~/asound.conf /etc/asound.conf
+# cat > ~/asound.conf << 'EOL'
+# pcm.speakerbonnet {
+#    type hw card 0
+# }
+#
+# pcm.dmixer {
+#    type dmix
+#    ipc_key 1024
+#    ipc_perm 0666
+#    slave {
+#      pcm "speakerbonnet"
+#      period_time 0
+#      period_size 1024
+#      buffer_size 8192
+#      rate 44100
+#      channels 2
+#    }
+# }
+#
+# ctl.dmixer {
+#     type hw card 0
+# }
+#
+# pcm.softvol {
+#     type softvol
+#     slave.pcm "dmixer"
+#     control.name "PCM"
+#     control.card 0
+# }
+#
+# ctl.softvol {
+#     type hw card 0
+# }
+#
+# pcm.!default {
+#     type             plug
+#     slave.pcm       "softvol"
+# }
+# EOL
+#
+# mv ~/asound.conf /etc/asound.conf
 
 #disable audio / for i2s speaker
 #sed -i "s/dtparam=audio=on/#dtparam=audio=on/g" $CONFIG

@@ -42,12 +42,6 @@ endofmessage = "#" #chr(35)
 def init():
 	print("initialize the rfid readers and figure_db.txt")
 	spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
-	spi.try_lock()
-	spi.configure(baudrate=12000000)
-	#spi.configure(baudrate=1000)
-
-	spi.unlock()
-	#print(spi.frequency)
 
 	global readers
 	readers.append(PN532_SPI(spi, reader1_pin, debug=False))
@@ -57,11 +51,11 @@ def init():
 	readers.append(PN532_SPI(spi, reader5_pin, debug=False))
 	readers.append(PN532_SPI(spi, reader6_pin, debug=False))
 
-	for r in range(0,6):
-		#ic, ver, rev, support = readers[r].firmware_version
-		#print('Found Reader '+str(r)+' with firmware version: {0}.{1}'.format(ver, rev, support))
-		readers[r].SAM_configuration()
-		print('Initialized and configured RFID/NFC reader '+str(r))
+	for n, reader in enumerate(readers):
+		#ic, ver, rev, support = reader.firmware_version
+		#print('Found Reader '+str(n)+' with firmware version: {0}.{1}'.format(ver, rev, support))
+		reader.SAM_configuration()
+		print('Initialized and configured RFID/NFC reader '+str(n+1))
 		tags.append(None)
 
 	#init figure db
@@ -103,6 +97,9 @@ def continuous_read():
 		mifare = False
 
 		tag_uid = r.read_passive_target(timeout=0.2)
+		#safe energy
+		r.power_down()
+
 		if tag_uid:
 			#convert byte_array tag_uid to string id_readable: 4-7-26-160
 			id_readable = ""
@@ -153,7 +150,6 @@ def continuous_read():
 					#if tag was removed before it was properly read
 					except TypeError:
 						print("Error while reading RFID-tag content. Tag was probably removed before reading was completed.")
-						#audio.espeaker("Täg konnte nicht gelesen werden. Lass ihn länger auf dem Feld stehen!")
 						audio.play_full("TTS",199) #Die Figur konnte nicht erkannt werden. Lass sie länger auf dem Feld stehen.
 						break
 

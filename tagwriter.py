@@ -19,20 +19,13 @@ import leds
 #gpio24
 reader1_pin = DigitalInOut(board.D24)
 
-
 reader = []
 
 spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
-spi.try_lock()
-spi.configure(baudrate=12000000)
-spi.unlock()
 
 reader.append(PN532_SPI(spi, reader1_pin, debug=False))
 #ic, ver, rev, support = reader[0].firmware_version
 reader[0].SAM_configuration()
-
-#TODO
-#https://circuitpython.readthedocs.io/projects/pn532/en/latest/api.html
 
 path = "./figure_ids.txt"
 file = open(path, mode="r", encoding="utf-8")
@@ -45,7 +38,6 @@ endofmessage = "#" #chr(35)
 #chr(0) = '\x00' or this?
 
 figure_database = []
-
 
 
 def write_single(message):
