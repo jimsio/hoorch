@@ -15,6 +15,7 @@ apt install -y sox
 apt install -y libsox-fmt-mp3
 apt install -y espeak
 apt install -y libsdl2-mixer-2.0-0
+apt install -y git
 
 pip3 install --upgrade setuptools
 pip3 install RPI.GPIO adafruit-circuitpython-pn532 board pygame
