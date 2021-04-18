@@ -9,8 +9,8 @@ from shlex import split
 print("starting adjust volume")
 
 #set start value of audio output
-os.system("amixer -q -c 0 sset 'Headphone',0 82%") #=48 in alsamixer
-#os.system("amixer -q -c 0 sset 'Headphone',0 86%") #=56 in alsamixer
+#os.system("amixer -q -c 0 sset 'Headphone',0 82%") #=48 in alsamixer
+os.system("amixer -q -c 0 sset 'Headphone',0 96%") #=85 in alsamixer - for redamp
 
 vol_up_pin = 36 # volume up
 vol_down_pin = 38 # volume down
@@ -35,8 +35,8 @@ def volume_up(pin):
 	cv = int(get_volume[position-2:position].replace("[", ""))
 	print(cv)
 
-	if cv <= 82:
-	#if cv <= 85:
+	#if cv <= 82:
+	if cv <= 96: # for redamp
 		print("volume up")
 		os.system("amixer -q -c 0 sset 'Headphone',0 5db+")
 

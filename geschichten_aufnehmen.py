@@ -47,7 +47,8 @@ def start():
 		leds.reset()
 		if figure_id is not None:
 			leds.led_value[i] = 100
-			new_recording = True
+			new_recording = False
+			error_recording = False
 
 			if figure_count > 1:
 				if start: #at start
@@ -73,7 +74,8 @@ def start():
 				waitingtime = time.time() + float(subprocess.run(['soxi','-D',figure_dir+'/'+figure_id+'.mp3'], stdout=subprocess.PIPE).stdout.decode('utf-8'))+60
 
 				while waitingtime > time.time():
-					if rfidreaders.tags[i] == "JA":
+					if "JA" in rfidreaders.tags:
+					#if rfidreaders.tags[i] == "JA":
 						audio.kill_sounds()
 
 						audio.play_full("TTS",200) #Stelle deine Figur wieder auf dein Spielfeld.
@@ -95,12 +97,14 @@ def start():
 							if rfidreaders.tags[i] is None or record_timer < time.time() or "ENDE" in rfidreaders.tags:
 								error_recording = audio.stop_recording(figure_id)
 								audio.play_full("TTS",57) #Aufnahme ist zu Ende
+								new_recording = True
 								break
 						break
 
-					elif rfidreaders.tags[i] == "NEIN" or "ENDE" in rfidreaders.tags:
+					#elif rfidreaders.tags[i] == "NEIN" or "ENDE" in rfidreaders.tags:
+					elif "NEIN" in rfidreaders.tags or "ENDE" in rfidreaders.tags:
 						audio.kill_sounds()
-						new_recording = False
+						#new_recording = False
 						break
 
 			else:
@@ -123,6 +127,7 @@ def start():
 					if rfidreaders.tags[i] is None or record_timer < time.time() or "ENDE" in rfidreaders.tags:
 						error_recording = audio.stop_recording(figure_id)
 						audio.play_full("TTS",57) #Aufnahme ist zu Ende"
+						new_recording = True
 						break
 
 
@@ -142,16 +147,19 @@ def start():
 				waitingtime = time.time() + float(subprocess.run(['soxi','-D',figure_dir+'/'+figure_id+'.mp3'], stdout=subprocess.PIPE).stdout.decode('utf-8'))+60
 
 				while waitingtime > time.time():
-					if rfidreaders.tags[i] == "JA":
+					#if rfidreaders.tags[i] == "JA":
+					if "JA" in rfidreaders.tags:
 						audio.kill_sounds()
 						audio.play_full("TTS",82) #Geschichte gespeichert
 						break
 
-					elif rfidreaders.tags[i] == "NEIN" or "ENDE" in rfidreaders.tags:
+					elif "NEIN" in rfidreaders.tags or "ENDE" in rfidreaders.tags:
+					#elif rfidreaders.tags[i] == "NEIN" or "ENDE" in rfidreaders.tags:
 						audio.kill_sounds()
 
 						files_in_dir = os.listdir(figure_dir)
 						sorted_files = sorted(files_in_dir)
+						#print(sorted_files)
 
 						if len(files_in_dir) <= 1:
 							#delete file
@@ -162,7 +170,7 @@ def start():
 							#delete file
 							os.remove(figure_dir+"/"+figure_id+".mp3")
 							#rename second file in folder to figure_id without timestamp
-							os.rename(figure_dir+"/"+sorted_files[1],figure_dir+"/"+figure_id+".mp3")
+							os.rename(figure_dir+"/"+sorted_files[-1],figure_dir+"/"+figure_id+".mp3")
 
 						audio.play_full("TTS",83) #Geschichte nicht gespeichert
 						break
