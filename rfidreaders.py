@@ -97,8 +97,8 @@ def continuous_read():
 		mifare = False
 
 		tag_uid = r.read_passive_target(timeout=0.2)
-		#safe energy
-		r.power_down()
+		#safe energy - breaks reading of some readers
+		#r.power_down()
 
 		if tag_uid:
 			#convert byte_array tag_uid to string id_readable: 4-7-26-160
