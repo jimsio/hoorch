@@ -34,7 +34,7 @@ def play_file(folder, audiofile):
 def play_story(figure_id):
 	print("play story of " +str(figure_id))
 	#increase volume by -2db for stories as their recording volume is lower
-	subprocess.Popen("play -v -1 "+path+"figures/"+figure_id+"/"+figure_id+".mp3"+"  2>/dev/null",shell=True, stdout=None, stderr=None)
+	subprocess.Popen("play -v2 "+path+"figures/"+figure_id+"/"+figure_id+".mp3"+"  2>/dev/null",shell=True, stdout=None, stderr=None)
 
 def kill_sounds():
 	subprocess.Popen("killall play",shell=True, stdout=None, stderr=None)
@@ -53,6 +53,7 @@ def record_story(figure):
 	subprocess.Popen("AUDIODEV=hw:1 rec "+path+"figures/"+figure+"/"+figure+".mp3"+" ", shell=True, stdout=None, stderr=None)
 
 	#TODO-maybe normalize, so volume boost at play_story can be removed -needs to be in other function because rec gets aborted
+	#for example in the else block of stop_recording!
 	#infile = path+"figures/"+folder+"/"+audiofile+".mp3"
 	#outfile = path+"figures/"+folder+"/"+audiofile+"_normalized.mp3"
 	#subprocess.Popen("sox --norm=-3 "+infile+" "+outfile+" 2>/dev/null",shell=True, stdout=None, stderr=None)

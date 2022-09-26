@@ -13,17 +13,19 @@ import dbus
 def main():
 
 	breaker = False
-
+		
 	# 2 minutes until exit if no user interaction occurs
+	admin_exit_counter = time.time() + 120
+	
+	
 	audio.espeaker("Sie befinden sich im Admin-Menü.")
 	audio.espeaker("Verwenden Sie die Zahlenkarten um Einstellungen vorzunehmen.")
 	audio.espeaker("1 - WeiFei-Konfiguration.")
 	audio.espeaker("2 - Software aktualisieren.")
 	audio.espeaker("3 - Spielfiguren-Set löschen.")
-	audio.espeaker("4 - Alle Geschichten archivieren")
+	audio.espeaker("4 - Alle Geschichten archivieren") 
 	audio.espeaker("Ende-Täg zum Beenden.")
 
-	admin_exit_counter = time.time() + 120
 
 	while admin_exit_counter > time.time():
 
@@ -39,6 +41,7 @@ def main():
 					git()
 					admin_exit_counter = time.time() + 120
 				elif op == 3:
+					#delete figure_db.txt, restart hoorch
 					new_set()
 
 				elif op == 4:
@@ -56,23 +59,29 @@ def main():
 
 
 def archive_stories():
-	recordings_list = os.listdir("./data/figures/")
-
+	figure_dir = "./data/figures/"
+	print("archive stories")
+	recordings_list = os.listdir(figure_dir)
+	
 	for folder in recordings_list:
-		if folder+".mp3" in os.listdir("./data/figures/"+folder+"/"):
-			#print(folder+".mp3")
-			os.rename("./data/figures/"+folder+"/"+folder+".mp3","./data/figures/"+folder+"/"+folder+"{0}.mp3".format(datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
-
+		if os.path.isdir(figure_dir+folder):
+			if folder+".mp3" in os.listdir(figure_dir+folder+"/"):
+				os.rename(figure_dir+folder+"/"+folder+".mp3",figure_dir+folder+"/"+folder+"-{0}.mp3".format(datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
+				print(folder+".mp3 put into archive")
+			
+			else:
+				print(folder+ "-stories already in archive")
+			
 	audio.espeaker("Alle Geschichten wurden archiviert.")
 
 def new_set():
-	#delete figure_db.txt, restart hoorch
+	print("delete figure_db.txt, restart hoorch")
 	os.rename("figure_db.txt","figure_db-{0}.txt".format(datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
 	audio.espeaker("Figuren-Datenbank gelöscht. Ich starte jetzt neu.")
 	os.system("reboot")
 
 def git():
-	#git update, restart hoorch
+	print("git update, restart hoorch")
 	bus = dbus.SystemBus()
 	#get comitup dbus object - https://davesteele.github.io/comitup/man/comitup.8.html
 	nm = bus.get_object('com.github.davesteele.comitup', '/com/github/davesteele/comitup')
@@ -93,7 +102,7 @@ def git():
 		os.system("reboot")
 
 def wifi():
-
+	print("wifi config")
 	rfkill_output = subprocess.run(['rfkill','list','wifi'], stdout=subprocess.PIPE).stdout.decode('utf-8')
 
 	#wifi blocked / off

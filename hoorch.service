@@ -2,6 +2,7 @@
 Description=Hoorch Main Program
 After=basic.target
 After=sound.target
+DefaultDependencies=false
 
 [Service]
 User=pi

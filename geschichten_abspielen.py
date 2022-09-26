@@ -58,20 +58,22 @@ def start():
 			else:
 				audio.play_full("TTS",47+i) # Die nächste Spielfigur steht auf Spielfeld x
 
-			try:
-				files = os.listdir("./data/figures/"+figure_id)
-				print(files)
-			except:
+			
+			recordings_list = os.listdir("./data/figures/")
+			figure_dir = "./data/figures/"+figure_id
+			
+			#when figure folder exists and contains i.e. roboter.mp3 
+			if figure_id in recordings_list and figure_id+'.mp3' in os.listdir(figure_dir):
+				#play story
+				audio.play_story(figure_id)
+				waitingtime = time.time() + float(subprocess.run(['soxi','-D',figure_dir+'/'+figure_id+'.mp3'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+				print(waitingtime)
+			else:
 				audio.play_full("TTS",62) #Du hast noch keine Geschichte aufgenommen!
 				continue
 
 			if "ENDE" in rfidreaders.tags:
 				return
-
-			print(files)
-			#play story
-			audio.play_story(figure_id)
-			waitingtime = time.time() + float(subprocess.run(['soxi','-D','./data/figures/'+figure_id+'/'+files[0]], stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
 			while True:
 				if rfidreaders.tags[i] != figure_id or waitingtime < time.time() or "ENDE" in rfidreaders.tags:

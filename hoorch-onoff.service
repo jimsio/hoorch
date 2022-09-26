@@ -1,6 +1,7 @@
 [Unit]
 Description=Hoorch switch off GPIO checker
 After=multi-user.target
+DefaultDependencies=false
 
 [Service]
 User=root

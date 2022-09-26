@@ -18,7 +18,7 @@ apt install -y libsdl2-mixer-2.0-0
 apt install -y git
 
 pip3 install --upgrade setuptools
-pip3 install RPI.GPIO adafruit-circuitpython-pn532 board pygame
+pip3 install RPI.GPIO adafruit-circuitpython-pn532 board pygame rpi_ws281x adafruit-circuitpython-neopixel
 python3 -m pip install --force-reinstall adafruit-blinka
 
 #enable SPI
@@ -143,7 +143,7 @@ sed -i "s/# ap_name: comitup-<nnn>/ap_name: hoorch-<nnn>/g" "/etc/comitup.conf"
 #comment out references to /etc/network/interfaces - https://github.com/davesteele/comitup/wiki/Installing-Comitup
 sed -i "s/source-directory/#source-directory/g" "/etc/network/interfaces"
 
-#if connected to pi via remote, network connection will break here making screen freeze at at 88%.
+#if connected to pi via remote, network connection will break here making screen freeze at 88%.
 
 echo "Installation complete, rebooting now"
 reboot
