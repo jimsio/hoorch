@@ -69,7 +69,7 @@ sed -i "s/#dtparam=spi=on/dtparam=spi=on/g" $CONFIG
 #
 # mv ~/asound.conf /etc/asound.conf
 
-#disable audio / for i2s speaker
+#disable onboard audio / for i2s speaker
 #sed -i "s/dtparam=audio=on/#dtparam=audio=on/g" $CONFIG
 
 #add the two lines for i2s speaker
