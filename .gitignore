@@ -3,7 +3,6 @@ figure_db*
 
 # recorded stories
 data/figures/**
-!data/figures/test/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
