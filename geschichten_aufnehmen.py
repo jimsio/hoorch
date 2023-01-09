@@ -36,7 +36,11 @@ def start():
 		audio.play_full("TTS",59) #"Du hast keine Spielfigure auf das Spielfeld gestellt."
 		return
 
-	time.sleep(1)
+	time.sleep(0.5)
+
+	#switch on leds at player field
+	leds.switch_on_with_color(players, (100,100,100))
+
 	audio.play_full("TTS",5+figure_count) # Es spielen x Figuren mit
 
 	if "ENDE" in rfidreaders.tags:
@@ -46,7 +50,9 @@ def start():
 	for i, figure_id in enumerate(players):
 		leds.reset()
 		if figure_id is not None:
-			leds.led_value[i] = 100
+			#leds.led_value[i] = 100
+			leds.switch_on_with_color(i, (0,255,0))
+
 			new_recording = False
 			error_recording = False
 
@@ -117,7 +123,8 @@ def start():
 				#leds.rotate_one_round(0.4)
 				audio.play_full("TTS",66) # 3 2 1 Los
 				#time.sleep(1)
-				leds.led_value[i] = 100
+				#leds.led_value[i] = 100
+				leds.switch_on_with_color(i, (255,0,0))
 
 				#most recent story has only figure_id as filename, record_story(figure_id)
 				audio.record_story(figure_id)

@@ -7,7 +7,6 @@ import os
 
 path = "./data/"
 
-
 def init():
 	#set environment variable for sox rec
 	os.environ['AUDIODRIVER'] = "alsa"

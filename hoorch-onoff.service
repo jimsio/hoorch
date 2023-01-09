@@ -7,7 +7,7 @@ DefaultDependencies=false
 User=root
 Type=idle
 WorkingDirectory=/home/pi/hoorch/
-ExecStart=/usr/bin/python3 /home/pi/hoorch/switch_off.py
+ExecStart=/usr/bin/python3 /home/pi/hoorch/service_switch_off.py
 
 [Install]
 WantedBy=multi-user.target

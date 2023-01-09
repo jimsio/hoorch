@@ -7,7 +7,6 @@ import busio
 from adafruit_pn532.spi import PN532_SPI
 import digitalio
 from digitalio import DigitalInOut
-import RPi.GPIO as GPIO
 import time
 import os
 import unicodedata
@@ -19,13 +18,13 @@ import audio
 #Reader 3: Pin7 - GPIO4
 #Reader 4: Pin37 - GPIO26
 #Reader 5: Pin13 - GPIO27
-#Reader 6: Pin40 - GPIO21
+#Reader 6: Pin36 - GPIO16
 reader1_pin = DigitalInOut(board.D24)
 reader2_pin = DigitalInOut(board.D22)
 reader3_pin = DigitalInOut(board.D4)
 reader4_pin = DigitalInOut(board.D26)
 reader5_pin = DigitalInOut(board.D27)
-reader6_pin = DigitalInOut(board.D21)
+reader6_pin = DigitalInOut(board.D16)
 
 readers = []
 tags = []
@@ -168,7 +167,7 @@ def continuous_read():
 					#	tag_name = "ADMIN"
 
 					else:
-						#else set the unknown figure as a gamer figures, with the id_readable as tag_name
+						#else set the unknown figure as a gamer figure, with the id_readable as tag_name
 						tag_name = id_readable
 						gamer_figures.append(tag_name)
 						print("added new unknown gamer figure to the temporary gamer_figure list")

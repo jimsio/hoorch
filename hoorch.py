@@ -7,7 +7,6 @@ import threading
 import time
 import os
 import subprocess
-import RPi.GPIO as GPIO
 import audio
 import rfidreaders
 import leds
@@ -21,6 +20,7 @@ import animals_english
 import admin
 import tagwriter
 
+#game_thread = None
 
 def init():
 	print ("initializiation of hardware")
@@ -36,6 +36,7 @@ def init():
 	#initialize figure_db if no tags defined for this hoorch set
 	if not os.path.exists("./figure_db.txt"):
 		leds.random_timer = False
+		initial_hardware_test()
 		tagwriter.write_set()
 
 	#start random blinker
@@ -44,25 +45,33 @@ def init():
 	#initialize readers
 	rfidreaders.init()
 
+#beim ersten mal hoorch starten soll es eine testroutine geben, leds, reader, aufnahme und abspielen
+def initial_hardware_test():
 
-#check_pause()
+	audio.espeaker("Jetzt werden alle LEDs beleuchtet.")
+	leds.rainbow_cycle(0.5)
 
-#def check_pause():
-	#while "PAUSE" in rfidreaders.tags:
-		#print("ich mache pause - spiel pausenmusik")
-		#audio.espeaker("ich mache pause")
-		#audio.play_full("TTS",1)
-		#leds.reset()
-		#leds.rotate_one_round(0.5)
-		#leds.led_value[index] = 0
-		#time.sleep(0.5)
-		#leds.led_value[index] = 1
-		#time.sleep(0.5)
-		#leds.reset()
+	audio.espeaker("Wir testen jetzt die Arefeidi Leser.")
+	for i, value in enumerate(rfidreaders.tags):
+		audio.espeaker("Lege eine Karte auf Leser "+i)
+		leds.switch_on_with_color((i),(255,0,0))
+		while True:
+			if value not None:
+				leds.reset()
+				break
 
-		#pause_timer1 = threading.Timer(0.01,check_pause).start()
+	audio.espeaker("Ich teste jetzt das Audio, die Aufnahme beginnt in 3 Sekunden und dauert 6 Sekunden")
+	leds.rotate_one_round(0.5)
+	audio.record_story("test")
+	leds.rotate_one_round(1)
+	audio.stop_recording("test")
+	leds.reset()
 
-	#pause_timer = threading.Timer(2.0,check_pause).start()
+	audio.espeaker("Ich spiele dir jetzt die Geschichte vor")
+	audio.play_story("test")
+
+
+
 
 
 def main():
@@ -93,10 +102,12 @@ def main():
 		if "Aufnehmen" in rfidreaders.tags:
 			print("Geschichten aufnehmen")
 			leds.random_timer = False
-			#active_thread = threading.Thread(target = geschichten_aufnehmen.start(), arg=(1,))
-			#active_thread.start()
+			#doesnt work because i cannot just kill a thread like game_thread.stop()
+			#game_thread = threading.Thread(target = geschichten_aufnehmen.start())
+			#game_thread.start()
+			#game_thread.join()
 			geschichten_aufnehmen.start()
-			audio.play_full("TTS",54) #Das Spiel ist zu Ende
+			audio.play_full("TTS",54) #Das Spiel ist zu
 			shutdown_counter = time.time()+shutdown_time
 
 		if "Abspielen" in rfidreaders.tags:

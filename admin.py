@@ -13,17 +13,17 @@ import dbus
 def main():
 
 	breaker = False
-		
+
 	# 2 minutes until exit if no user interaction occurs
 	admin_exit_counter = time.time() + 120
 	
-	
+
 	audio.espeaker("Sie befinden sich im Admin-Menü.")
 	audio.espeaker("Verwenden Sie die Zahlenkarten um Einstellungen vorzunehmen.")
 	audio.espeaker("1 - WeiFei-Konfiguration.")
 	audio.espeaker("2 - Software aktualisieren.")
 	audio.espeaker("3 - Spielfiguren-Set löschen.")
-	audio.espeaker("4 - Alle Geschichten archivieren") 
+	audio.espeaker("4 - Alle Geschichten archivieren")
 	audio.espeaker("Ende-Täg zum Beenden.")
 
 
@@ -62,16 +62,16 @@ def archive_stories():
 	figure_dir = "./data/figures/"
 	print("archive stories")
 	recordings_list = os.listdir(figure_dir)
-	
+
 	for folder in recordings_list:
 		if os.path.isdir(figure_dir+folder):
 			if folder+".mp3" in os.listdir(figure_dir+folder+"/"):
 				os.rename(figure_dir+folder+"/"+folder+".mp3",figure_dir+folder+"/"+folder+"-{0}.mp3".format(datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
 				print(folder+".mp3 put into archive")
-			
+
 			else:
 				print(folder+ "-stories already in archive")
-			
+
 	audio.espeaker("Alle Geschichten wurden archiviert.")
 
 def new_set():

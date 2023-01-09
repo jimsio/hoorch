@@ -28,27 +28,49 @@ def start():
 		return
 
 	players = copy.deepcopy(rfidreaders.tags)
-	#check if player tag is predefined in definded_tags xor starts with number (than it's an unknown tag)
+	#check if player tag is predefined in definded_tags xor starts with number (then it's an unknown tag)
 	for i,p in enumerate(players):
 		if p not in defined_figures:
 			players[i] = None
 
 	figure_count = sum(x is not None for x in players)
 	if figure_count is 0:
-		audio.play_full("TTS",59) # Du hast keine Spielfigure auf das Spielfeld gestellt
+		audio.play_full("TTS",59) # Du hast keine Spielfigur auf das Spielfeld gestellt
 		return
 
 	#time.sleep(1)
 	if "ENDE" in rfidreaders.tags:
 		return
 
-	audio.play_full("TTS",5+figure_count)
+	recordings_list = os.listdir("./data/figures/")
+	figure_dir = "./data/figures/"+figure_id
+
+	#remove figures without a recorded story from list
+	for i, figure_id in enumerate(players):
+		if figure_id in recordings_list and figure_id+'.mp3' in os.listdir(figure_dir):
+			continue
+		else:
+			players[i] = None
+
+	figure_count = sum(x is not None for x in players)
+	if figure_count is 0:
+		audio.play_full("TTS",59) # ToDo: Keine deiner Spielfiguren hat eine Geschichte gespeichert.
+		return
+
+	#switch on leds at player field
+	leds.switch_on_with_color(players, (100,100,100))
+
+	audio.play_full("TTS",5+figure_count) #ToDo: x figuren haben eine geschichte gespeichert
+
+	if "ENDE" in rfidreaders.tags:
+		return
 
 	start = True
 	for i, figure_id in enumerate(players):
 		leds.reset()
 		if figure_id is not None:
-			leds.led_value[i] = 100
+			#leds.led_value[i] = 100
+			leds.switch_on_with_color(i, (0,255,0))
 
 			if start: #at start
 				if figure_count > 1:
@@ -58,11 +80,10 @@ def start():
 			else:
 				audio.play_full("TTS",47+i) # Die nächste Spielfigur steht auf Spielfeld x
 
-			
-			recordings_list = os.listdir("./data/figures/")
-			figure_dir = "./data/figures/"+figure_id
-			
-			#when figure folder exists and contains i.e. roboter.mp3 
+			if "ENDE" in rfidreaders.tags:
+				return
+
+			#when figure folder exists and contains i.e. roboter.mp3
 			if figure_id in recordings_list and figure_id+'.mp3' in os.listdir(figure_dir):
 				#play story
 				audio.play_story(figure_id)
@@ -71,9 +92,6 @@ def start():
 			else:
 				audio.play_full("TTS",62) #Du hast noch keine Geschichte aufgenommen!
 				continue
-
-			if "ENDE" in rfidreaders.tags:
-				return
 
 			while True:
 				if rfidreaders.tags[i] != figure_id or waitingtime < time.time() or "ENDE" in rfidreaders.tags:

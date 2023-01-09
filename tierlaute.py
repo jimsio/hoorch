@@ -25,7 +25,7 @@ def start():
 
 	if "ENDE" in rfidreaders.tags:
 		return
-		
+
 	audio.play_file("sounds","waiting.mp3") # play wait sound
 	leds.rotate_one_round(1.11)
 
@@ -46,13 +46,16 @@ def start():
 		audio.play_full("TTS",59) #Du hast keine Spielfigure auf das Spielfeld gestellt.
 		return
 
+	#switch on leds at player field
+	leds.switch_on_with_color(players, (100,100,100))
+
 	audio.play_full("TTS",5+figure_count) # Es spielen x Figuren mit
 
 	rounds = 3 # 1-5 rounds possible
 	audio.play_full("TTS",20+rounds) #Wir spielen 1-5 Runden
 	points = [0,0,0,0,0,0]
 
-	isthefirst = True
+	first_round = True
 	for r in range(0,rounds):
 		#print(players)
 		for i,p in enumerate(players):
@@ -63,8 +66,8 @@ def start():
 				if "ENDE" in rfidreaders.tags:
 					return
 
-				if r == 0 and isthefirst == True: #first round
-					isthefirst = False
+				if r == 0 and first_round == True: #first round
+					first_round = False
 					if figure_count > 1:
 						audio.play_full("TTS",12+i) #Es beginnt die Spielfigur auf Spielfeld x
 					audio.play_full("TTS",19) #Ich spiele dir jetzt die Laute eines Tiers vor. Wenn du das Tier erkennst, tausche deine Spielfigur gegen den Tier-Spielstein.
