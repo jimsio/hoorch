@@ -40,7 +40,7 @@ mv ./.asoundrc ~/.asoundrc
 curl -sS https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/i2samp.sh | bash
 
 #disable hdmi (enable: -p) - to safe power
-/opt/vc/bin/tvservice -o
+#/opt/vc/bin/tvservice -o
 
 # Disable the ACT LED.
 #sh -c "echo 'dtparam=act_led_trigger=none' >> /boot/config.txt"

@@ -113,7 +113,7 @@ def wifi():
 		while True:
 			if "JA" in rfidreaders.tags:
 				audio.espeaker("Weifei wird gestartet. Dies kann einen Augenblick dauern.")
-				#os.system("rfkill unblock wifi")
+				os.system("rfkill unblock wifi")
 
 				while not subprocess.run(['hostname','-I'], stdout=subprocess.PIPE).stdout.decode('utf-8'):
 					time.sleep(2)
