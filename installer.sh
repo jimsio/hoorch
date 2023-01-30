@@ -6,10 +6,6 @@ echo "apt updating system. this may take some time..."
 apt update -y
 apt upgrade -y
 
-#remove GUI - for faster start:
-apt remove --purge x11-common
-apt autoremove
-
 echo "installing packages"
 apt install -y python3-pip
 apt install -y sox
