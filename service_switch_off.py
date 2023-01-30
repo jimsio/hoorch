@@ -3,11 +3,11 @@
 
 # shutdown Raspberry Pi with button press
 
-import audio
-import digitalio
-import board
 import os
 import time
+import digitalio
+import board
+import audio
 import leds
 
 print("starting switch off")
@@ -23,16 +23,16 @@ pressed = False
 threshold_time = 3
 
 while True:
-	if not off_btn.value:
-		if not pressed:
-			start_pressed = time.time()
-			pressed	= True
-		if pressed:
-			if start_pressed+threshold_time < time.time():
-				print("shutdown")
-				audio.play_full("TTS",3) #Tschüss ich schalte mich jetzt aus
-				leds.reset()
-				os.system("shutdown -P now")
+    if not off_btn.value:
+        if not pressed:
+            start_pressed = time.time()
+            pressed = True
+        if pressed:
+            if start_pressed+threshold_time < time.time():
+                print("shutdown")
+                audio.play_full("TTS", 3)  # Tschüss ich schalte mich jetzt aus
+                leds.reset()
+                os.system("shutdown -P now")
 
-	else:
-		pressed = False
+    else:
+        pressed = False

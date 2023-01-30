@@ -44,31 +44,31 @@ last_block = 8
 endofmessage = "#"
 
 while True:
-	# Check if a card is available to read
-	tag_uid = pn532_reader.read_passive_target(timeout=1.0)
-	print(".", end="")
+    # Check if a card is available to read
+    tag_uid = pn532_reader.read_passive_target(timeout=1.0)
+    print(".", end="")
 
-	if tag_uid is not None:
-		id_readable = ""
-		for counter, number in enumerate(tag_uid):
-			id_readable += str(number)+"-"
-		id_readable = id_readable[:-1]
-		print("tag_uid readable: " + str(id_readable))
-		time.sleep(1)
-		break
+    if tag_uid is not None:
+        id_readable = ""
+        for counter, number in enumerate(tag_uid):
+            id_readable += str(number)+"-"
+        id_readable = id_readable[:-1]
+        print("tag_uid readable: " + str(id_readable))
+        time.sleep(1)
+        break
 
 while True:
-	#read from tag - has issues, reading error occurs quite often...
-	read_message = ""
+    # read from tag - has issues, reading error occurs quite often...
+    read_message = ""
 
-	for i in range(4,last_block+1):
-		while not pn532_reader.mifare_classic_authenticate_block(tag_uid, i, MIFARE_CMD_AUTH_B, key):
-			print("authentication error")
-			time.sleep(1)
+    for i in range(4, last_block+1):
+        while not pn532_reader.mifare_classic_authenticate_block(tag_uid, i, MIFARE_CMD_AUTH_B, key):
+            print("authentication error")
+            time.sleep(1)
 
-		print("authentication successful")
-		block = pn532_reader.mifare_classic_read_block(i)
-		print(block)
+        print("authentication successful")
+        block = pn532_reader.mifare_classic_read_block(i)
+        print(block)
 """
 		for character in block:
 			if character != ord(endofmessage):

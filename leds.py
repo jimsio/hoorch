@@ -31,37 +31,37 @@ random_timer = False
 
 
 def init():
-	# global pixels #needed?
-	# check_status()
-	random_blinker()
+    # global pixels #needed?
+    # check_status()
+    random_blinker()
 
 
 def testr():
-	# global pixels
+    # global pixels
 
-	for i in range(0, 2):
-		pixels.fill((255, 0, 0))
-		pixels.show()
-		time.sleep(0.3)
-	
-		pixels.fill((0, 255, 0))
-		pixels.show()
-		time.sleep(0.3)
-		
-		pixels.fill((0, 0, 255))
-		pixels.show()
-		time.sleep(0.3)
+    for i in range(0, 2):
+        pixels.fill((255, 0, 0))
+        pixels.show()
+        time.sleep(0.3)
 
-		# no fill
-		pixels.fill((0, 0, 0))
-		pixels.show()
-		time.sleep(0.6)
+        pixels.fill((0, 255, 0))
+        pixels.show()
+        time.sleep(0.3)
+
+        pixels.fill((0, 0, 255))
+        pixels.show()
+        time.sleep(0.3)
+
+        # no fill
+        pixels.fill((0, 0, 0))
+        pixels.show()
+        time.sleep(0.6)
 
 # set all pixels to no color
 
 
 def reset():
-	# global pixels
+    # global pixels
     pixels.fill((0, 0, 0))
     pixels.show()
 
@@ -93,56 +93,59 @@ def wheel(pos):
 # rainbow_cycle(0.001)  # rainbow cycle with 1ms delay per step
 def rainbow_cycle(wait):
     # ??global pixels
-	for j in range(255):
-		for i in range(num_pixels):
-			pixel_index = (i * 256 // num_pixels) + j
-			pixels[i] = wheel(pixel_index & 255)
-			pixels.show()
-		time.sleep(wait)
+    for j in range(255):
+        for i in range(num_pixels):
+            pixel_index = (i * 256 // num_pixels) + j
+            pixels[i] = wheel(pixel_index & 255)
+            pixels.show()
+        time.sleep(wait)
 
 # rotate through all leds one whole circle/round, time per led in seconds
 
 
 def rotate_one_round(time_per_led):
-	# global pixels
-	for i in range(len(pixels)):
-		reset()
-		pixels[i] = (0, 255, 0)
-		pixels.show()
-		time.sleep(time_per_led)
-	reset()
+    # global pixels
+    for i in range(len(pixels)):
+        reset()
+        pixels[i] = (0, 255, 0)
+        pixels.show()
+        time.sleep(time_per_led)
+    reset()
 
 
 def random_blinker():
-	# global pixels
-	threading.Timer(0.25, random_blinker).start()
-	if random_timer:
-		pixels[random.randrange(len(pixels))] = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-		pixels.show()
+    # global pixels
+    threading.Timer(0.25, random_blinker).start()
+    if random_timer:
+        pixels[random.randrange(len(pixels))] = (random.randint(
+            0, 255), random.randint(0, 255), random.randint(0, 255))
+        pixels.show()
 
 # number from 0 to 5 or tuple(1,3,5); color like (0, 255, 0)
+
+
 def switch_on_with_color(number, color=None):
-	# global pixels
+    # global pixels
 
-	# random color if none given
-	if color is None:
-		color=wheel(random.randrange(0, 255))
+    # random color if none given
+    if color is None:
+        color = wheel(random.randrange(0, 255))
 
-	if isinstance(number, tuple):
-		# leds.switch_on_with_color((0,3,5), (200,200,100))
-		for c in number:
-			pixels[c]=color
-			pixels.show()
+    if isinstance(number, tuple):
+        # leds.switch_on_with_color((0,3,5), (200,200,100))
+        for c in number:
+            pixels[c] = color
+            pixels.show()
 
-	elif isinstance(number, list):
-		# expect players list
-		for i, p in enumerate(number):
-			if p is not None:
-				pixels[i]=color
-				pixels.show()
-	else:
-		pixels[number]=color
-		pixels.show()
+    elif isinstance(number, list):
+        # expect players list
+        for i, p in enumerate(number):
+            if p is not None:
+                pixels[i] = color
+                pixels.show()
+    else:
+        pixels[number] = color
+        pixels.show()
 
 # GPIO.setmode(GPIO.BCM) #= GPIO number (BCM)
 # GPIO.setwarnings(False)
