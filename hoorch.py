@@ -43,7 +43,7 @@ def init():
 
         # leds.random_timer = False
         initial_hardware_test()
-        tagwriter.write_set()
+        #tagwriter.write_set()
 
     # start random blinker
     leds.random_timer = True
