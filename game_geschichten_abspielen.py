@@ -43,10 +43,10 @@ def start():
 		return
 
 	recordings_list = os.listdir("./data/figures/")
-	figure_dir = "./data/figures/"+figure_id
 
 	#remove figures without a recorded story from list
 	for i, figure_id in enumerate(players):
+		figure_dir = "./data/figures/"+figure_id
 		if figure_id in recordings_list and figure_id+'.mp3' in os.listdir(figure_dir):
 			continue
 		else:

@@ -3,7 +3,7 @@
 
 # Install packages
 echo "apt updating system. this may take some time..."
-apt update
+apt update -y
 apt upgrade -y
 
 #remove GUI - for faster start:
