@@ -53,7 +53,7 @@ def start():
 				if animal is not None:
 					animal = animal[:-1] #remove digit at end
 					if animal in defined_animals:
-						leds.led_value[i] = 1
+						leds.switch_on_with_color(i)
 						if not audio.file_is_playing(animal+".mp3"):
 							audio.play_file("TTS/animals_en",animal+".mp3")
 							time.sleep(2)
