@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # OnOff SHIM exposed by cyperghost for retropie.org.uk
-# This is mandatory for proper SHIM shutdown!
+# This is mandatory for proper shutdown with SHIM!
 
 #this script goes here /lib/systemd/system-shutdown/
 #and need to be executeable
