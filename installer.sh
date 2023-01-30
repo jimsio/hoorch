@@ -26,13 +26,13 @@ sed -i "s/#dtparam=spi=on/dtparam=spi=on/g" "/boot/config.txt"
 wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/i2smic.py
 python3 i2smic.py
 
-# i2s microphone - add volume control
-mv ./.asoundrc ~/.asoundrc
+# i2s microphone - add volume control # doesnt seem to work - to it manually
+#mv ./.asoundrc ~/.asoundrc
 
 # i2s amplifier
 curl -sS https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/i2samp.sh | bash
 
-#disable hdmi (enable: -p) - to safe power
+#disable hdmi (enable: -p) - to safe power - i need hdmi connection 
 #/opt/vc/bin/tvservice -o
 
 # Disable the ACT LED.
@@ -77,6 +77,9 @@ apt install log2ram
 
 #disable swapping
 systemctl disable dphys-swapfile.service
+
+#change SIZE=40M to SIZE=100M /etc/log2ram.conf
+sed -i 's/SIZE=40M/SIZE=100M/g' /etc/log2ram.conf
 
 #start/restart networking service (NetworkManager)
 systemctl restart networking
