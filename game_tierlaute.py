@@ -42,7 +42,7 @@ def start():
 	figure_count = sum(x is not None for x in players)
 
 	time.sleep(1)
-	if figure_count is 0:
+	if figure_count == 0:
 		audio.play_full("TTS",59) #Du hast keine Spielfigure auf das Spielfeld gestellt.
 		return
 
@@ -66,7 +66,7 @@ def start():
 				if "ENDE" in rfidreaders.tags:
 					return
 
-				if r == 0 and first_round == True: #first round
+				if r == 0 and first_round is True: #first round
 					first_round = False
 					if figure_count > 1:
 						audio.play_full("TTS",12+i) #Es beginnt die Spielfigur auf Spielfeld x

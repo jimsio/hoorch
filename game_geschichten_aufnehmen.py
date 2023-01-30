@@ -32,7 +32,7 @@ def start():
 			players[i] = None
 
 	figure_count = sum(x is not None for x in players)
-	if figure_count is 0:
+	if figure_count == 0:
 		audio.play_full("TTS",59) #"Du hast keine Spielfigure auf das Spielfeld gestellt."
 		return
 
