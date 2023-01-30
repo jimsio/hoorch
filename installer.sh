@@ -1,13 +1,10 @@
 #!/bin/sh
 # installer.sh will install the necessary packages and config files for HOORCH
 
-CONFIG="/boot/config.txt"
-COMITUP_CONF="/etc/comitup.conf"
-
 # Install packages
-#echo "updating system. this may take some time..."
+echo "apt updating system. this may take some time..."
 apt update
-#apt upgrade -y
+apt upgrade -y
 
 #remove GUI - for faster start:
 apt remove --purge x11-common
@@ -27,7 +24,7 @@ python3 -m pip install --force-reinstall adafruit-blinka
 pip3 install --upgrade adafruit-python-shell
 
 #enable SPI
-sed -i "s/#dtparam=spi=on/dtparam=spi=on/g" $CONFIG
+sed -i "s/#dtparam=spi=on/dtparam=spi=on/g" "/boot/config.txt"
 
 # i2s microphone
 wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/i2smic.py
@@ -70,8 +67,10 @@ cp gpio-shutoff.sh /lib/systemd/system-shutdown/
 chmod +x /lib/systemd/system-shutdown/gpio-shutoff.sh
 
 #enable and start the services
-systemctl enable hoorch*.service
-#systemctl start hoorch*.service #will be started manually by user, see installation manual
+#systemctl enable hoorch*.service
+#systemctl start hoorch*.service 
+
+#will be started manually by user, see installation manual
 
 
 #install log2ram
@@ -83,22 +82,33 @@ apt install log2ram
 #disable swapping
 systemctl disable dphys-swapfile.service
 
-#install comitup - wifi
-echo "deb http://davesteele.github.io/comitup/repo comitup main" | sudo tee /etc/apt/sources.list.d/azlux.list
-wget -qO - https://davesteele.github.io/key-366150CE.pub.txt | sudo apt-key add -
+#start/restart networking service (NetworkManager)
+systemctl restart networking
+
+#install comitup - wifi:
+    #install package .deb
+wget https://davesteele.github.io/comitup/latest/davesteele-comitup-apt-source_latest.deb
+dpkg -i --force-all davesteele-comitup-apt-source_latest.deb
+rm davesteele-comitup-apt-source_latest.deb
 apt update
-apt install comitup
+apt install comitup comitup-watch -y
 
+    #2: Allow NetworkManager to manage the wifi interfaces by removing references to them from /etc/network/interfaces.
+mv /etc/network/interfaces /etc/network/interfaces.bak
+
+    #3: Rename  /etc/wpa_supplicant/wpa_supplicant.conf.
 mv /etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.confbak
-#systemctl disable systemd.resolved
 
-#rename the comitup-wifi-name to hoorch-<nn> - https://davesteele.github.io/comitup/man/comitup-conf.5.html
+    #4: The systemd.resolved service should be disabled and masked to avoid contention for providing DNS service.
+systemctl mask dnsmasq.service
+systemctl mask systemd-resolved.service
+systemctl mask dhcpd.service
+systemctl mask dhcpcd.service
+systemctl mask wpa-supplicant.service
+systemctl enable NetworkManager.service
+
+    #5: #rename the comitup-wifi-name to hoorch-<nn> - https://davesteele.github.io/comitup/man/comitup-conf.5.html
 sed -i "s/# ap_name: comitup-<nnn>/ap_name: hoorch-<nnn>/g" "/etc/comitup.conf"
-
-#comment out references to /etc/network/interfaces - https://github.com/davesteele/comitup/wiki/Installing-Comitup
-sed -i "s/source-directory/#source-directory/g" "/etc/network/interfaces"
-
-#if connected to pi via remote, network connection will break here making screen freeze at 88%.
 
 echo "Installation complete, rebooting now"
 reboot

@@ -23,7 +23,6 @@ defined_figures = rfidreaders.gamer_figures
 	end_timer = threading.Timer(0.3,check_end).start()
 '''
 def start():
-	#check_end()
 
 	audio.play_full("TTS",85) #Wir üben jetzt das Einmaleins.
 	leds.reset() #reset leds

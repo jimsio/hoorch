@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: UTF8 -*-
-import rfidreaders
-import audio
 import time
 import os
 import subprocess
 import datetime
 import re
 import dbus
+import rfidreaders
+import audio
 
 
 def main():

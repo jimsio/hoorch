@@ -4,16 +4,27 @@
 import subprocess
 import time
 import os
+import digitalio
+import board
 
 path = "./data/"
+
+#SD pin of i2s amp
+#default: switched on, only switch off for recording (to avoid clicking)
+amp_sd = digitalio.DigitalInOut(board.D6)
+amp_sd.direction = digitalio.Direction.OUTPUT
 
 def init():
 	#set environment variable for sox rec
 	os.environ['AUDIODRIVER'] = "alsa"
 
 	#set mic record level to 95% (92 in alsamixer)
-	os.system("amixer -q -c 1 sset 'Mic',0 95%")
+	#os.system("amixer -q -c 1 sset 'Mic',0 95%")
+	os.system("amixer -q sset PCM 95%")
 
+	#switch on amp by default
+	amp_sd.value = True
+	
 #non-blocking play
 def play(folder, audiofile):
 	subprocess.Popen("play "+path+"/"+folder+"/"+"{:03d}".format(audiofile)+".mp3"+"  2>/dev/null",shell=True, stdout=None, stderr=None)
@@ -49,7 +60,15 @@ def file_is_playing(audiofile):
 		return False
 
 def record_story(figure):
-	subprocess.Popen("AUDIODEV=hw:1 rec "+path+"figures/"+figure+"/"+figure+".mp3"+" ", shell=True, stdout=None, stderr=None)
+	#switching off amp
+	amp_sd.value = False
+
+	#subprocess.Popen("AUDIODEV=hw:1 rec "+path+"figures/"+figure+"/"+figure+".mp3"+" ", shell=True, stdout=None, stderr=None)
+
+	subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 "+path+"figures/"+figure+"/"+figure+".mp3", shell=True, stdout=None, stderr=None)
+	
+	#trim of the first 0.3 seconds - needed witch /dev/zero??
+	#subprocess.Popen("sox "+path+"figures/"+figure+"/"+figure+".mp3"+" "+path+"figures/"+figure+"/"+figure+".mp3"+" trim 0.3", shell=True, stdout=None, stderr=None)
 
 	#TODO-maybe normalize, so volume boost at play_story can be removed -needs to be in other function because rec gets aborted
 	#for example in the else block of stop_recording!
@@ -60,6 +79,9 @@ def record_story(figure):
 
 def stop_recording(figure_id):
 	subprocess.Popen("killall rec",shell=True, stdout=None, stderr=None)
+
+	#switching on amp
+	amp_sd.value = True
 
 	figure_dir = path+"figures/"+figure_id
 

@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: UTF8 -*-
 
-import board
 import threading
 import sys
 import time
+import copy
+import unicodedata
+import board
 import busio
 from adafruit_pn532.spi import PN532_SPI
 import digitalio
 from digitalio import DigitalInOut
 import RPi.GPIO as GPIO
-import audio
-import copy
-import unicodedata
 import leds
-
+import audio
 
 #gpio24
 reader1_pin = DigitalInOut(board.D24)

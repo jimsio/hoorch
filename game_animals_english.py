@@ -83,7 +83,8 @@ def start():
 			for i,p in enumerate(players):
 				if p is not None:
 					leds.reset()
-					leds.led_value[i] = 100
+					leds.switch_on_with_color(i)
+					#led_value[i] = 100
 
 					if r == 0 and isthefirst == True: #first round
 						isthefirst = False

@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: UTF8 -*-
 
-import threading
-#import RPi.GPIO as GPIO
 import time
 import random
+import threading
 import neopixel
 import board
 
-#LEDS
+# LEDS
 
 # Neopixel connected to GPIO12 / pin32
 pixel_pin = board.D12
@@ -19,51 +18,58 @@ num_pixels = 6
 # The order of the pixel colors - RGB or GRB. Some NeoPixels have red and green reversed!
 ORDER = neopixel.GRB
 
-pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.2, auto_write=False, pixel_order=ORDER)
+pixels = neopixel.NeoPixel(pixel_pin, num_pixels,
+                           brightness=0.2, auto_write=False, pixel_order=ORDER)
 
 random_timer = False
 
-#pixels.fill fills ALL pixels with the given color
-#color with value (0,0,0) is black, i.e. no color
+# pixels.fill fills ALL pixels with the given color
+# color with value (0,0,0) is black, i.e. no color
 
 # sets the first led to color red
-#pixels[0] = (255,0,0)
+# pixels[0] = (255,0,0)
+
 
 def init():
-	#global pixels #needed?
-	#check_status()
+	# global pixels #needed?
+	# check_status()
 	random_blinker()
 
+
 def testr():
-	#global pixels
+	# global pixels
 
-	for i in range(0,2):
-	    pixels.fill((255, 0, 0))
-	    pixels.show()
-	    time.sleep(0.3)
+	for i in range(0, 2):
+		pixels.fill((255, 0, 0))
+		pixels.show()
+		time.sleep(0.3)
+	
+		pixels.fill((0, 255, 0))
+		pixels.show()
+		time.sleep(0.3)
+		
+		pixels.fill((0, 0, 255))
+		pixels.show()
+		time.sleep(0.3)
 
-	    pixels.fill((0, 255, 0))
-	    pixels.show()
-	    time.sleep(0.3)
+		# no fill
+		pixels.fill((0, 0, 0))
+		pixels.show()
+		time.sleep(0.6)
 
-	    pixels.fill((0, 0, 255))
-	    pixels.show()
-	    time.sleep(0.3)
+# set all pixels to no color
 
-	    #no fill
-	    pixels.fill((0,0,0))
-	    pixels.show()
-	    time.sleep(0.6)
 
-#set all pixels to no color
 def reset():
-	#global pixels
-    pixels.fill((0,0,0))
+	# global pixels
+    pixels.fill((0, 0, 0))
     pixels.show()
 
 # Input a value 0 to 255 to get a color value.
 # The colours are a transition r - g - b - back to r.
 # is that a way to make color picking easier?
+
+
 def wheel(pos):
     if pos < 0 or pos > 255:
         r = g = b = 0
@@ -84,19 +90,21 @@ def wheel(pos):
     return (r, g, b)
 
 
-#rainbow_cycle(0.001)  # rainbow cycle with 1ms delay per step
+# rainbow_cycle(0.001)  # rainbow cycle with 1ms delay per step
 def rainbow_cycle(wait):
-    #??global pixels
+    # ??global pixels
 	for j in range(255):
-        for i in range(num_pixels):
-            pixel_index = (i * 256 // num_pixels) + j
-            pixels[i] = wheel(pixel_index & 255)
-        pixels.show()
-        time.sleep(wait)
+		for i in range(num_pixels):
+			pixel_index = (i * 256 // num_pixels) + j
+			pixels[i] = wheel(pixel_index & 255)
+			pixels.show()
+		time.sleep(wait)
 
-#rotate through all leds one whole circle/round, time per led in seconds
+# rotate through all leds one whole circle/round, time per led in seconds
+
+
 def rotate_one_round(time_per_led):
-	#global pixels
+	# global pixels
 	for i in range(len(pixels)):
 		reset()
 		pixels[i] = (0, 255, 0)
@@ -104,35 +112,36 @@ def rotate_one_round(time_per_led):
 		time.sleep(time_per_led)
 	reset()
 
+
 def random_blinker():
-	#global pixels
-	threading.Timer(0.25,random_blinker).start()
+	# global pixels
+	threading.Timer(0.25, random_blinker).start()
 	if random_timer:
-		pixels[random.randrange(len(pixels))] = ((random.randint(0,255), random.randint(0,255), random.randint(0,255))
+		pixels[random.randrange(len(pixels))] = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 		pixels.show()
 
-#number from 0 to 5 or tuple(1,3,5); color like (0, 255, 0)
-def switch_on_with_color(number, color):
-	#global pixels
+# number from 0 to 5 or tuple(1,3,5); color like (0, 255, 0)
+def switch_on_with_color(number, color=None):
+	# global pixels
 
-	#random color if none given
-	if color = None:
-		color = wheel(random.randrange(0,255))
+	# random color if none given
+	if color is None:
+		color=wheel(random.randrange(0, 255))
 
-	if isinstanceof(number, tuple):
-		#leds.switch_on_with_color((0,3,5), (200,200,100))
+	if isinstance(number, tuple):
+		# leds.switch_on_with_color((0,3,5), (200,200,100))
 		for c in number:
-			pixels[c] = color
+			pixels[c]=color
 			pixels.show()
 
-	elif isinstanceof(number, list):
-		#expect players list
-		for i, p in enumerate(players):
-			if p not None:
-				pixels[i] = color
+	elif isinstance(number, list):
+		# expect players list
+		for i, p in enumerate(number):
+			if p is not None:
+				pixels[i]=color
 				pixels.show()
 	else:
-		pixels[number] = color
+		pixels[number]=color
 		pixels.show()
 
 # GPIO.setmode(GPIO.BCM) #= GPIO number (BCM)
@@ -142,8 +151,8 @@ def switch_on_with_color(number, color):
 # led = []
 # led_value = [0,0,0,0,0,0]
 
-#rotate_timer = None
-#random_timer = False
+# rotate_timer = None
+# random_timer = False
 
 # def init():
 # 	global led
@@ -164,7 +173,7 @@ def switch_on_with_color(number, color):
 # 	for i in range(0,6):
 # 		GPIO.output(led_pins[i], led_value[i])
 #
-#rotate through all leds one whole circle/round, time per led in seconds
+# rotate through all leds one whole circle/round, time per led in seconds
 # def rotate_one_round(time_per_led):
 # 	global led_value
 # 	for i in range(0,6):

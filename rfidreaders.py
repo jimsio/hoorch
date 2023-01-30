@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: UTF8 -*-
 
-import board
+import time
 import threading
+import os
+import unicodedata
+import board
 import busio
 from adafruit_pn532.spi import PN532_SPI
 import digitalio
 from digitalio import DigitalInOut
-import time
-import os
-import unicodedata
 import audio
 
 #gpio belegung
