@@ -5,9 +5,8 @@ After=sound.target
 DefaultDependencies=false
 
 [Service]
-Type=idle
 User=pi
-Group=pi
+Type=simple
 ExecStart=/usr/bin/python3 /home/pi/hoorch/service_volume_control.py
 
 [Install]

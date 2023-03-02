@@ -96,6 +96,7 @@ def rainbow_cycle(wait):
             pixels[i] = wheel(pixel_index & 255)
             pixels.show()
         time.sleep(wait)
+    reset()
 
 def rotate_one_round(time_per_led):
     # rotate through all leds one whole circle/round, time per led in seconds
@@ -110,6 +111,7 @@ def rotate_one_round(time_per_led):
 
 def random_blinker():
     global pixels
+    reset()
 
     threading.Timer(0.25, random_blinker).start()
     if random_timer:
@@ -120,6 +122,7 @@ def random_blinker():
 def switch_on_with_color(number, color=None):
     # single number from 0 to 5 or tuple(1,3,5); color like (0, 255, 0)
     global pixels
+    reset()
 
     # random color if none given
     if color is None:

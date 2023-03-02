@@ -55,16 +55,15 @@ def initial_hardware_test():
     audio.espeaker("Jetzt wird die ganze Hardware getestet")
 
     audio.espeaker("Jetzt werden alle LEDs beleuchtet.")
-    leds.rainbow_cycle(0.005)
+    leds.rainbow_cycle(0.001)
 
     audio.espeaker("Wir testen jetzt die Ar ef eidi Leser.")
-    for i, value in enumerate(rfidreaders.tags):
+    for i in range(6):
         # "Mit WeiFei {0} verbunden.".format(connection)
-        audio.espeaker("Lege eine Karte auf Leser {0}".format(i))
+        audio.espeaker("Lege eine Karte auf Leser {0}".format(i+1))
         leds.switch_on_with_color(i, (255, 0, 0))
         while True:
-            if value is not None:
-                leds.reset()
+            if rfidreaders.tags[i] is not None:
                 break
 
     audio.espeaker(
