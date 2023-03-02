@@ -7,8 +7,9 @@ import os
 import time
 import digitalio
 import board
-import audio
-import leds
+from adafruit_debouncer import Debouncer
+#import audio
+#import leds
 
 print("starting switch off")
 
@@ -16,23 +17,34 @@ off_btn = digitalio.DigitalInOut(board.D13)
 off_btn.direction = digitalio.Direction.INPUT
 off_btn.pull = digitalio.Pull.UP
 
-start_pressed = 0
-pressed = False
+off = Debouncer(off_btn, interval=0.3)
+
+#start_pressed = 0
+#pressed = False
 
 # push threshold (in seconds)
 threshold_time = 3
 
 while True:
-    if not off_btn.value:
-        if not pressed:
-            start_pressed = time.time()
-            pressed = True
-        if pressed:
-            if start_pressed+threshold_time < time.time():
-                print("shutdown")
-                audio.play_full("TTS", 3)  # Tschüss ich schalte mich jetzt aus
-                leds.reset()
-                os.system("shutdown -P now")
+    off.update()
 
-    else:
-        pressed = False
+    if off.rose:
+        #if button is released, check if it was pressed for at least 3 seconds
+        if off.last_duration > threshold_time:
+            print("shutdown")
+            #audio.play_full("TTS", 3)  # Tschüss ich schalte mich jetzt aus
+            #os.system("shutdown -P now")
+
+    # if not off_btn.value:
+    #     if not pressed:
+    #         start_pressed = time.time()
+    #         pressed = True
+    #     if pressed:
+    #         if start_pressed+threshold_time < time.time():
+    #             print("shutdown")
+    #             audio.play_full("TTS", 3)  # Tschüss ich schalte mich jetzt aus
+    #             leds.reset()
+    #             os.system("shutdown -P now")
+
+    # else:
+    #     pressed = False
