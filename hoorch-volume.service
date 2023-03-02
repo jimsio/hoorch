@@ -1,5 +1,5 @@
 [Unit]
-Description=Hoorch Volume Service
+Description=HOORCH Volume Service
 After=multi-user.target
 After=sound.target
 DefaultDependencies=false

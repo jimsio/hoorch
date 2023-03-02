@@ -1,14 +1,12 @@
 [Unit]
-Description=Hoorch Main Program
+Description=HOORCH Main Program
 After=basic.target
 After=sound.target
 DefaultDependencies=false
 
 [Service]
-User=pi
+User=root
 Type=simple
-Environment="DISPLAY=:0"
-Environment="XAUTHORITY=/home/pi/.Xauthority"
 Restart=on-failure
 WorkingDirectory=/home/pi/hoorch/
 ExecStart=/usr/bin/python3 /home/pi/hoorch/hoorch.py

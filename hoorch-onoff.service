@@ -1,11 +1,11 @@
 [Unit]
-Description=Hoorch switch off GPIO checker
+Description=HOORCH switch off GPIO checker
 After=multi-user.target
 DefaultDependencies=false
 
 [Service]
 User=root
-Type=idle
+Type=simple
 WorkingDirectory=/home/pi/hoorch/
 ExecStart=/usr/bin/python3 /home/pi/hoorch/service_switch_off.py
 
