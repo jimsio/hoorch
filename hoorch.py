@@ -19,9 +19,6 @@ import game_animals_english
 import admin
 import tagwriter
 
-# game_thread = None
-
-
 def init():
     print("initializiation of hardware")
 
@@ -32,6 +29,9 @@ def init():
 
     # initialize leds
     leds.init()
+
+    # initialize readers
+    rfidreaders.init()
 
     # initialize figure_db if no tags defined for this hoorch set
     if not os.path.exists("./figure_db.txt"):
@@ -48,24 +48,20 @@ def init():
     # start random blinker
     leds.random_timer = True
 
-    # initialize readers
-    rfidreaders.init()
-
-# test run to check hardware on first hoorch start - will test leds, readers, speakers, microphone
-
 
 def initial_hardware_test():
+    # test run to check hardware on first hoorch start - will test leds, readers, speakers, microphone
 
     audio.espeaker("Jetzt wird die ganze Hardware getestet")
 
     audio.espeaker("Jetzt werden alle LEDs beleuchtet.")
-    leds.rainbow_cycle(0.5)
+    leds.rainbow_cycle(0.005)
 
     audio.espeaker("Wir testen jetzt die Ar ef eidi Leser.")
     for i, value in enumerate(rfidreaders.tags):
         # "Mit WeiFei {0} verbunden.".format(connection)
         audio.espeaker("Lege eine Karte auf Leser {0}".format(i))
-        leds.switch_on_with_color((i), (255, 0, 0))
+        leds.switch_on_with_color(i, (255, 0, 0))
         while True:
             if value is not None:
                 leds.reset()
