@@ -118,7 +118,7 @@ def random_blinker():
         pixels.show()
 
 def switch_on_with_color(number, color=None):
-    # number from 0 to 5 or tuple(1,3,5); color like (0, 255, 0)
+    # single number from 0 to 5 or tuple(1,3,5); color like (0, 255, 0)
     global pixels
 
     # random color if none given

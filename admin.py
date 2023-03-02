@@ -108,7 +108,7 @@ def git():
         # git reset resets the master branch to what you just fetched. 
         # The --hard option changes all the files in your working tree to match the files in origin/master.
         subprocess.run(['git', 'fetch', '--all'], stdout=subprocess.PIPE)
-        subprocess.run(['git', 'branch', 'backup-master'], stdout=subprocess.PIPE)
+        #subprocess.run(['git', 'branch', 'backup-master'], stdout=subprocess.PIPE)
         subprocess.run(['git', 'reset', '--hard', 'origin/master'], stdout=subprocess.PIPE)
 
         audio.espeaker("Aktualisierung beendet. Ich starte jetzt neu.")

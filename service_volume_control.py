@@ -20,8 +20,8 @@ vol_down_btn = digitalio.DigitalInOut(board.D3)
 vol_down_btn.direction = digitalio.Direction.INPUT
 vol_down_btn.pull = digitalio.Pull.UP
 
-vol_up = Debouncer(vol_up_btn, interval=0.5)
-vol_down = Debouncer(vol_down_btn, interval=0.5)
+vol_up = Debouncer(vol_up_btn, interval=0.05)
+vol_down = Debouncer(vol_down_btn, interval=0.05)
 
 cmd = "amixer sget PCM"
 cmd = split(cmd)
@@ -47,11 +47,9 @@ while True:
     vol_up.update()
     vol_down.update()
 
-    #if not vol_up_btn.value:  # VOL UP
     if vol_up.fell:
         #volume up button pressed
         volume_up()
-    #elif not vol_down_btn.value:  # VOL DOWN
     elif vol_down.fell:
         #volume down button pressed
         volume_down()
