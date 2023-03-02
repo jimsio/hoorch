@@ -1,0 +1,7 @@
+# Ignore everything in this directory, files and directories
+/*
+/*/
+# Except this file and the directory /test
+!.gitignore
+!/test/
+!/test/*
