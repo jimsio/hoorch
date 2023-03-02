@@ -47,7 +47,6 @@ def volume_down():
 
 
 while True:
-    # continue
     if not vol_up_btn.value:  # VOL UP
         volume_up()
     elif not vol_down_btn.value:  # VOL DOWN

@@ -26,14 +26,11 @@ def init():
     # switch on amp by default
     amp_sd.value = True
 
-# non-blocking play
-
-
 def play(folder, audiofile):
+    # non-blocking play
     subprocess.Popen("play "+path+"/"+folder+"/"+"{:03d}".format(
         audiofile)+".mp3"+"  2>/dev/null", shell=True, stdout=None, stderr=None)
     # print("playing TTS number "+str(audiofile))
-
 
 def play_full(folder, audiofile):
     file_path = path+folder+"/"+"{:03d}".format(audiofile)+".mp3"
@@ -43,10 +40,8 @@ def play_full(folder, audiofile):
                      shell=True, stdout=None, stderr=None)
     time.sleep(waitingtime)
 
-# for sounds (animals, systemsounds) in /data and subsequent folders
-
-
 def play_file(folder, audiofile):
+    # for sounds (animals, systemsounds) in /data and subsequent folders
     subprocess.Popen("play "+path+folder+"/"+audiofile +
                      "  2>/dev/null", shell=True, stdout=None, stderr=None)
     print("playing file "+str(audiofile))

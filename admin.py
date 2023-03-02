@@ -103,7 +103,14 @@ def git():
     elif state == "CONNECTED":
         audio.espeaker(
             "Aktualisierung wird gestartet. Dies kann einige Minuten dauern. Hoorch startet anschließend neu.")
-        subprocess.run(['git', 'pull'], stdout=subprocess.PIPE)
+        # Any local files that are not tracked by Git will not be affected:
+        # git fetch downloads the latest from remote without trying to merge or rebase anything.
+        # git reset resets the master branch to what you just fetched. 
+        # The --hard option changes all the files in your working tree to match the files in origin/master.
+        subprocess.run(['git', 'fetch', '--all'], stdout=subprocess.PIPE)
+        subprocess.run(['git', 'branch', 'backup-master'], stdout=subprocess.PIPE)
+        subprocess.run(['git', 'reset', '--hard', 'origin/master'], stdout=subprocess.PIPE)
+
         audio.espeaker("Aktualisierung beendet. Ich starte jetzt neu.")
         os.system("reboot")
 
@@ -113,8 +120,8 @@ def wifi():
     rfkill_output = subprocess.run(
         ['rfkill', 'list', 'wifi'], stdout=subprocess.PIPE).stdout.decode('utf-8')
 
-    # wifi blocked / off
     if "yes" in rfkill_output:
+        # wifi blocked / off
         audio.espeaker("Weifei ist ausgeschaltet.")
         audio.espeaker("Soll ich es einschalten?")
 
@@ -140,8 +147,8 @@ def wifi():
 
             elif "NEIN" in rfidreaders.tags or "ENDE" in rfidreaders.tags:
                 break
-    # wifi on
     else:
+    # wifi on
 
         bus = dbus.SystemBus()
         # get comitup dbus object - https://davesteele.github.io/comitup/man/comitup.8.html
