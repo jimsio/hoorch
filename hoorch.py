@@ -65,7 +65,7 @@ def initial_hardware_test():
     audio.espeaker("Jetzt wird die ganze Hardware getestet")
 
     audio.espeaker("Jetzt werden alle LEDs beleuchtet.")
-    leds.rainbow_cycle(0.005)
+    leds.rainbow_cycle(0.001)
 
     audio.espeaker("Wir testen jetzt die Ar ef eidi Leser.")
     for i in range(6):

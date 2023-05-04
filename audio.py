@@ -33,6 +33,7 @@ def play(folder, audiofile):
     # print("playing TTS number "+str(audiofile))
 
 def play_full(folder, audiofile):
+    #blocking play
     file_path = path+folder+"/"+"{:03d}".format(audiofile)+".mp3"
     waitingtime = float(subprocess.run(
         ['soxi', '-D', file_path], stdout=subprocess.PIPE).stdout.decode('utf-8'))
@@ -79,7 +80,7 @@ def record_story(figure):
     subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 "+path+"figures/" +
                      figure+"/"+figure+".mp3", shell=True, stdout=None, stderr=None)
 
-    # trim of the first 0.3 seconds - needed witch /dev/zero??
+    # trim of the first 0.3 seconds - needed with /dev/zero??
     # subprocess.Popen("sox "+path+"figures/"+figure+"/"+figure+".mp3"+" "+path+"figures/"+figure+"/"+figure+".mp3"+" trim 0.3", shell=True, stdout=None, stderr=None)
 
     # TODO-maybe normalize, so volume boost at play_story can be removed -needs to be in other function because rec gets aborted

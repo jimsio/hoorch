@@ -31,6 +31,7 @@ random_timer = False
 
 
 def init():
+    testr()
     random_blinker()
 
 
@@ -103,7 +104,7 @@ def rotate_one_round(time_per_led):
     global pixels
     for i in range(len(pixels)):
         reset()
-        pixels[i] = (0, 255, 0)
+        pixels[i] = wheel(random.randrange(0, 255))
         pixels.show()
         time.sleep(time_per_led)
     reset()
