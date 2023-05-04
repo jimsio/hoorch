@@ -55,13 +55,14 @@ def testr():
         pixels.fill((0, 0, 0))
         pixels.show()
         time.sleep(6)
+    
+    reset()
 
 def reset():
     # set all pixels to no color
     global pixels
     pixels.fill((0, 0, 0))
     pixels.show()
-
 
 
 def wheel(pos):
