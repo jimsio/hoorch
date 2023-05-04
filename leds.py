@@ -120,7 +120,7 @@ def random_blinker():
         pixels[random.randrange(len(pixels))] = wheel(random.randrange(0, 255))
         pixels.show()
 
-def switch_all_on_with_color(color):
+def switch_all_on_with_color(color=None):
     switch_on_with_color(list(range(6)), color)
 
 def switch_on_with_color(number, color=None):
