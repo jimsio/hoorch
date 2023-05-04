@@ -88,8 +88,11 @@ def initial_hardware_test():
     audio.record_story("test")
     print("recording started und sleep 6")
     leds.rainbow_cycle(0.01)
-    #time.sleep(6)
     #leds.rotate_one_round(1)
+    ##neopixel frieren einfach ein
+
+    #time.sleep(6) - recorded bis unendlich, hört nicht auf, geht über time.sleep nicht drüber?!
+    #wenn ich sudo killall rec aus zweitem terminal aufrufe hört er auf mit recorden und programm läuft normal weiter
     print("fertig mit sleep")
     error = audio.stop_recording("test")
     leds.reset()

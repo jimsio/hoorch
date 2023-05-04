@@ -19,7 +19,7 @@ num_pixels = 6
 ORDER = neopixel.GRB
 
 pixels = neopixel.NeoPixel(pixel_pin, num_pixels,
-                           brightness=0.2, auto_write=False, pixel_order=ORDER)
+                           brightness=0.4, auto_write=True, pixel_order=ORDER)
 
 random_timer = False
 
