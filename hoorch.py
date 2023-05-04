@@ -87,7 +87,7 @@ def initial_hardware_test():
 
     #switch off speakers to avoid clicking
     audio.amp_sd.value = False
-    subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 ./data/figures/test/test.mp3 trim 0 6", shell=True, stdout=None, stderr=None, timeout=6)
+    subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 ./data/figures/test/test.mp3 trim 0 6", shell=True, stdout=None, stderr=None)
     #audio.record_story("test")
     
     print("recording started und sleep 6")
