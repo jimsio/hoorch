@@ -78,7 +78,7 @@ def record_story(figure):
     # subprocess.Popen("AUDIODEV=hw:1 rec "+path+"figures/"+figure+"/"+figure+".mp3"+" ", shell=True, stdout=None, stderr=None)
 
     subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 "+path+"figures/" +
-                     figure+"/"+figure+".mp3", shell=True, stdout=None, stderr=None)
+                     figure+"/"+figure+".mp3", shell=False, stdout=None, stderr=None)
 
     # trim of the first 0.3 seconds - needed with /dev/zero??
     # subprocess.Popen("sox "+path+"figures/"+figure+"/"+figure+".mp3"+" "+path+"figures/"+figure+"/"+figure+".mp3"+" trim 0.3", shell=True, stdout=None, stderr=None)
