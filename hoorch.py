@@ -84,8 +84,12 @@ def initial_hardware_test():
         "Ich teste jetzt das Audio, die Aufnahme beginnt in 3 Sekunden und dauert 6 Sekunden")
     #leds.rotate_one_round(0.5)
     time.sleep(3)
-    #subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 ./data/figures/test/test.mp3", shell=True, stdout=None, stderr=None, timeout=6)
-    audio.record_story("test")
+
+    #switch off speakers to avoid clicking
+    audio.amp_sd.value = False
+    subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 ./data/figures/test/test.mp3 trim 0 6", shell=True, stdout=None, stderr=None, timeout=6)
+    #audio.record_story("test")
+    
     print("recording started und sleep 6")
     leds.rainbow_cycle(0.01)
     #leds.rotate_one_round(1)

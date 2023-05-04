@@ -24,6 +24,7 @@ def init():
     os.system("amixer -q sset PCM 95%")
 
     # switch on amp by default
+    global amp_sd
     amp_sd.value = True
 
 def play(folder, audiofile):
@@ -73,6 +74,7 @@ def file_is_playing(audiofile):
 
 def record_story(figure):
     # switching off amp
+    global amp_sd
     amp_sd.value = False
 
     # subprocess.Popen("AUDIODEV=hw:1 rec "+path+"figures/"+figure+"/"+figure+".mp3"+" ", shell=True, stdout=None, stderr=None)
@@ -93,6 +95,8 @@ def record_story(figure):
 
 def stop_recording(figure_id):
     subprocess.Popen("killall rec", shell=True, stdout=None, stderr=None)
+
+    global amp_sd
 
     # switching on amp
     amp_sd.value = True
