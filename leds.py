@@ -115,10 +115,9 @@ def random_blinker():
     global pixels
     reset()
 
-    threading.Timer(0.40, random_blinker).start()
+    threading.Timer(0.80, random_blinker).start()
     if random_timer:
-        pixels[random.randrange(len(pixels))] = (random.randint(
-            0, 255), random.randint(0, 255), random.randint(0, 255))
+        pixels[random.randrange(len(pixels))] = wheel(random.randrange(0, 255))
         pixels.show()
 
 def switch_on_with_color(number, color=None):
