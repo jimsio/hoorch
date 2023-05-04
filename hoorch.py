@@ -84,9 +84,11 @@ def initial_hardware_test():
     #leds.rotate_one_round(0.5)
     time.sleep(3)
     audio.record_story("test")
+    print("recording started und sleep 6")
     time.sleep(6)
     #leds.rotate_one_round(1)
-    audio.stop_recording("test")
+    print("fertig mit sleep")
+    error = audio.stop_recording("test")
     leds.reset()
 
     audio.espeaker("Ich spiele dir jetzt die Geschichte vor")
