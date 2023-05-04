@@ -38,7 +38,7 @@ def init():
 def testr():
     global pixels
 
-    for i in range(0, 2):
+    for i in range(0, 1):
         pixels.fill((255, 0, 0))
         pixels.show()
         time.sleep(3)

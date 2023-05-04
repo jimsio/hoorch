@@ -87,7 +87,7 @@ def initial_hardware_test():
     #subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 ./data/figures/test/test.mp3", shell=True, stdout=None, stderr=None, timeout=6)
     audio.record_story("test")
     print("recording started und sleep 6")
-    audio.espeaker("Jetzt werden alle LEDs beleuchtet.")
+    leds.rainbow_cycle(0.01)
     #time.sleep(6)
     #leds.rotate_one_round(1)
     print("fertig mit sleep")
