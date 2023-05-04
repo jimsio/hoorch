@@ -68,7 +68,8 @@ def initial_hardware_test():
     audio.espeaker("Jetzt wird die ganze Hardware getestet")
 
     audio.espeaker("Jetzt werden alle LEDs beleuchtet.")
-    leds.rainbow_cycle(0.001)
+    #leds.rainbow_cycle(0.001)
+    leds.rainbow_cycle(0.01)
 
     # audio.espeaker("Wir testen jetzt die Ar ef eidi Leser.")
     # for i in range(6):
@@ -83,9 +84,11 @@ def initial_hardware_test():
         "Ich teste jetzt das Audio, die Aufnahme beginnt in 3 Sekunden und dauert 6 Sekunden")
     #leds.rotate_one_round(0.5)
     time.sleep(3)
+    #subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 ./data/figures/test/test.mp3", shell=True, stdout=None, stderr=None, timeout=6)
     audio.record_story("test")
     print("recording started und sleep 6")
-    time.sleep(6)
+    audio.espeaker("Jetzt werden alle LEDs beleuchtet.")
+    #time.sleep(6)
     #leds.rotate_one_round(1)
     print("fertig mit sleep")
     error = audio.stop_recording("test")
