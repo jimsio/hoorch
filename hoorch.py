@@ -37,10 +37,15 @@ def init():
     if not os.path.exists("./figure_db.txt"):
         # tell the ip adress
         output = None
-        while output is None or output is '\n': 
+        while True:
             output = subprocess.run(['hostname', '-I'], stdout=subprocess.PIPE).stdout.decode('utf-8')
-            audio.espeaker("WeiFei nicht verbunden")
-            time.sleep(1.00)
+
+            if output is None or output == '\n': 
+                audio.espeaker("WeiFei nicht verbunden")
+                time.sleep(1.00)
+            
+            else:
+                break
     
         ip_adress = output.split(" ", 1)
         audio.espeaker(ip_adress[0])
