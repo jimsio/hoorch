@@ -19,6 +19,7 @@ import game_animals_english
 import admin
 import tagwriter
 
+
 def init():
     print("initializiation of hardware")
 
@@ -34,28 +35,29 @@ def init():
     leds.random_timer = True
 
     # initialize readers
-    #rfidreaders.init()
+    # rfidreaders.init()
 
     # initialize figure_db if no tags defined for this hoorch set
     if not os.path.exists("./figure_db.txt"):
         # tell the ip adress
         output = None
         while True:
-            output = subprocess.run(['hostname', '-I'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+            output = subprocess.run(
+                ['hostname', '-I'], stdout=subprocess.PIPE).stdout.decode('utf-8')
 
-            if output is None or output == '\n': 
+            if output is None or output == '\n':
                 audio.espeaker("WeiFei nicht verbunden")
                 time.sleep(1.00)
-            
+
             else:
                 break
-    
+
         ip_adress = output.split(" ", 1)
         audio.espeaker(ip_adress[0])
 
         leds.random_timer = False
         initial_hardware_test()
-        #tagwriter.write_set()
+        # tagwriter.write_set()
 
     # start random blinker
     leds.random_timer = True
@@ -68,8 +70,8 @@ def initial_hardware_test():
     audio.espeaker("Jetzt wird die ganze Hardware getestet")
 
     audio.espeaker("Jetzt werden alle LEDs beleuchtet.")
-    #leds.rainbow_cycle(0.001)
-    leds.rainbow_cycle(0.01)
+    # leds.rainbow_cycle(0.001)
+    leds.rainbow_cycle(0.5)
 
     # audio.espeaker("Wir testen jetzt die Ar ef eidi Leser.")
     # for i in range(6):
@@ -82,30 +84,30 @@ def initial_hardware_test():
 
     audio.espeaker(
         "Ich teste jetzt das Audio, die Aufnahme beginnt in 3 Sekunden und dauert 6 Sekunden")
-    #leds.rotate_one_round(0.5)
     time.sleep(3)
 
-    #switch off speakers to avoid clicking
+    # switch off speakers to avoid clicking
     audio.amp_sd.value = False
-    subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 ./data/figures/test/test.aif trim 0 6", shell=True, stdout=None, stderr=None)
-    #audio.record_story("test")
-    
-    print("recording started und sleep 6")
-    leds.rainbow_cycle(0.01)
-    #leds.rotate_one_round(1)
-    ##neopixel frieren einfach ein
+    subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 ./data/figures/test/test.aif trim 0 6",
+                     shell=True, stdout=None, stderr=None)
+    # audio.record_story("test")
+    leds.rotate_one_round(1)
+    time.sleep(0.5)
 
-    #time.sleep(6) - recorded bis unendlich, hört nicht auf, geht über time.sleep nicht drüber?!
-    #wenn ich sudo killall rec aus zweitem terminal aufrufe hört er auf mit recorden und programm läuft normal weiter
-    print("fertig mit sleep")
-    error = audio.stop_recording("test")
+    # time.sleep(6) - recorded bis unendlich, hört nicht auf, geht über time.sleep nicht drüber?!
+    # wenn ich sudo killall rec aus zweitem terminal aufrufe hört er auf mit recorden und programm läuft normal weiter
+    # error = audio.stop_recording("test")
     leds.reset()
 
-    audio.espeaker("Ich spiele dir jetzt die Geschichte vor")
-    audio.play_story("test")
-    time.sleep(7)
+    if os.path.exists("./figures/test/test.aif"):
+        audio.espeaker("Ich spiele dir jetzt die Geschichte vor")
+        leds.switch_all_on_with_color()
+        audio.play_file("figures/test", "test.aif")
+        time.sleep(7)
+    else:
+        audio.espeaker("Aufnahme hat nicht geklappt. Audio nicht gefunden")
 
-    audio.espeaker("Test erfolgreich abgeschlossen.")
+    audio.espeaker("Test abgeschlossen.")
 
 
 def main():

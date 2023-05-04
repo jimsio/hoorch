@@ -43,7 +43,7 @@ def play_full(folder, audiofile):
     time.sleep(waitingtime)
 
 def play_file(folder, audiofile):
-    # for sounds (animals, systemsounds) in /data and subsequent folders
+    # for sounds (animals, systemsounds) in /data and subsequent folders, non-blocking
     subprocess.Popen("play "+path+folder+"/"+audiofile +
                      "  2>/dev/null", shell=True, stdout=None, stderr=None)
     print("playing file "+str(audiofile))
