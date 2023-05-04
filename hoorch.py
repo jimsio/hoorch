@@ -36,12 +36,16 @@ def init():
     # initialize figure_db if no tags defined for this hoorch set
     if not os.path.exists("./figure_db.txt"):
         # tell the ip adress
-        output = subprocess.run(
-            ['hostname', '-I'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+        output = None
+        while output is None or output is '\n': 
+            output = subprocess.run(['hostname', '-I'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+            audio.espeaker("WeiFei nicht verbunden")
+            time.sleep(1.00)
+    
         ip_adress = output.split(" ", 1)
         audio.espeaker(ip_adress[0])
 
-        # leds.random_timer = False
+        leds.random_timer = False
         initial_hardware_test()
         #tagwriter.write_set()
 
@@ -51,20 +55,21 @@ def init():
 
 def initial_hardware_test():
     # test run to check hardware on first hoorch start - will test leds, readers, speakers, microphone
+    leds.random_timer = False
 
     audio.espeaker("Jetzt wird die ganze Hardware getestet")
 
     audio.espeaker("Jetzt werden alle LEDs beleuchtet.")
-    leds.rainbow_cycle(0.001)
+    leds.rainbow_cycle(0.005)
 
     audio.espeaker("Wir testen jetzt die Ar ef eidi Leser.")
     for i in range(6):
-        # "Mit WeiFei {0} verbunden.".format(connection)
         audio.espeaker("Lege eine Karte auf Leser {0}".format(i+1))
         leds.switch_on_with_color(i, (255, 0, 0))
         while True:
             if rfidreaders.tags[i] is not None:
                 break
+        leds.reset()
 
     audio.espeaker(
         "Ich teste jetzt das Audio, die Aufnahme beginnt in 3 Sekunden und dauert 6 Sekunden")

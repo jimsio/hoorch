@@ -40,20 +40,20 @@ def testr():
     for i in range(0, 2):
         pixels.fill((255, 0, 0))
         pixels.show()
-        time.sleep(0.3)
+        time.sleep(3)
 
         pixels.fill((0, 255, 0))
         pixels.show()
-        time.sleep(0.3)
+        time.sleep(3)
 
         pixels.fill((0, 0, 255))
         pixels.show()
-        time.sleep(0.3)
+        time.sleep(3)
 
         # no fill
         pixels.fill((0, 0, 0))
         pixels.show()
-        time.sleep(0.6)
+        time.sleep(6)
 
 def reset():
     # set all pixels to no color
@@ -113,7 +113,7 @@ def random_blinker():
     global pixels
     reset()
 
-    threading.Timer(0.25, random_blinker).start()
+    threading.Timer(0.40, random_blinker).start()
     if random_timer:
         pixels[random.randrange(len(pixels))] = (random.randint(
             0, 255), random.randint(0, 255), random.randint(0, 255))
@@ -132,90 +132,13 @@ def switch_on_with_color(number, color=None):
         # leds.switch_on_with_color((0,3,5), (200,200,100))
         for c in number:
             pixels[c] = color
-            pixels.show()
-
+    
     elif isinstance(number, list):
         # expect players list
         for i, p in enumerate(number):
             if p is not None:
                 pixels[i] = color
-                pixels.show()
     else:
         pixels[number] = color
-        pixels.show()
-
-# GPIO.setmode(GPIO.BCM) #= GPIO number (BCM)
-# GPIO.setwarnings(False)
-#
-# led_pins = [23,18,17,12,7,8]#= GPIO number (BCM)
-# led = []
-# led_value = [0,0,0,0,0,0]
-
-# rotate_timer = None
-# random_timer = False
-
-# def init():
-# 	global led
-# 	for led_pin in led_pins:
-# 		GPIO.setup(led_pin,GPIO.OUT)
-# 		#l = GPIO.PWM(led_pin,100)
-# 		#l.start(100)
-# 		#led.append(l)
-# 	check_status()
-# 	randomer()
-#
-# def reset():
-# 	global led_value
-# 	led_value = [0,0,0,0,0,0]
-#
-# def check_status():
-# 	leds_timer = threading.Timer(0.05,check_status).start()
-# 	for i in range(0,6):
-# 		GPIO.output(led_pins[i], led_value[i])
-#
-# rotate through all leds one whole circle/round, time per led in seconds
-# def rotate_one_round(time_per_led):
-# 	global led_value
-# 	for i in range(0,6):
-# 		reset()
-# 		led_value[i] = 1
-# 		time.sleep(time_per_led)
-# 		reset()
-#
-# def randomer():
-# 	global random_timer
-# 	threading.Timer(0.25,randomer).start()
-# 	if random_timer:
-# 		for index,i in enumerate(led_value):
-# 			led_value[index] = random.randint(0,1)
-#
-#
-# #not used
-# #TODO : implement as threaded timer - so it can be stopped
-# def rotate_timer(time_until_end, start_position):
-# 	time_per_led = time_until_end / 6
-# 	global led_value
-# 	led_value = [1,1,1,1,1,1]
-#
-# 	for x in range(0,5):
-# 		position = start_position+x
-# 		if position > 5:
-# 			position -= 5
-# 		led_value[x] = 0
-# 		time.sleep(time_per_led)
-#
-# #not used
-# #rotate leds
-# rotate_led = 0
-# def rotate():
-# 	global rotate_led
-# 	global rotate_timer
-# 	rotate_timer = threading.Timer(0.2,rotate).start()
-# 	for index,i in enumerate(led_value):
-# 		if index is rotate_led:
-# 			led_value[index] = 1
-# 		else:
-# 			led_value[index] = 0
-# 	rotate_led += 1
-# 	if rotate_led > 5:
-# 		rotate_led = 0
+        
+    pixels.show()
