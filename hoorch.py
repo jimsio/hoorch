@@ -81,9 +81,11 @@ def initial_hardware_test():
 
     audio.espeaker(
         "Ich teste jetzt das Audio, die Aufnahme beginnt in 3 Sekunden und dauert 6 Sekunden")
-    leds.rotate_one_round(0.5)
+    #leds.rotate_one_round(0.5)
+    time.sleep(3)
     audio.record_story("test")
-    leds.rotate_one_round(1)
+    time.sleep(6)
+    #leds.rotate_one_round(1)
     audio.stop_recording("test")
     leds.reset()
 
