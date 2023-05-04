@@ -19,7 +19,7 @@ num_pixels = 6
 ORDER = neopixel.GRB
 
 pixels = neopixel.NeoPixel(pixel_pin, num_pixels,
-                           brightness=0.4, auto_write=False, pixel_order=ORDER)
+                           brightness=0.2, auto_write=False, pixel_order=ORDER)
 
 random_timer = False
 
@@ -31,7 +31,7 @@ random_timer = False
 
 
 def init():
-    #testr()
+    testr()
     random_blinker()
 
 
@@ -103,19 +103,19 @@ def rainbow_cycle(wait):
 def rotate_one_round(time_per_led):
     # rotate through all leds one whole circle/round, time per led in seconds
     global pixels
+    color = wheel(random.randrange(0, 255))
     for i in range(len(pixels)):
         reset()
-        pixels[i] = wheel(random.randrange(0, 255))
+        pixels[i] = color
         pixels.show()
         time.sleep(time_per_led)
     reset()
-
 
 def random_blinker():
     global pixels
     reset()
 
-    threading.Timer(0.80, random_blinker).start()
+    threading.Timer(0.50, random_blinker).start()
     if random_timer:
         pixels[random.randrange(len(pixels))] = wheel(random.randrange(0, 255))
         pixels.show()

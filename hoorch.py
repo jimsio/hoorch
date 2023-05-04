@@ -102,7 +102,7 @@ def initial_hardware_test():
     # switch on speakers
     audio.amp_sd.value = True
 
-    if os.path.exists("./figures/test/test.aif"):
+    if os.path.exists("./data/figures/test/test.aif"):
         audio.espeaker("Ich spiele dir jetzt die Geschichte vor")
         leds.switch_all_on_with_color()
         audio.play_file("figures/test", "test.aif")
