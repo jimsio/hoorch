@@ -31,7 +31,7 @@ random_timer = False
 
 
 def init():
-    testr()
+    #testr()
     random_blinker()
 
 
@@ -119,6 +119,9 @@ def random_blinker():
     if random_timer:
         pixels[random.randrange(len(pixels))] = wheel(random.randrange(0, 255))
         pixels.show()
+
+def switch_all_on_with_color(color):
+    switch_on_with_color(list(range(6)), color)
 
 def switch_on_with_color(number, color=None):
     # single number from 0 to 5 or tuple(1,3,5); color like (0, 255, 0)
