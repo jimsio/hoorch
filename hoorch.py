@@ -93,6 +93,7 @@ def initial_hardware_test():
 
     audio.espeaker("Ich spiele dir jetzt die Geschichte vor")
     audio.play_story("test")
+    time.sleep(7)
 
     audio.espeaker("Test erfolgreich abgeschlossen.")
 
