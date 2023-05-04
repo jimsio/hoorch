@@ -98,6 +98,9 @@ def initial_hardware_test():
     # wenn ich sudo killall rec aus zweitem terminal aufrufe hört er auf mit recorden und programm läuft normal weiter
     # error = audio.stop_recording("test")
     leds.reset()
+    
+    # switch on speakers
+    audio.amp_sd.value = True
 
     if os.path.exists("./figures/test/test.aif"):
         audio.espeaker("Ich spiele dir jetzt die Geschichte vor")
