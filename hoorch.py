@@ -90,13 +90,8 @@ def initial_hardware_test():
     audio.amp_sd.value = False
     subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 ./data/figures/test/test.aif trim 0 6",
                      shell=True, stdout=None, stderr=None)
-    # audio.record_story("test")
-    leds.rotate_one_round(1)
     time.sleep(0.5)
 
-    # time.sleep(6) - recorded bis unendlich, hört nicht auf, geht über time.sleep nicht drüber?!
-    # wenn ich sudo killall rec aus zweitem terminal aufrufe hört er auf mit recorden und programm läuft normal weiter
-    # error = audio.stop_recording("test")
     leds.reset()
     
     # switch on speakers
