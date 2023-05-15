@@ -53,7 +53,6 @@ def start():
     for i, figure_id in enumerate(players):
         leds.reset()
         if figure_id is not None:
-            # leds.led_value[i] = 100
             leds.switch_on_with_color(i, (0, 255, 0))
 
             new_recording = False
@@ -103,7 +102,7 @@ def start():
                         audio.play_full("TTS", 56)
                         # leds.rotate_one_round(0.4)
                         audio.play_full("TTS", 66)  # 3 2 1 Los
-                        leds.led_value[i] = 100
+                        leds.switch_on_with_color(i, (0, 255, 0))
 
                         # most recent story has only figure_id as filename, record_story(figure_id)
                         audio.record_story(figure_id)
@@ -136,7 +135,6 @@ def start():
                 # leds.rotate_one_round(0.4)
                 audio.play_full("TTS", 66)  # 3 2 1 Los
                 # time.sleep(1)
-                # leds.led_value[i] = 100
                 leds.switch_on_with_color(i, (255, 0, 0))
 
                 # most recent story has only figure_id as filename, record_story(figure_id)

@@ -32,7 +32,8 @@ blink = False
 
 
 def init():
-    testr()
+    pass
+    #testr()
     #blinker()
 
 

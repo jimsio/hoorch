@@ -62,7 +62,7 @@ def start():
         for i, p in enumerate(players):
             if p is not None:
                 leds.reset()
-                leds.led_value[i] = 100
+                leds.switch_on_with_color(i)
 
                 if "ENDE" in rfidreaders.tags:
                     return
@@ -136,7 +136,7 @@ def start():
     for i, p in enumerate(players):
         if p is not None:
             leds.reset()
-            leds.led_value[i] = 100
+            leds.switch_on_with_color(i)
             audio.play_full("TTS", 74+i)  # Spielfigur auf Spielfeld 1,2...6
             time.sleep(0.2)
             print("Du hast "+str(points[i])+" Antworten richtig")

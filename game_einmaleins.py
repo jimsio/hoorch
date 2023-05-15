@@ -21,7 +21,7 @@ def start():
 
     # Es können drei Figuren mitspielen. Stellt eure Figuren auf die Felder 1, 3 oder 5, wo die Lämpchen leuchten.
     audio.play_full("TTS", 86)
-    leds.led_value = [1, 0, 1, 0, 1, 0]
+    leds.switch_on_with_color((0,2,4))
     audio.play_file("sounds", "waiting.mp3")  # play wait sound
     time.sleep(6)
 
@@ -62,7 +62,7 @@ def start():
         for i, p in enumerate(players):
             if p is not None:
                 leds.reset()
-                leds.led_value[i] = 100
+                leds.switch_on_with_color(i)
 
                 if r == 0 and isthefirst == True:  # first round
                     isthefirst = False
@@ -97,8 +97,8 @@ def start():
                     ud = i-1
 
                 # illuminate the led after and before the player field
-                leds.led_value[ud] = 100
-                leds.led_value[i+1] = 100
+                leds.switch_on_with_color(ud)
+                leds.switch_on_with_color(i+1)
 
                 if "ENDE" in rfidreaders.tags:
                     return
@@ -116,11 +116,11 @@ def start():
 
                 # leds blink at tens and unit fields
                 for k in range(5):
-                    leds.led_value[i+1] = 0
-                    leds.led_value[ud] = 100
+                    leds.switch_on_with_color(i+1, (0,0,0))
+                    leds.switch_on_with_color(ud)
                     time.sleep(1)
-                    leds.led_value[ud] = 0
-                    leds.led_value[i+1] = 100
+                    leds.switch_on_with_color(ud, (0,0,0))
+                    leds.switch_on_with_color(i+1)
                     time.sleep(1)
 
                 if "ENDE" in rfidreaders.tags:
@@ -168,7 +168,7 @@ def start():
     for i, p in enumerate(players):
         if p is not None:
             leds.reset()
-            leds.led_value[i] = 100
+            leds.switch_on_with_color(i)
             audio.play_full("TTS", 74+i)  # Spielfigur auf Spielfeld 1,2...6
             time.sleep(0.2)
             print("Du hast "+str(points[i])+" Antworten richtig")
