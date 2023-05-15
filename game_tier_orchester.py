@@ -17,11 +17,11 @@ def start():
     leds.reset()  # reset leds
 
     playing_animals = [None, None, None, None, None, None]
-    leds.random_timer = True
+    leds.blink = True
     while True:
         animals = copy.deepcopy(rfidreaders.tags)
         if "ENDE" in animals:
-            leds.random_timer = False
+            leds.blink = False
             leds.reset()
             audio.kill_sounds()
             break

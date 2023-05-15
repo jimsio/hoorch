@@ -21,7 +21,8 @@ ORDER = neopixel.GRB
 pixels = neopixel.NeoPixel(pixel_pin, num_pixels,
                            brightness=0.2, auto_write=False, pixel_order=ORDER)
 
-random_timer = False
+#start random blinking of leds
+blink = False
 
 # pixels.fill fills ALL pixels with the given color
 # color with value (0,0,0) is black, i.e. no color
@@ -32,7 +33,7 @@ random_timer = False
 
 def init():
     testr()
-    #random_blinker()
+    blinker()
 
 
 def testr():
@@ -42,22 +43,22 @@ def testr():
         #rot
         pixels.fill((255, 0, 0))
         pixels.show()
-        time.sleep(2)
+        time.sleep(3)
     
         #gruen
         pixels.fill((0, 255, 0))
         pixels.show()
-        time.sleep(2)
+        time.sleep(3)
 
-       # no fill
-        pixels.fill((0, 0, 0))
-        pixels.show()
-        time.sleep(2)
+    #    # no fill
+    #     pixels.fill((0, 0, 0))
+    #     pixels.show()
+    #     time.sleep(2)
 
         #blau    
         pixels.fill((0, 0, 255))
         pixels.show()
-        time.sleep(23)
+        time.sleep(3)
     reset()
 
 def reset():
@@ -113,14 +114,14 @@ def rotate_one_round(time_per_led):
         time.sleep(time_per_led)
     reset()
 
-def random_blinker():
+def blinker():
     global pixels
     reset()
 
-    threading.Timer(0.50, random_blinker).start()
-    if random_timer:
+    if blink:
         pixels[random.randrange(len(pixels))] = wheel(random.randrange(0, 255))
         pixels.show()
+    threading.Timer(0.80, blinker).start()
 
 def switch_all_on_with_color(color=None):
     switch_on_with_color(list(range(6)), color)

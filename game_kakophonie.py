@@ -33,7 +33,7 @@ def start():
 
     for p in phones:
         p.play(loops=-1)
-    leds.random_timer = True
+    leds.blink = True
 
     while True:
         found_digits = []
@@ -61,5 +61,5 @@ def start():
             pygame.mixer.pause()
             break
 
-    leds.random_timer = False
+    leds.blink = False
     leds.reset()
