@@ -79,16 +79,16 @@ def initial_hardware_test():
         while True:
             if rfidreaders.tags[i] is not None:
                 break
-        leds.reset()
+
+    leds.reset()
 
     audio.espeaker(
         "Ich teste jetzt das Audio, die Aufnahme beginnt in 3 Sekunden und dauert 6 Sekunden")
     time.sleep(3)
-
+    leds.switch_all_on_with_color()
+    
     # switch off speakers to avoid clicking
     audio.amp_sd.value = False
-
-    leds.reset()
 
     print("aufnahme starten")
     subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 ./data/figures/test/test.aif",
