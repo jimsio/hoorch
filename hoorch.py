@@ -88,14 +88,14 @@ def initial_hardware_test():
     # switch off speakers to avoid clicking
     audio.amp_sd.value = False
 
-    #new:
     leds.reset()
-    leds.switch_all_on_with_color()
+    #leds.switch_all_on_with_color()
 
     print("aufnahme starten")
     subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 ./data/figures/test/test.aif",
                      shell=True, stdout=None, stderr=None)
-    time.sleep(6)
+    #time.sleep(6)
+    leds.rotate_one_round(6)
     print("aufnahme beendet")
     subprocess.Popen("killall rec", shell=True, stdout=None, stderr=None)
 
@@ -105,7 +105,7 @@ def initial_hardware_test():
     #time.sleep(0.5)
 
     leds.reset()
-    
+
     # switch on speakers
     audio.amp_sd.value = True
 
