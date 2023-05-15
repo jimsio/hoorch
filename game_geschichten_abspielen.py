@@ -39,7 +39,6 @@ def start():
         audio.play_full("TTS", 59)
         return
 
-    # time.sleep(1)
     if "ENDE" in rfidreaders.tags:
         return
 
@@ -47,10 +46,10 @@ def start():
 
     # remove figures without a recorded story from list
     for i, figure_id in enumerate(players):
-        figure_dir = "./data/figures/"+figure_id
-        if figure_id in recordings_list and figure_id+'.mp3' in os.listdir(figure_dir):
-            continue
-        else:
+        if figure_id is not None:
+            figure_dir = "./data/figures/"+figure_id
+            if figure_id in recordings_list and figure_id+'.mp3' in os.listdir(figure_dir):
+                continue
             players[i] = None
 
     figure_count = sum(x is not None for x in players)
@@ -72,7 +71,6 @@ def start():
     for i, figure_id in enumerate(players):
         leds.reset()
         if figure_id is not None:
-            # leds.led_value[i] = 100
             leds.switch_on_with_color(i, (0, 255, 0))
 
             if first_round:  # at start
