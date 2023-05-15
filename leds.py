@@ -33,7 +33,7 @@ blink = False
 
 def init():
     testr()
-    blinker()
+    #blinker()
 
 
 def testr():
