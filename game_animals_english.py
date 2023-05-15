@@ -47,8 +47,6 @@ def start():
         while True:
             figures_on_board = copy.deepcopy(rfidreaders.tags)
             if "ENDE" in figures_on_board:
-                leds.random_timer = False
-                leds.reset()
                 audio.kill_sounds()
                 break
 
