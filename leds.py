@@ -16,7 +16,7 @@ pixel_pin = board.D12
 num_pixels = 6
 
 # The order of the pixel colors - RGB or GRB. Some NeoPixels have red and green reversed!
-ORDER = neopixel.GRB
+ORDER = neopixel.RGB
 
 pixels = neopixel.NeoPixel(pixel_pin, num_pixels,
                            brightness=0.2, auto_write=False, pixel_order=ORDER)
@@ -39,23 +39,25 @@ def testr():
     global pixels
 
     for i in range(0, 1):
+        #rot
         pixels.fill((255, 0, 0))
         pixels.show()
-        time.sleep(3)
-
+        time.sleep(2)
+    
+        #gruen
         pixels.fill((0, 255, 0))
         pixels.show()
-        time.sleep(3)
+        time.sleep(2)
 
-        pixels.fill((0, 0, 255))
-        pixels.show()
-        time.sleep(3)
-
-        # no fill
+       # no fill
         pixels.fill((0, 0, 0))
         pixels.show()
-        time.sleep(6)
-    
+        time.sleep(2)
+
+        #blau    
+        pixels.fill((0, 0, 255))
+        pixels.show()
+        time.sleep(23)
     reset()
 
 def reset():

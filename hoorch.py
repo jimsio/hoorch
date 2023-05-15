@@ -29,13 +29,13 @@ def init():
     audio.play_full("TTS", 1)
 
     # initialize leds
-    #leds.init()
+    leds.init()
 
     # start random blinker
-    #leds.random_timer = True
+    leds.random_timer = True
 
     # initialize readers
-    #rfidreaders.init()
+    rfidreaders.init()
 
     # initialize figure_db if no tags defined for this hoorch set
     if not os.path.exists("./figure_db.txt"):
@@ -53,34 +53,35 @@ def init():
                 break
 
         ip_adress = output.split(" ", 1)
+        audio.espeaker("Die eipi Adresse lautet")
         audio.espeaker(ip_adress[0])
 
-        #leds.random_timer = False
+        leds.random_timer = False
         initial_hardware_test()
         tagwriter.write_set()
 
     # start random blinker
-    #leds.random_timer = True
+    leds.random_timer = True
 
 
 def initial_hardware_test():
     # test run to check hardware on first hoorch start - will test leds, readers, speakers, microphone
-    #leds.random_timer = False
+    leds.random_timer = False
 
     audio.espeaker("Jetzt wird die ganze Hardware getestet")
 
     audio.espeaker("Jetzt werden alle LEDs beleuchtet.")
     ## leds.rainbow_cycle(0.001)
-    #leds.rainbow_cycle(0.05)
+    leds.rainbow_cycle(0.05)
 
-    # audio.espeaker("Wir testen jetzt die Ar ef eidi Leser.")
-    # for i in range(6):
-    #     audio.espeaker("Lege eine Karte auf Leser {0}".format(i+1))
-    #     leds.switch_on_with_color(i, (255, 0, 0))
-    #     while True:
-    #         if rfidreaders.tags[i] is not None:
-    #             break
-    #     leds.reset()
+    audio.espeaker("Wir testen jetzt die Ar ef eidi Leser.")
+    for i in range(6):
+        audio.espeaker("Lege eine Karte auf Leser {0}".format(i+1))
+        leds.switch_on_with_color(i, (255, 0, 0))
+        while True:
+            if rfidreaders.tags[i] is not None:
+                break
+        leds.reset()
 
     audio.espeaker(
         "Ich teste jetzt das Audio, die Aufnahme beginnt in 3 Sekunden und dauert 6 Sekunden")
@@ -92,9 +93,12 @@ def initial_hardware_test():
     audio.amp_sd.value = False
 
     #new:
+    leds.reset()
+    print("aufnahme starten")
     subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 ./data/figures/test/test.aif",
                      shell=True, stdout=None, stderr=None)
     time.sleep(12)
+    print("aufnahme beendet")
     subprocess.Popen("killall rec", shell=True, stdout=None, stderr=None)
 
     #old:
