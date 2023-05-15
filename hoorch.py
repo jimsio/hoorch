@@ -59,7 +59,7 @@ def init():
         audio.espeaker(ip_adress[0])
 
         initial_hardware_test()
-        #tagwriter.write_set()
+        tagwriter.write_set()
 
 
 def initial_hardware_test():
