@@ -89,13 +89,12 @@ def initial_hardware_test():
     audio.amp_sd.value = False
 
     leds.reset()
-    #leds.switch_all_on_with_color()
 
     print("aufnahme starten")
     subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 ./data/figures/test/test.aif",
                      shell=True, stdout=None, stderr=None)
-    #time.sleep(6)
-    leds.rotate_one_round(6)
+    time.sleep(6)
+    #leds.rotate_one_round(6)
     print("aufnahme beendet")
     subprocess.Popen("killall rec", shell=True, stdout=None, stderr=None)
 

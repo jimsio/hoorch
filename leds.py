@@ -76,6 +76,7 @@ def rainbow_cycle(wait):
         time.sleep(wait)
     reset()
 
+#not working!! sleeps way more than it should, leds show random ouput!
 def rotate_one_round(time_per_led):
     # rotate through all leds one whole circle/round, time per led in seconds
     color = wheel(random.randrange(0, 255))
