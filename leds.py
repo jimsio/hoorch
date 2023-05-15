@@ -110,11 +110,14 @@ def rotate_one_round(time_per_led):
     reset()
 
 def blinker():
-    reset()
-
+    
     if blink:
+        pixels.fill((0, 0, 0))
         pixels[random.randrange(len(pixels))] = wheel(random.randrange(0, 255))
         pixels.show()
+    else:
+        reset()
+
     threading.Timer(0.80, blinker).start()
 
 def switch_all_on_with_color(color=None):
