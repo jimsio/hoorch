@@ -36,6 +36,8 @@ animal_figures = []  # Loewe2, Elefant1, ...
 
 endofmessage = "#"  # chr(35)
 
+read_continuously = True
+
 
 def init():
     print("initialize the rfid readers and figure_db.txt")
@@ -166,9 +168,13 @@ def continuous_read():
                     else:
                         # else set the unknown figure as a gamer figure, with the id_readable as tag_name
                         tag_name = id_readable
-                        gamer_figures.append(tag_name)
-                        print(
-                            "added new unknown gamer figure to the temporary gamer_figure list")
+
+                        if tag_name not in gamer_figures:
+                            gamer_figures.append(tag_name)
+                            print(
+                                "added new unknown gamer figure to the temporary gamer_figure list")
+                        else:
+                            print("unknown gamer figure detected, is already in temporary gamer_figure list")
 
         else:
             tag_name = None
@@ -183,5 +189,7 @@ def continuous_read():
             tags[index] = tag_name
 
     print(tags)
-    # rfidreaders_timer = threading.Timer(0.01,continuous_read).start()
-    threading.Timer(1.0, continuous_read).start()
+    
+    if read_continuously:
+        # rfidreaders_timer = threading.Timer(0.01,continuous_read).start()
+        threading.Timer(1.0, continuous_read).start()

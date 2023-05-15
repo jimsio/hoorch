@@ -59,7 +59,11 @@ def init():
         audio.espeaker(ip_adress[0])
 
         initial_hardware_test()
+
+        rfidreaders.read_continuously = False
+        time.sleep(1)
         tagwriter.write_set()
+        rfidreaders.read_continuously = True
 
 
 def initial_hardware_test():
