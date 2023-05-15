@@ -47,8 +47,7 @@ def start():
     # remove figures without a recorded story from list
     for i, figure_id in enumerate(players):
         if figure_id is not None:
-            figure_dir = "./data/figures/"+figure_id
-            if figure_id in recordings_list and figure_id+'.mp3' in os.listdir(figure_dir):
+            if os.path.exists("./data/figures/"+figure_id+"/"+figure_id+".mp3"):
                 continue
             players[i] = None
 
