@@ -42,8 +42,6 @@ def start():
     if "ENDE" in rfidreaders.tags:
         return
 
-    recordings_list = os.listdir("./data/figures/")
-
     # remove figures without a recorded story from list
     for i, figure_id in enumerate(players):
         if figure_id is not None:
@@ -53,14 +51,14 @@ def start():
 
     figure_count = sum(x is not None for x in players)
     if figure_count == 0:
-        #TODO: Keine deiner Spielfiguren hat eine Geschichte gespeichert.
+        # TODO: Keine deiner Spielfiguren hat eine Geschichte gespeichert.
         audio.play_full("TTS", 59)
         return
 
     # switch on leds at player field
     leds.switch_on_with_color(players, (100, 100, 100))
 
-    #TODO: x figuren haben eine geschichte gespeichert
+    # TODO: x figuren haben eine geschichte gespeichert
     audio.play_full("TTS", 5+figure_count)
 
     if "ENDE" in rfidreaders.tags:
@@ -87,11 +85,12 @@ def start():
                 return
 
             # when figure folder exists and contains i.e. roboter.mp3
-            if figure_id in recordings_list and figure_id+'.mp3' in os.listdir(figure_dir):
+            # if figure_id in recordings_list and figure_id+'.mp3' in os.listdir(figure_dir):
+            if os.path.exists("./data/figures/"+figure_id+"/"+figure_id+".mp3"):
                 # play story
                 audio.play_story(figure_id)
                 waitingtime = time.time() + float(subprocess.run(
-                    ['soxi', '-D', figure_dir+'/'+figure_id+'.mp3'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+                    ['soxi', '-D', './data/figures/'+figure_id+'.mp3'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
                 print(waitingtime)
             else:
                 # Du hast noch keine Geschichte aufgenommen!
