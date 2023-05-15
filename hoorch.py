@@ -35,7 +35,7 @@ def init():
     #leds.random_timer = True
 
     # initialize readers
-    rfidreaders.init()
+    #rfidreaders.init()
 
     # initialize figure_db if no tags defined for this hoorch set
     if not os.path.exists("./figure_db.txt"):
