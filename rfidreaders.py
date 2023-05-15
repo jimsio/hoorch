@@ -41,7 +41,6 @@ def init():
     print("initialize the rfid readers and figure_db.txt")
     spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
 
-    global readers
     readers.append(PN532_SPI(spi, reader1_pin, debug=False))
     readers.append(PN532_SPI(spi, reader2_pin, debug=False))
     readers.append(PN532_SPI(spi, reader3_pin, debug=False))
@@ -58,8 +57,6 @@ def init():
 
     # init figure db
     path = "./figure_db.txt"
-    global gamer_figures
-    global animal_figures
 
     if os.path.exists(path):
         file = open(path, mode="r", encoding="utf-8")
@@ -87,9 +84,6 @@ def init():
 
 
 def continuous_read():
-    global readers
-    global tags
-    global gamer_figures
 
     for index, r in enumerate(readers):
 
@@ -190,4 +184,4 @@ def continuous_read():
 
     print(tags)
     # rfidreaders_timer = threading.Timer(0.01,continuous_read).start()
-    rfidreaders_timer = threading.Timer(1.0, continuous_read).start()
+    threading.Timer(1.0, continuous_read).start()

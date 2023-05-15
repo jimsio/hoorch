@@ -58,12 +58,8 @@ def init():
         audio.espeaker("Die eipi Adresse lautet")
         audio.espeaker(ip_adress[0])
 
-        #leds.blink = False
         initial_hardware_test()
-        tagwriter.write_set()
-
-    # start random blinker
-    #leds.blink = True
+        #tagwriter.write_set()
 
 
 def initial_hardware_test():
@@ -88,8 +84,6 @@ def initial_hardware_test():
     audio.espeaker(
         "Ich teste jetzt das Audio, die Aufnahme beginnt in 3 Sekunden und dauert 6 Sekunden")
     time.sleep(3)
-
-    #leds.switch_all_on_with_color()
 
     # switch off speakers to avoid clicking
     audio.amp_sd.value = False
