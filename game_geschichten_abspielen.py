@@ -90,7 +90,7 @@ def start():
                 # play story
                 audio.play_story(figure_id)
                 waitingtime = time.time() + float(subprocess.run(
-                    ['soxi', '-D', './data/figures/'+figure_id+'/'+figure_id'.mp3'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+                    ['soxi', '-D', './data/figures/'+figure_id+'/'+figure_id+'.mp3'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
                 print(waitingtime)
             else:
                 # Du hast noch keine Geschichte aufgenommen!
