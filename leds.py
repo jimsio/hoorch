@@ -16,7 +16,7 @@ pixel_pin = board.D12
 num_pixels = 6
 
 # The order of the pixel colors - RGB or GRB. Some NeoPixels have red and green reversed!
-ORDER = neopixel.RGB
+ORDER = neopixel.GRB
 
 pixels = neopixel.NeoPixel(pixel_pin, num_pixels,
                            brightness=0.2, auto_write=False, pixel_order=ORDER)
@@ -32,7 +32,7 @@ random_timer = False
 
 def init():
     testr()
-    random_blinker()
+    #random_blinker()
 
 
 def testr():

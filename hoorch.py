@@ -32,7 +32,7 @@ def init():
     leds.init()
 
     # start random blinker
-    leds.random_timer = True
+    #leds.random_timer = True
 
     # initialize readers
     rfidreaders.init()
@@ -56,17 +56,17 @@ def init():
         audio.espeaker("Die eipi Adresse lautet")
         audio.espeaker(ip_adress[0])
 
-        leds.random_timer = False
+        #leds.random_timer = False
         initial_hardware_test()
         tagwriter.write_set()
 
     # start random blinker
-    leds.random_timer = True
+    #leds.random_timer = True
 
 
 def initial_hardware_test():
     # test run to check hardware on first hoorch start - will test leds, readers, speakers, microphone
-    leds.random_timer = False
+    #leds.random_timer = False
 
     audio.espeaker("Jetzt wird die ganze Hardware getestet")
 
@@ -97,7 +97,7 @@ def initial_hardware_test():
     print("aufnahme starten")
     subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 ./data/figures/test/test.aif",
                      shell=True, stdout=None, stderr=None)
-    time.sleep(12)
+    time.sleep(6)
     print("aufnahme beendet")
     subprocess.Popen("killall rec", shell=True, stdout=None, stderr=None)
 
@@ -133,7 +133,7 @@ def main():
     while True:
         # while shutdown_counter > time.time():
 
-        leds.random_timer = True
+        #leds.random_timer = True
 
         if greet_time < time.time():
             audio.play_full("TTS", 2)  # Welches Spiel wollt ihr spielen?
@@ -142,56 +142,56 @@ def main():
         # Erklärung
         if "FRAGEZEICHEN" in rfidreaders.tags:
             print("Hoorch Erklärung")
-            leds.random_timer = False
+            #leds.random_timer = False
             audio.play_full("TTS", 65)  # Erklärung
             shutdown_counter = time.time()+shutdown_time
 
         # Games
         if "Aufnehmen" in rfidreaders.tags:
             print("Geschichten aufnehmen")
-            leds.random_timer = False
+            #leds.random_timer = False
             game_geschichten_aufnehmen.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu
             shutdown_counter = time.time()+shutdown_time
 
         if "Abspielen" in rfidreaders.tags:
             print("Geschichte abspielen")
-            leds.random_timer = False
+            #leds.random_timer = False
             game_geschichten_abspielen.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
 
         if "Tierlaute" in rfidreaders.tags:
             print("Tierlaute erkennen")
-            leds.random_timer = False
+            #leds.random_timer = False
             game_tierlaute.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
 
         if "TierOrchester" in rfidreaders.tags:
             print("Tier-Orchester")
-            leds.random_timer = False
+            #leds.random_timer = False
             game_tier_orchester.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
 
         if "Kakophonie" in rfidreaders.tags:
             print("Kakophonie")
-            leds.random_timer = False
+            #leds.random_timer = False
             game_kakophonie.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
 
         if "Einmaleins" in rfidreaders.tags:
             print("Einmaleins")
-            leds.random_timer = False
+            #leds.random_timer = False
             game_einmaleins.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
 
         if "Animals" in rfidreaders.tags:
             print("Animals")
-            leds.random_timer = False
+            #leds.random_timer = False
             game_animals_english.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
