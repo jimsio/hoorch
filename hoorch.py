@@ -34,8 +34,6 @@ def init():
     # start random blinker
     #leds.blink = True
 
-    # initialize readers
-    rfidreaders.init()
 
     # initialize figure_db if no tags defined for this hoorch set
     if not os.path.exists("./figure_db.txt"):
@@ -58,12 +56,15 @@ def init():
         audio.espeaker("Die eipi Adresse lautet")
         audio.espeaker(ip_adress[0])
 
+        # initialize readers
+        rfidreaders.init()
         initial_hardware_test()
 
         rfidreaders.read_continuously = False
         time.sleep(1)
         tagwriter.write_set()
         rfidreaders.read_continuously = True
+        rfidreaders.continuous_read()
 
 
 def initial_hardware_test():
