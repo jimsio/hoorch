@@ -51,8 +51,8 @@ def start():
 
     figure_count = sum(x is not None for x in players)
     if figure_count == 0:
-        # TODO: Keine deiner Spielfiguren hat eine Geschichte gespeichert.
-        audio.play_full("TTS", 59)
+        # Keine deiner Spielfiguren hat eine Geschichte gespeichert.
+        audio.play_full("TTS", 201)
         return
 
     # switch on leds at player field
