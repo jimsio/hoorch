@@ -26,8 +26,8 @@ sed -i "s/#dtparam=spi=on/dtparam=spi=on/g" "/boot/config.txt"
 wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/i2smic.py
 python3 i2smic.py
 
-# i2s microphone - add volume control # doesnt seem to work - to it manually
-#mv ./.asoundrc ~/.asoundrc
+# i2s microphone - add volume control
+mv asoundrc ~/.asoundrc
 
 # i2s amplifier
 curl -sS https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/i2samp.sh | bash
@@ -85,20 +85,20 @@ sed -i 's/SIZE=40M/SIZE=100M/g' /etc/log2ram.conf
 systemctl restart networking
 
 #install comitup - wifi:
-    #install package .deb
+#1 install package .deb
 wget https://davesteele.github.io/comitup/latest/davesteele-comitup-apt-source_latest.deb
 dpkg -i --force-all davesteele-comitup-apt-source_latest.deb
 rm davesteele-comitup-apt-source_latest.deb
 apt update
 apt install comitup comitup-watch -y
 
-    #2: Allow NetworkManager to manage the wifi interfaces by removing references to them from /etc/network/interfaces.
+#2: Allow NetworkManager to manage the wifi interfaces by removing references to them from /etc/network/interfaces.
 mv /etc/network/interfaces /etc/network/interfaces.bak
 
-    #3: Rename  /etc/wpa_supplicant/wpa_supplicant.conf.
+#3: Rename  /etc/wpa_supplicant/wpa_supplicant.conf.
 mv /etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.confbak
 
-    #4: The systemd.resolved service should be disabled and masked to avoid contention for providing DNS service.
+#4: The systemd.resolved service should be disabled and masked to avoid contention for providing DNS service.
 systemctl mask dnsmasq.service
 systemctl mask systemd-resolved.service
 systemctl mask dhcpd.service
@@ -106,7 +106,7 @@ systemctl mask dhcpcd.service
 systemctl mask wpa-supplicant.service
 systemctl enable NetworkManager.service
 
-    #5: #rename the comitup-wifi-name to hoorch-<nn> - https://davesteele.github.io/comitup/man/comitup-conf.5.html
+#5: #rename the comitup-wifi-name to hoorch-<nn> - https://davesteele.github.io/comitup/man/comitup-conf.5.html
 sed -i "s/# ap_name: comitup-<nnn>/ap_name: hoorch-<nnn>/g" "/etc/comitup.conf"
 
 echo "Installation complete, rebooting now"
