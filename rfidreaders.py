@@ -92,8 +92,8 @@ def continuous_read():
         mifare = False
 
         tag_uid = r.read_passive_target(timeout=0.2)
-        # safe energy - breaks reading of some readers
-        # r.power_down()
+        # safe energy - breaks reading of some readers?
+        r.power_down()
 
         if tag_uid:
             # convert byte_array tag_uid to string id_readable: 4-7-26-160
@@ -118,7 +118,7 @@ def continuous_read():
             # id_readable is not in figures_db
             except:
 
-                # reader has issues with reading mifare cards, stick with the tag_uid, dont read the tag content
+                # reader has issues with reading content of mifare cards, stick with the tag_uid
                 if mifare:
                     tag_name = id_readable
                 else:
@@ -154,16 +154,13 @@ def continuous_read():
                     read_message = "".join(
                         ch for ch in read_message if unicodedata.category(ch)[0] != "C")
 
-                    # enADMIN; - remove en at beginning
+                    # enSchaf6; - remove "en" at beginning
                     tag_name = read_message[2:]
 
                     # if a figure (i.e. Affe,1 or koenigin) from another game (i.e. as a replacement of a lost one) that is already defined in this game is used
                     # add another key value pair to the figures_db database
                     if tag_name in figures_db:
                         figures_db[id_readable] = tag_name
-
-                    # elif tag_name.startswith("ADMIN"):
-                    # tag_name = "ADMIN"
 
                     else:
                         # else set the unknown figure as a gamer figure, with the id_readable as tag_name

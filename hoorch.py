@@ -16,6 +16,7 @@ import game_tier_orchester
 import game_geschichten_abspielen
 import game_einmaleins
 import game_animals_english
+import game_hoerspiele
 import admin
 import tagwriter
 
@@ -79,8 +80,8 @@ def initial_hardware_test():
 
     audio.espeaker("Wir testen jetzt die Ar ef eidi Leser.")
     for i in range(6):
-        audio.espeaker("Lege eine Karte auf Leser {0}".format(i+1))
         leds.switch_on_with_color(i, (255, 0, 0))
+        audio.espeaker(f"Lege eine Karte auf Leser {i+1}")
         while True:
             if rfidreaders.tags[i] is not None:
                 break
@@ -102,11 +103,6 @@ def initial_hardware_test():
     #leds.rotate_one_round(6)
     print("aufnahme beendet")
     subprocess.Popen("killall rec", shell=True, stdout=None, stderr=None)
-
-    #old:
-    #subprocess.Popen("AUDIODEV=dmic_sv rec -c 1 ./data/figures/test/test.aif trim 0 6",
-    #                 shell=True, stdout=None, stderr=None)
-    #time.sleep(0.5)
 
     leds.reset()
 
@@ -135,7 +131,7 @@ def main():
     while True:
         # while shutdown_counter > time.time():
 
-        #leds.blink = True
+        leds.blink = True
 
         if greet_time < time.time():
             audio.play_full("TTS", 2)  # Welches Spiel wollt ihr spielen?
@@ -144,43 +140,44 @@ def main():
         # Erklärung
         if "FRAGEZEICHEN" in rfidreaders.tags:
             print("Hoorch Erklärung")
-            #leds.blink = False
+            leds.blink = False
             audio.play_full("TTS", 65)  # Erklärung
             shutdown_counter = time.time()+shutdown_time
 
         # Games
         if "Aufnehmen" in rfidreaders.tags:
             print("Geschichten aufnehmen")
-            #leds.blink = False
+            leds.blink = False
             game_geschichten_aufnehmen.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu
             shutdown_counter = time.time()+shutdown_time
 
         if "Abspielen" in rfidreaders.tags:
             print("Geschichte abspielen")
-            #leds.blink = False
+            leds.blink = False
             game_geschichten_abspielen.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
 
         if "Tierlaute" in rfidreaders.tags:
             print("Tierlaute erkennen")
-            #leds.blink = False
+            leds.blink = False
             game_tierlaute.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
 
         if "TierOrchester" in rfidreaders.tags:
             print("Tier-Orchester")
-            #leds.blink = False
+            leds.blink = False
             game_tier_orchester.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
 
         if "Kakophonie" in rfidreaders.tags:
             print("Kakophonie")
-            #leds.blink = False
-            game_kakophonie.start()
+            leds.blink = False
+            #game_kakophonie.start()
+            game_hoerspiele.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
 
@@ -198,8 +195,8 @@ def main():
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
 
-        # NFC tools on Android: write text to tag: ADMIN#
-        if "ADMIN" in rfidreaders.tags:
+        # Schaf6, Ziege5, Wolf6 on readers enters admin menu
+        if "Schaf6" in rfidreaders.tags and "Ziege5" in rfidreaders.tags and "Wolf6" in rfidreaders.tags:
             admin.main()
             shutdown_counter = time.time()+shutdown_time
 

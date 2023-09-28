@@ -34,7 +34,8 @@ blink = False
 def init():
     pass
     #testr()
-    #blinker()
+    reset()
+    blinker()
 
 
 def testr():
@@ -90,7 +91,6 @@ def rotate_one_round(time_per_led):
     reset()
     
 def blinker():
-    
     if blink:
         pixels.fill((0, 0, 0))
         pixels[random.randrange(len(pixels))] = wheel(random.randrange(0, 255))

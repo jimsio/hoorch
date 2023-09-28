@@ -27,7 +27,7 @@ wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/m
 python3 i2smic.py
 
 # i2s microphone - add volume control
-mv asoundrc ~/.asoundrc
+bash -c 'cat .asoundrc >> /etc/asound.conf'
 
 # i2s amplifier
 curl -sS https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/i2samp.sh | bash

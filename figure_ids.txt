@@ -10,7 +10,6 @@ ENDE
 JA
 NEIN
 FRAGEZEICHEN
-ADMIN
 +
 roboter
 koenig
