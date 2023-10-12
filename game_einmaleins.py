@@ -111,9 +111,6 @@ def start():
                     # play wait sound 6 sec
                     audio.play_file("sounds", "waiting.mp3")
 
-                leds.rotate_one_round(1.11)
-                leds.reset()
-
                 # leds blink at tens and unit fields
                 for k in range(5):
                     leds.switch_on_with_color(i+1, (0,0,0))
