@@ -176,8 +176,8 @@ def main():
         if "Kakophonie" in rfidreaders.tags:
             print("Kakophonie")
             leds.blink = False
-            #game_kakophonie.start()
-            game_hoerspiele.start()
+            game_kakophonie.start()
+            #game_hoerspiele.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
 
