@@ -34,7 +34,7 @@ def volume_up():
     cv = int(get_volume[position-2:position].replace("[", ""))
     print(cv)
 
-    if cv <= 95:
+    if cv <= 88:
         print("volume up")
         os.system("amixer -q sset PCM 10+")
 

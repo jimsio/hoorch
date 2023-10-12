@@ -29,7 +29,8 @@ while True:
         #if button is released, check if it was pressed for at least 3 seconds
         if off.last_duration > threshold_time:
             print("shutdown")
+            leds.blink = False
+            leds.reset()
             leds.switch_on_with_color((0,1,2,3,4,5), (255,0,0))
             audio.play_full("TTS", 3)  # Tschüss ich schalte mich jetzt aus
-            leds.reset()
             os.system("shutdown -P now")

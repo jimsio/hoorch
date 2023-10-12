@@ -97,7 +97,7 @@ def blinker():
     else:
         reset()
 
-    threading.Timer(0.80, blinker).start()
+    threading.Timer(0.50, blinker).start()
 
 def switch_all_on_with_color(color=None):
     switch_on_with_color(list(range(6)), color)

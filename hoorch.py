@@ -65,7 +65,7 @@ def init():
         time.sleep(1)
         tagwriter.write_set()
         rfidreaders.read_continuously = True
-        #rfidreaders.continuous_read()  - do I need this?
+        rfidreaders.continuous_read()
 
 
 def initial_hardware_test():

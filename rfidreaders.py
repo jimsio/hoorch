@@ -198,4 +198,4 @@ def continuous_read():
 
     if read_continuously:
         # rfidreaders_timer = threading.Timer(0.01,continuous_read).start()
-        threading.Timer(1.4, continuous_read).start()
+        threading.Timer(0.02, continuous_read).start()
