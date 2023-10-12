@@ -37,7 +37,6 @@ def init():
     reset()
     blinker()
 
-
 def testr():
     for i in range(0, 1):
         #rot

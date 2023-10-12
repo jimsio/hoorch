@@ -30,7 +30,7 @@ readers = []
 tags = []
 timer = [0, 0, 0, 0, 0, 0]
 
-figures_db = {}  # figure database is a dictionary with tag id and tag name stored, based on predefined figure_db.txt. figure_db.txt is created when configuring HOORCH for the first time
+figures_db = {}  # figure database is a dictionary with tag id and tag name stored, based on predefined figure_db.txt. figure_db.txt is created when configuring HOORCH for the first time (and is based on tag names in figure_ids.txt)
 gamer_figures = []  # ritter, koenigin,...
 animal_figures = []  # Loewe2, Elefant1, ...
 
@@ -87,16 +87,17 @@ def init():
 
 def continuous_read():
 
+    #try:
     for index, r in enumerate(readers):
 
         mifare = False
 
         tag_uid = r.read_passive_target(timeout=0.2)
-        # safe energy - breaks reading of some readers?
+        # power down to safe energy
         r.power_down()
 
         if tag_uid:
-            # convert byte_array tag_uid to string id_readable: 4-7-26-160
+            # convert byte_array tag_uid to string id_readable (i.e. 4-7-26-160)
             id_readable = ""
             for counter, number in enumerate(tag_uid):
                 if counter < 4:
@@ -157,14 +158,14 @@ def continuous_read():
                     # enSchaf6; - remove "en" at beginning
                     tag_name = read_message[2:]
 
-                    # if a figure (i.e. Affe,1 or koenigin) from another game (i.e. as a replacement of a lost one) that is already defined in this game is used
+                    # if a figure (i.e. Loewe0 or koenigin) from another game (i.e. as a replacement of a lost one) that is already defined in this game is used
                     # add another key value pair to the figures_db database
                     if tag_name in figures_db:
-                        figures_db[id_readable] = tag_name
+                        figures_db[id_readable] = tag_name       
 
                     else:
-                        # else set the unknown figure as a gamer figure, with the id_readable as tag_name
-                        tag_name = id_readable
+                        # else set the unknown figure as a gamer figure with read tag_name
+                        #tag_name = id_readable
 
                         if tag_name not in gamer_figures:
                             gamer_figures.append(tag_name)
@@ -187,6 +188,10 @@ def continuous_read():
 
     print(tags)
     
+    #except KeyboardInterrupt:
+    #   for r in readers:
+    #    r.power_down()
+
     if read_continuously:
         # rfidreaders_timer = threading.Timer(0.01,continuous_read).start()
         threading.Timer(1.0, continuous_read).start()

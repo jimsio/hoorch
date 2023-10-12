@@ -65,7 +65,7 @@ def init():
         time.sleep(1)
         tagwriter.write_set()
         rfidreaders.read_continuously = True
-        rfidreaders.continuous_read()
+        #rfidreaders.continuous_read()  - do I need this?
 
 
 def initial_hardware_test():
@@ -129,7 +129,7 @@ def main():
     greet_time = time.time()
 
     while True:
-        # while shutdown_counter > time.time():
+    #while shutdown_counter > time.time():
 
         leds.blink = True
 
@@ -196,7 +196,7 @@ def main():
             shutdown_counter = time.time()+shutdown_time
 
         # Schaf6, Ziege5, Wolf6 on readers enters admin menu
-        if "Schaf6" in rfidreaders.tags and "Ziege5" in rfidreaders.tags and "Wolf6" in rfidreaders.tags:
+        if "JA" in rfidreaders.tags and "NEIN" in rfidreaders.tags:
             admin.main()
             shutdown_counter = time.time()+shutdown_time
 

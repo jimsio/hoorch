@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: UTF8 -*-
 
-import pygame
-import rfidreaders
-import leds
 import time
 import copy
 import os
+import pygame
+import rfidreaders
+import leds
+import audio
 
 hoerspiele = {}
 
 def start():
     print("Wir spielen Hörspiele")
 
-    #TODO Wir spielen Hörspiele ab
+    #TODO Wir spielen Hörspiele ab tts
     #audio.play_full("TTS", xx)
+    audio.espeaker("Wir spielen jetzt Hörspiele ab.")
     leds.reset()  # reset leds
 
     if not pygame.mixer.get_init():
