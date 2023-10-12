@@ -77,7 +77,6 @@ def rainbow_cycle(wait):
         time.sleep(wait)
     reset()
 
-#not working!! sleeps way more than it should, leds show random ouput!
 def rotate_one_round(time_per_led):
     # rotate through all leds one whole circle/round, time per led in seconds
     color = wheel(random.randrange(0, 255))
@@ -128,7 +127,7 @@ def switch_on_with_color(number, color=None):
 def wheel(pos):
     # Input a value 0 to 255 to get a color value.
     # The colours are a transition r - g - b - back to r.
-    # is that a way to make color picking easier?
+    # a way to make color picking easier
     if pos < 0 or pos > 255:
         r = g = b = 0
     elif pos < 85:

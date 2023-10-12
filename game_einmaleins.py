@@ -107,12 +107,12 @@ def start():
                 audio.play_full("TTS", 190)
 
                 # blink / wait for 10 seconds
-                # for b in range(1):
                 if r == 0:  # only play in the first round
                     # play wait sound 6 sec
                     audio.play_file("sounds", "waiting.mp3")
 
-                # leds.rotate_one_round(1.11)
+                leds.rotate_one_round(1.11)
+                leds.reset()
 
                 # leds blink at tens and unit fields
                 for k in range(5):

@@ -183,14 +183,14 @@ def main():
 
         if "Einmaleins" in rfidreaders.tags:
             print("Einmaleins")
-            #leds.blink = False
+            leds.blink = False
             game_einmaleins.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
 
         if "Animals" in rfidreaders.tags:
             print("Animals")
-            #leds.blink = False
+            leds.blink = False
             game_animals_english.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
