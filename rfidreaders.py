@@ -185,13 +185,17 @@ def continuous_read():
         if tag_name is not None:
             timer[index] = time.time()+1
             tags[index] = tag_name
+        
+        #sleep for 0.3 seconds between readers to avoid heavy power load
+        time.sleep(0.3)
 
     print(tags)
     
+
     #except KeyboardInterrupt:
     #   for r in readers:
     #    r.power_down()
 
     if read_continuously:
         # rfidreaders_timer = threading.Timer(0.01,continuous_read).start()
-        threading.Timer(1.0, continuous_read).start()
+        threading.Timer(0.2, continuous_read).start()
