@@ -20,10 +20,10 @@ def start():
     leds.reset()  # reset leds
 
     if not pygame.mixer.get_init():
-        pygame.mixer.pre_init(frequency=22050, buffer=512, channels=6)
+        pygame.mixer.pre_init(frequency=22050, buffer=512)
         pygame.mixer.init()
         # pygame.mixer.init(buffer=4096)
-        #pygame.mixer.set_num_channels(6)
+        pygame.mixer.set_num_channels(6)
 
         for s in range(0, 6):
             phones.append(pygame.mixer.Sound("data/phonie/00"+str(s+1)+".ogg"))
