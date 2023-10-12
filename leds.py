@@ -103,8 +103,8 @@ def switch_all_on_with_color(color=None):
 
 def switch_on_with_color(number, color=None):
     # single number from 0 to 5 or tuple(1,3,5); color like (0, 255, 0)
-    pixels.fill((0, 0, 0))
-
+    pixels.reset()
+    
     # random color if none given
     if color is None:
         color = wheel(random.randrange(0, 255))

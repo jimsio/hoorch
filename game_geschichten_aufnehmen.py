@@ -140,7 +140,7 @@ def start():
                 # most recent story has only figure_id as filename, record_story(figure_id)
                 audio.record_story(figure_id)
 
-                record_timer = time.time()+600  # 600 sekunden(=10min) counter until stop
+                record_timer = time.time()+600  # 600 sec (=10min) counter until stop
                 while True:
                     if rfidreaders.tags[i] is None or record_timer < time.time() or "ENDE" in rfidreaders.tags:
                         error_recording = audio.stop_recording(figure_id)
