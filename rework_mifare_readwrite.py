@@ -60,7 +60,7 @@ print("Found card with UID:", [hex(i) for i in uid])
 # 8, 9, 0A,
 # 0C, 0D, 0E,...
 
-#allow only 16 ascii characters, so i only need one block, block 4
+#allow only 16 ascii characters, so i only need one block (block 4)
 # 2 characters for prefix "en", 1 for suffix "#", so my word can have 13 characters!
 
 print("Authenticating block 4 ...")

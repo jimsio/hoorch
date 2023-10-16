@@ -28,9 +28,9 @@ figures = file.readlines()
 file.close()
 
 lang = "en"
-endofmessage = "#"  # chr(35)
-# chr(32) = ' ' try this?
-# chr(0) = '\x00' or this?
+endofmessage = "#"  # chr(35) 
+#use \xFE !! like nfc tools!
+#endofmessage = b"\xFE"
 
 figure_database = []
 
@@ -69,6 +69,7 @@ def write_single(message):
         for i, s in enumerate(send):
             while len(s) != 4:
                 s += chr(0)
+            #starts at block 7
             j = reader[0].ntag2xx_write_block(7+i, s.encode())
             # print(j)
 
@@ -79,6 +80,7 @@ def write_single(message):
 
         breaker = False
 
+        #reads until block 14, means 8 block x 4 byte = 32 bytes/ascii characters
         for i in range(7, 14):
             block = reader[0].ntag2xx_read_block(i)
             print(block)  # bytearray(b'en9\t')

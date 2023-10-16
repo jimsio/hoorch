@@ -141,9 +141,7 @@ def continuous_read():
                             if breaker:
                                 break
                     
-                    # power down to safe energy, breaks readers?
-                    #r.power_down()
-                    
+
                     # if tag was removed before it was properly read
                     except TypeError:
                         print(
@@ -151,6 +149,9 @@ def continuous_read():
                         # Die Figur konnte nicht erkannt werden. Lass sie länger auf dem Feld stehen.
                         audio.play_full("TTS", 199)
                         break
+
+                    # power down to safe energy, breaks readers?
+                    r.power_down()
 
                     # remove unicode control characters from read string
                     read_message = "".join(
