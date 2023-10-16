@@ -48,46 +48,20 @@ while True:
 
 print("")
 
-print("Found card with UID:", [str(i) for i in uid])
-# print("Found card with UID:", [hex(i) for i in uid])
+print("Found card with UID:", [hex(i) for i in uid])
 print("Authenticating block 4 ...")
 
-authenticated = pn532.mifare_classic_authenticate_block(
-    uid, 4, MIFARE_CMD_AUTH_B, key)
+authenticated = pn532.mifare_classic_authenticate_block(uid, 4, MIFARE_CMD_AUTH_B, key)
 if not authenticated:
     print("Authentication failed!")
 
 # Set 16 bytes of block to 0xFEEDBEEF
-# data = bytearray(16)
-# data[0:16] = b"\xFE\xED\xBE\xEF\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+data = bytearray(16)
+data[0:16] = b"\xFE\xED\xBE\xEF\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
 
-# print("Data to write:", [str(i) for i in data])
-
-data = bytearray()
-
-lang = "en"
-message = "ADMIN"
-endofmessage = "#"
-message = lang+message+endofmessage
-
-chunks, chunk_size = len(message), 16
-send = [message[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
-
-print(send)
-
-for i, s in enumerate(send):
-    while len(s) != chunk_size:
-        s += chr(0)
-    print(s)
-    print(s.encode())
-    # j = reader[0].ntag2xx_write_block(4+i,s.encode())
-    pn532.mifare_classic_write_block(4+i, s.encode())
-
-# print("Data to write:", [str(i) for i in data])
-
-# Write 16 byte to block 4.
-# pn532.mifare_classic_write_block(4, data)
-# Read block #4
+# Write 16 byte block.
+pn532.mifare_classic_write_block(4, data)
+# Read block #6
 print(
     "Wrote to block 4, now trying to read that data:",
     [hex(x) for x in pn532.mifare_classic_read_block(4)],

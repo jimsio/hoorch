@@ -51,15 +51,15 @@ while True:
         time.sleep(1)
         break
 
-# while True:
-#     # read from tag - has issues, reading error occurs quite often...
-#     read_message = ""
+while True:
+    # read from tag - has issues, reading error occurs quite often...
+    read_message = ""
 
-#     for i in range(4, last_block+1):
-#         while not pn532_reader.mifare_classic_authenticate_block(tag_uid, i, MIFARE_CMD_AUTH_B, key):
-#             print("authentication error")
-#             time.sleep(1)
+    for i in range(4, last_block+1):
+        while not pn532_reader.mifare_classic_authenticate_block(tag_uid, i, MIFARE_CMD_AUTH_B, key):
+            print("authentication error")
+            time.sleep(1)
 
-#         print("authentication successful")
-#         block = pn532_reader.mifare_classic_read_block(i)
-#         print(block)
+        print("authentication successful")
+        block = pn532_reader.mifare_classic_read_block(i)
+        print(block)
