@@ -100,9 +100,9 @@ def start():
 
                         # Die Aufnahme beginnt in 3 Sekunden! Wenn du fertig bist, nimm deine Spielfigur vom Spielfeld"
                         audio.play_full("TTS", 56)
-                        # leds.rotate_one_round(0.4)
                         audio.play_full("TTS", 66)  # 3 2 1 Los
-                        #leds.switch_on_with_color(i, (255, 0, 0))
+                        
+                        leds.switch_on_with_color(i, (255, 0, 0))
 
                         # most recent story has only figure_id as filename, record_story(figure_id)
                         audio.record_story(figure_id)
