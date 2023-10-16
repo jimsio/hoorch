@@ -81,7 +81,6 @@ def rotate_one_round(time_per_led):
     # rotate through all leds one whole circle/round, time per led in seconds
     color = wheel(random.randrange(0, 255))
     for i in range(len(pixels)):
-        #reset()
         pixels.fill((0, 0, 0))
         pixels[i] = color
         pixels.show()
@@ -93,9 +92,7 @@ def blinker():
         pixels.fill((0, 0, 0))
         pixels[random.randrange(len(pixels))] = wheel(random.randrange(0, 255))
         pixels.show()
-    else:
-        reset()
-
+    
     threading.Timer(0.50, blinker).start()
 
 def switch_all_on_with_color(color=None):

@@ -34,7 +34,7 @@ endofmessage = "#"  # chr(35)
 
 figure_database = []
 
-
+#write single word to ntag2 (sticker), mifare (cards, chips) not supported yet
 def write_single(message):
     # mifare = False
 

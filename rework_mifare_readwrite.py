@@ -9,6 +9,7 @@ import unicodedata
 import audio
 import board
 import busio
+
 from adafruit_pn532.spi import PN532_SPI
 import digitalio
 from digitalio import DigitalInOut

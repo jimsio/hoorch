@@ -93,8 +93,6 @@ def continuous_read():
         mifare = False
 
         tag_uid = r.read_passive_target(timeout=0.2)
-        # power down to safe energy
-        r.power_down()
 
         if tag_uid:
             # convert byte_array tag_uid to string id_readable (i.e. 4-7-26-160)
@@ -142,7 +140,10 @@ def continuous_read():
 
                             if breaker:
                                 break
-
+                    
+                    # power down to safe energy, breaks readers?
+                    #r.power_down()
+                    
                     # if tag was removed before it was properly read
                     except TypeError:
                         print(
