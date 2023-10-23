@@ -9,8 +9,8 @@ import board
 
 path = "./data/"
 
-# SD pin of i2s amp
-# default: switched on, only switch off for recording (to avoid clicking)
+# SD pin of i2s amp , GPIO6
+# default: switched on (3.3V), only switch off (0V) for recording (to avoid clicking)
 amp_sd = digitalio.DigitalInOut(board.D6)
 amp_sd.direction = digitalio.Direction.OUTPUT
 
