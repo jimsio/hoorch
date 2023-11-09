@@ -171,6 +171,9 @@ def continuous_read():
                         
                         #tag_name should not be empty and not in game_figures
                         if tag_name not in gamer_figures and tag_name:
+                            b = bytearray()
+                            b.extend(map(ord, tag_name))
+                            print(b)
                             gamer_figures.append(tag_name)
                             print(
                                 "added new unknown gamer figure to the temporary gamer_figure list")
