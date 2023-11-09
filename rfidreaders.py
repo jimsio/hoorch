@@ -160,20 +160,20 @@ def continuous_read():
                     # enSchaf6; - remove "en" at beginning
                     tag_name = read_message[2:]
 
+                    #if tag_name is empty, use id_readable
+                    if not tag_name:
+                        print("tag is empty, use id_readable")
+                        tag_name = id_readable
+
                     # if a figure (i.e. Loewe0 or koenigin) from another game (i.e. as a replacement of a lost one) that is already defined in this game is used
                     # add another key value pair to the figures_db database
-                    if tag_name in figures_db:
+                    elif tag_name in figures_db:
                         figures_db[id_readable] = tag_name       
 
                     else:
                         # else set the unknown figure as a gamer figure with read tag_name
-                        #tag_name = id_readable
-                        
-                        #tag_name should not be empty and not in game_figures
-                        if tag_name not in gamer_figures and tag_name:
-                            b = bytearray()
-                            b.extend(map(ord, tag_name))
-                            print(b)
+             
+                        if tag_name not in gamer_figures:
                             gamer_figures.append(tag_name)
                             print(
                                 "added new unknown gamer figure to the temporary gamer_figure list")
