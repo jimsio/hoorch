@@ -71,10 +71,10 @@ if not authenticated:
 
 data = bytearray(16)
 
-lang = "en"
-message = "MANFREd" #can be 13 characters long
+#lang = "en"
+message = "MANFREd" #can be 15 characters long
 endofmessage = "#"
-message = lang+message+endofmessage
+message = message+endofmessage
 
 data[0:len(message)] = message.encode()
 

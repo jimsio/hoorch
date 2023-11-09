@@ -168,13 +168,14 @@ def continuous_read():
                     else:
                         # else set the unknown figure as a gamer figure with read tag_name
                         #tag_name = id_readable
-
-                        if tag_name not in gamer_figures:
+                        
+                        #tag_name should not be empty and not in game_figures
+                        if tag_name not in gamer_figures and tag_name:
                             gamer_figures.append(tag_name)
                             print(
                                 "added new unknown gamer figure to the temporary gamer_figure list")
                         else:
-                            print("unknown gamer figure detected, is already in temporary gamer_figure list")
+                            print("unknown gamer figure already in temporary gamer_figure list")
 
         else:
             tag_name = None
