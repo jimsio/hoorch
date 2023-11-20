@@ -37,6 +37,7 @@ animal_figures = []  # Loewe2, Elefant1, ...
 endofmessage = "#"  # chr(35)
 
 read_continuously = True
+currently_reading = False
 
 
 def init():
@@ -86,14 +87,18 @@ def init():
 
 
 def continuous_read():
+    
+    global currently_reading
 
     #try:
     for index, r in enumerate(readers):
 
         mifare = False
 
-        tag_uid = r.read_passive_target(timeout=0.2)
+        currently_reading = True
 
+        tag_uid = r.read_passive_target(timeout=0.2)
+        
         if tag_uid:
             # convert byte_array tag_uid to string id_readable (i.e. 4-7-26-160)
             id_readable = ""
@@ -149,6 +154,8 @@ def continuous_read():
                         # Die Figur konnte nicht erkannt werden. Lass sie länger auf dem Feld stehen.
                         audio.play_full("TTS", 199)
                         break
+                    
+                    currently_reading = False
 
                     # power down to safe energy, breaks readers?
                     r.power_down()
@@ -162,7 +169,7 @@ def continuous_read():
 
                     #if tag_name is empty, use id_readable
                     if not tag_name:
-                        print("tag is empty, use id_readable")
+                        #print("tag is empty, use id_readable")
                         tag_name = id_readable
 
                     # if a figure (i.e. Loewe0 or koenigin) from another game (i.e. as a replacement of a lost one) that is already defined in this game is used

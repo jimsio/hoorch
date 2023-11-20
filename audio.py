@@ -6,6 +6,7 @@ import time
 import os
 import digitalio
 import board
+from rfidreaders import currently_reading
 
 path = "./data/"
 
@@ -28,14 +29,25 @@ def init():
     global amp_sd
     amp_sd.value = True
 
+def wait_for_reader():
+    # wait for rfid reader reading pause to avoid undervoltage when amp and reader start simultaneously
+    while True:
+        if not currently_reading:
+            break
+        time.sleep(0.01)
+
 def play(folder, audiofile):
     # non-blocking play
+    wait_for_reader()
+        
     subprocess.Popen("play "+path+"/"+folder+"/"+"{:03d}".format(
         audiofile)+".mp3"+"  2>/dev/null", shell=True, stdout=None, stderr=None)
     # print("playing TTS number "+str(audiofile))
 
 def play_full(folder, audiofile):
     #blocking play
+    wait_for_reader()
+
     file_path = path+folder+"/"+"{:03d}".format(audiofile)+".mp3"
     waitingtime = float(subprocess.run(
         ['soxi', '-D', file_path], stdout=subprocess.PIPE).stdout.decode('utf-8'))
@@ -45,12 +57,16 @@ def play_full(folder, audiofile):
 
 def play_file(folder, audiofile):
     # for sounds (animals, systemsounds) in /data and subsequent folders, non-blocking
+    wait_for_reader()
+
     subprocess.Popen("play "+path+folder+"/"+audiofile +
                      "  2>/dev/null", shell=True, stdout=None, stderr=None)
     print("playing file "+str(audiofile))
 
 
 def play_story(figure_id):
+    wait_for_reader()
+
     print("play story of " + str(figure_id))
     # increase volume by -2db for stories as their recording volume is lower
     subprocess.Popen("play -v2 "+path+"figures/"+figure_id+"/"+figure_id +
@@ -146,6 +162,8 @@ def stop_recording(figure_id):
 
 
 def espeaker(words):
+    wait_for_reader()
+    
     os.system("espeak -v de+f2 -p 30 -g 12 -s 170 --stdout \"" +
               str(words)+"\" | aplay -D 'default'")
     # espeak -v de+f2 -p 30 -g 12 -s 150 --stdout "apfelbaum" | aplay -D 'default'
