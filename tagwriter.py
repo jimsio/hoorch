@@ -39,12 +39,12 @@ key = b"\xFF\xFF\xFF\xFF\xFF\xFF"
 
 #write single word to ntag2 (sticker), mifare (cards, chips) not supported yet
 def write_single(payload):
-    # mifare = False
-
-    audio.espeaker("Schreibe "+str(payload) +
-                   " auf den Täg. Bitte Täg auf Spielfeld 1 platzieren")
     leds.reset()  # reset leds
     leds.switch_on_with_color(0)
+    
+    print("Platziere TAG auf reader1. Schreibe auf den TAG: "+str(payload))
+    audio.espeaker("Schreibe "+str(payload) +
+                   " auf den Täg. Bitte Täg auf Spielfeld 1 platzieren")
     time.sleep(2)
     tag_uid = reader[0].read_passive_target(timeout=0.2)
 
