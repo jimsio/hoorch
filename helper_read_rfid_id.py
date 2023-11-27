@@ -1,6 +1,5 @@
 """
-This example shows connecting to the PN532 and writing & reading a mifare classic
-type RFID tag
+This helper outputs the UID of a found RFID tag on reader 1
 """
 import time
 import os
@@ -13,8 +12,6 @@ import busio
 from adafruit_pn532.spi import PN532_SPI
 from digitalio import DigitalInOut
 
-from adafruit_pn532.adafruit_pn532 import MIFARE_CMD_AUTH_B
-
 spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
 spi.try_lock()
 spi.configure(baudrate=12000000)
@@ -25,16 +22,13 @@ pn532 = PN532_SPI(spi, reader1_pin, debug=False)
 ic, ver, rev, support = pn532.firmware_version
 pn532.SAM_configuration()
 
-
 ic, ver, rev, support = pn532.firmware_version
 print("Found PN532 with firmware version: {0}.{1}".format(ver, rev))
 
 # Configure PN532 to communicate with MiFare cards
 pn532.SAM_configuration()
 
-print("Waiting for RFID/NFC card to write to!")
-
-#key = b"\xFF\xFF\xFF\xFF\xFF\xFF"
+print("Waiting for RFID/NFC card to read ID!")
 
 while True:
 
@@ -58,3 +52,5 @@ while True:
     print("")
 
     print("Found card with byte UID:", [hex(i) for i in uid] ," readable: ", id_readable)
+
+    time.sleep(0.3)
