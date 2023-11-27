@@ -30,6 +30,7 @@ while True:
         if off.last_duration > threshold_time:
             print("shutdown")
             leds.blink = False
+            time.sleep(0.5)
             leds.reset()
             leds.switch_all_on_with_color((255,0,0))
             audio.play_full("TTS", 3)  # Tschüss ich schalte mich jetzt aus

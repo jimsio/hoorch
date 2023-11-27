@@ -7,6 +7,7 @@ import unicodedata
 import board
 import busio
 from adafruit_pn532.spi import PN532_SPI
+from adafruit_pn532.adafruit_pn532 import MIFARE_CMD_AUTH_B
 from digitalio import DigitalInOut
 import leds
 import audio
@@ -27,23 +28,24 @@ file = open(path, mode="r", encoding="utf-8")
 figures = file.readlines()
 file.close()
 
-lang = "en"
-endofmessage = "#"  # chr(35) 
-#use \xFE !! like nfc tools!
-#endofmessage = b"\xFE"
-
 figure_database = []
 
+prefix = b'\x00\x00\x03\x0E\xD1\x01\x0A\x54\x02'
+suffix = b'\xFE'
+language = "en"
+
+key = b"\xFF\xFF\xFF\xFF\xFF\xFF"
+
 #write single word to ntag2 (sticker), mifare (cards, chips) not supported yet
-def write_single(message):
+def write_single(payload):
     # mifare = False
 
-    audio.espeaker("Schreibe "+str(message) +
+    audio.espeaker("Schreibe "+str(payload) +
                    " auf den Täg. Bitte Täg auf Spielfeld 1 platzieren")
     leds.reset()  # reset leds
-    leds.led_value = [1, 0, 0, 0, 0, 0]
+    leds.switch_on_with_color(0)
     time.sleep(2)
-    tag_uid = reader[0].read_passive_target(timeout=0.05)
+    tag_uid = reader[0].read_passive_target(timeout=0.2)
 
     if tag_uid:
         # bytearray(b'\x04q\x1b\xea\xa0e\x80')
@@ -58,54 +60,102 @@ def write_single(message):
                 id_readable = id_readable[:-1]
                 break
 
-        print("write "+str(message) + " on tag with tag_uid: " + id_readable)
+        print("write "+str(payload) + " on tag with tag_uid: " + id_readable)
+        payload = language+payload
+        payload = payload.encode()
+        full_payload = prefix+payload+suffix #full byte payload
+        data = bytearray(32)
+        data[0:len(full_payload)] = full_payload
+        
+        chunks = len(full_payload)
+        
+        verify_data = bytearray(0)
 
-        # write
-        message = lang+message+endofmessage
+        #mifare tags
 
-        chunks, chunk_size = len(message), 4
-        send = [message[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
+        #mifare 1K layout (chip + card)
+        # 1 kByte
+        # 16 Sektoren zu je 4 Blöcken (16 Bytes/16 Ascii Characters pro Block)
 
-        for i, s in enumerate(send):
-            while len(s) != 4:
-                s += chr(0)
-            #starts at block 7
-            j = reader[0].ntag2xx_write_block(7+i, s.encode())
-            # print(j)
+        #writeable blocks (https://support.ccs.com.ph/portal/en/kb/articles/mifare-classic-1k-memory-structure)
+        # 4, 5, 6
+        # 8, 9, 0A,
+        # 0C, 0D, 0E,...
+        if id_readable.endswith("-"):
+            chunk_size = 16
+            send = [data[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
+            
+            #write 16 bytes to blocks 4 and 5
+            for i, s in enumerate(send):
+                print("Authenticating block "+str(4+i))
+                authenticated = reader[0].mifare_classic_authenticate_block(tag_uid, 4+i, MIFARE_CMD_AUTH_B, key)
+                if not authenticated:
+                    print("Authentication failed!")
+                
+                reader[0].mifare_classic_write_block(4+i, s)
 
-        time.sleep(1)
+                # Read blocks
+                print("Wrote to block "+str(4+i))
+                print("Now reading")
+                verify_data.extend(reader[0].mifare_classic_read_block(4+i))
 
-        # read for verification
-        read_message = ""
+                #[chr(x) for x in reader[0].mifare_classic_read_block(4+i)],
 
-        breaker = False
+        #ntag2 tags
+        else:
+            chunk_size = 4
+            send = [data[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
 
-        #reads until block 14, means 8 block x 4 byte = 32 bytes/ascii characters
-        for i in range(7, 14):
-            block = reader[0].ntag2xx_read_block(i)
-            print(block)  # bytearray(b'en9\t')
-            for character in block:
-                if character != ord(endofmessage):
-                    read_message += chr(character)
-                else:
-                    breaker = True
-                    break
+            #write 4 bytes to blocks 7 to 14
+            for i, s in enumerate(send):
+                # while len(s) != chunk_size:
+                #     s += chr(0)
 
-            if breaker:
-                break
+                #j = reader[0].ntag2xx_write_block(7+i, s.encode())
+
+                j = reader[0].ntag2xx_write_block(7+i, s)
+                # print(j)
+
+            time.sleep(1)
+
+            # Read blocks
+
+            #breaker = False
+
+            #reads until block 14, means 8 block x 4 byte = 32 bytes/ascii characters
+            for i in range(7, 14):
+                verify_data.extend(reader[0].ntag2xx_read_block(i))
+
+                #block = reader[0].ntag2xx_read_block(i)
+ 
+                # print(block)  # bytearray(b'en9\t')
+                # for character in block:
+                #     if character != ord(suffix):
+                #         read_message += chr(character)
+                #     else:
+                #         breaker = True
+                #         break
+
+                # if breaker:
+                #     break
+        
+        if verify_data == data:
+            print("read and write perfect!")
+        
+        #read_message = [chr(x) for x in verify_data]
 
         # remove unicode control characters (\t) from read string
-        read_message = "".join(
-            ch for ch in read_message if unicodedata.category(ch)[0] != "C")
+        #read_message = "".join(
+        #    ch for ch in read_message if unicodedata.category(ch)[0] != "C")
         # remove "en" at beginning
-        read_message = read_message[2:]
+        #read_message = read_message[2:]
 
-        print("wrote "+read_message+" to tag")
+        #print("wrote "+read_message+" to tag")
         audio.espeaker("Schreiben erfolgreich, Füge Täg zu Datenbank hinzu")
 
         db_file = open('figure_db.txt', 'a')
         # 12-56-128-34;ritter
-        db_file.write(id_readable+";"+read_message+"\n")
+        db_file.write(id_readable+";"+payload+"\n")
         db_file.close()
 
     else:
@@ -118,7 +168,7 @@ def write_set():
     audio.espeaker(
         "Wir beschreiben das gesamte Spieleset. Stelle die Figuren bei Aufruf auf Spielfeld 1")
     leds.reset()  # reset leds
-    leds.led_value = [1, 0, 0, 0, 0, 0]
+    leds.switch_on_with_color(0)
 
     mifare = False
 

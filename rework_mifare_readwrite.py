@@ -11,9 +11,7 @@ import board
 import busio
 
 from adafruit_pn532.spi import PN532_SPI
-import digitalio
 from digitalio import DigitalInOut
-import RPi.GPIO as GPIO
 
 from adafruit_pn532.adafruit_pn532 import MIFARE_CMD_AUTH_B
 
@@ -61,7 +59,7 @@ print("Found card with UID:", [hex(i) for i in uid])
 # 0C, 0D, 0E,...
 
 #allow only 16 ascii characters, so i only need one block (block 4)
-# 2 characters for prefix "en", 1 for suffix "#", so my word can have 13 characters!
+# 1 for suffix "#", so my word can have 15 characters!
 
 print("Authenticating block 4 ...")
 authenticated = pn532.mifare_classic_authenticate_block(uid, 4, MIFARE_CMD_AUTH_B, key)
@@ -71,7 +69,7 @@ if not authenticated:
 
 data = bytearray(16)
 
-#lang = "en"
+#lang = "en" 
 message = "MANFREd" #can be 15 characters long
 endofmessage = "#"
 message = message+endofmessage
