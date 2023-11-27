@@ -42,7 +42,7 @@ def write_single(payload):
     leds.reset()  # reset leds
     leds.switch_on_with_color(0)
     
-    print("Platziere TAG auf reader1. Schreibe auf den TAG: "+str(payload))
+    print("Place tag on reader1. Will write this to tag: "+str(payload))
     audio.espeaker("Schreibe "+str(payload) +
                    " auf den Täg. Bitte Täg auf Spielfeld 1 platzieren")
     time.sleep(2)
@@ -62,9 +62,8 @@ def write_single(payload):
                 break
 
         print("write "+str(payload) + " on tag with tag_uid: " + id_readable)
-        payload = language+payload
-        payload = payload.encode()
-        full_payload = prefix+payload+suffix #full byte payload
+        payload_enc = (language+payload).encode()
+        full_payload = prefix+payload_enc+suffix #full byte payload
         data = bytearray(32)
         data[0:len(full_payload)] = full_payload
         
