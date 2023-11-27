@@ -20,8 +20,8 @@ def init():
     # set environment variable for sox rec
     os.environ['AUDIODRIVER'] = "alsa"
 
-    # set audio output level to 85%
-    os.system("amixer -q sset PCM 85%")
+    # set audio output level to 90%
+    os.system("amixer -q sset PCM 90%")
     # set mic record level to 95% (92 in alsamixer)
     os.system("amixer -q sset Boost 95%")
 
