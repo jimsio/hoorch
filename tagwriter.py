@@ -66,8 +66,8 @@ def write_single(word):
     leds.switch_on_with_color(0)
     
     print("Place tag on reader1. Will write this to tag: "+str(word))
-    audio.espeaker("Schreibe "+str(word) +
-                   " auf den Täg. Bitte Täg auf Spielfeld 1 platzieren")
+    #audio.espeaker("Schreibe "+str(word) +
+    #               " auf den Täg. Bitte Täg auf Spielfeld 1 platzieren")
     time.sleep(2)
     tag_uid = reader[0].read_passive_target(timeout=0.2)
 
@@ -151,11 +151,9 @@ def write_single(word):
 
             #reads until block 14, means 8 block x 4 byte = 32 bytes/ascii characters
             for i in range(7, 14):
-                kaka = reader[0].ntag2xx_read_block(i)
-                print(kaka)
-                verify_data.extend(kaka)
+                verify_data.extend(reader[0].ntag2xx_read_block(i))
 
-        
+        print(verify_data)
         if verify_data == data:
             print("successfully wrote "+str(word)+" to tag")
             audio.espeaker("Schreiben erfolgreich, Füge Täg zu Datenbank hinzu")
