@@ -44,9 +44,10 @@ suffix = b'\xFE'
 
 
 #https://community.element14.com/challenges-projects/project14/nfc-rfid/b/blog/posts/nfc-badge---update-your-badge-with-your-smartphone---ndef-and-app
-#00 00 - weiß ich nicht
+#00 00 - nur für mifare!
 #x03 = TLV Block tag field - 0x03=NDEF message
 #!12! = length of the NDEF message 12 = 18 Bytes )
+#--ndef record starts here
 #xD1 = record header 0xD1= Well-Known Record
 #01 = length of record type field
 #0E = payload length (OE = 14 Bytes)
@@ -56,11 +57,13 @@ suffix = b'\xFE'
 #65+6E = language code (en) - others: 64+65 (de)
 #66:72:61:6E:7A = text string
 #--- end payload ---
+#--ndef record ends here
 #FE - Terminator Last TLV block / suffix
 
 key = b'\xFF\xFF\xFF\xFF\xFF\xFF'
 
 #write single word to ntag2 (sticker), mifare (cards, chips) not supported yet
+#max length of word is 20!
 def write_single(word):
     leds.reset()  # reset leds
     leds.switch_on_with_color(0)
@@ -95,8 +98,8 @@ def write_single(word):
         #payload + encoding + langauge code (en)
         #payload_length = hex(len(payload)+3)
         #length_ndef_msg = hex(len(payload)+7)
-        length_ndef_msg = bytearray.fromhex(hex(len(payload))[2:]) #16 = b'\x10'
         #full_payload = prefix+length_ndef_msg+length_rec_type_field+payload_length+record_type+encoding+language+suffix
+        length_ndef_msg = bytearray.fromhex(hex(len(payload))[2:]) #16 = b'\x10'
         full_payload = prefix+length_ndef_msg+payload+suffix
 
         data = bytearray(32)
@@ -138,19 +141,22 @@ def write_single(word):
 
         #ntag2 tags
         else:
+            #remove two \x00 \x00 from prefix - not needed for ntag2
+            data = bytearray(32)
+            data[0:len(data)-2] = data[2:]
             chunk_size = 4
             send = [data[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
 
-            #write 4 bytes to blocks 7 to 14
+            #write 4 bytes to blocks 4 to 12
             for i, s in enumerate(send):
-                j = reader[0].ntag2xx_write_block(7+i, s)
+                j = reader[0].ntag2xx_write_block(4+i, s)
 
-            time.sleep(1)
+            time.sleep(0.5)
 
             # Read blocks
 
-            #reads until block 14, means 8 block x 4 byte = 32 bytes/ascii characters
-            for i in range(7, 14):
+            #reads until block 12, means 8 block x 4 byte = 32 bytes/ascii characters
+            for i in range(4, 12):
                 verify_data.extend(reader[0].ntag2xx_read_block(i))
 
         print(verify_data)
