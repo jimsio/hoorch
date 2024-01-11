@@ -9,6 +9,7 @@ import busio
 from adafruit_pn532.spi import PN532_SPI
 from adafruit_pn532.adafruit_pn532 import MIFARE_CMD_AUTH_B
 from digitalio import DigitalInOut
+import ndef
 import leds
 import audio
 
@@ -30,20 +31,42 @@ file.close()
 
 figure_database = []
 
-prefix = b'\x00\x00\x03\x0E\xD1\x01\x0A\x54\x02'
-#prefix = b'\x00\x00\x03\x0E\xD1\x01\x0E\x54\x02'
+#nftools franziseppi 00:00:03:!12!:D1:01:0E:54:02:65:6E:66:72:61:6E:7A
+prefix = b'\x00\x00\x03'
+#length_ndef_msg = b''
+#record_header = b'\xD1'
+#length_rec_type_field = b'\x01'
+#payload_length = b'\'
+#record_type = b'\x54'
+#encoding = b'\x02' #utf8 and length of language code
+#language = b'\x65\x6E'
 suffix = b'\xFE'
-language = "en"
+
+
+#https://community.element14.com/challenges-projects/project14/nfc-rfid/b/blog/posts/nfc-badge---update-your-badge-with-your-smartphone---ndef-and-app
+#00 00 - weiß ich nicht
+#x03 = TLV Block tag field - 0x03=NDEF message
+#!12! = length of the NDEF message 12 = 18 Bytes )
+#xD1 = record header 0xD1= Well-Known Record
+#01 = length of record type field
+#0E = payload length (OE = 14 Bytes)
+#54 = Record Type 0x54=Text Record
+#--- here starts the payload ---
+#02 = encoding (UTF8) and length of language code (2 bytes)
+#65+6E = language code (en) - others: 64+65 (de)
+#66:72:61:6E:7A = text string
+#--- end payload ---
+#FE - Terminator Last TLV block / suffix
 
 key = b"\xFF\xFF\xFF\xFF\xFF\xFF"
 
 #write single word to ntag2 (sticker), mifare (cards, chips) not supported yet
-def write_single(payload):
+def write_single(word):
     leds.reset()  # reset leds
     leds.switch_on_with_color(0)
     
-    print("Place tag on reader1. Will write this to tag: "+str(payload))
-    audio.espeaker("Schreibe "+str(payload) +
+    print("Place tag on reader1. Will write this to tag: "+str(word))
+    audio.espeaker("Schreibe "+str(word) +
                    " auf den Täg. Bitte Täg auf Spielfeld 1 platzieren")
     time.sleep(2)
     tag_uid = reader[0].read_passive_target(timeout=0.2)
@@ -60,10 +83,21 @@ def write_single(payload):
             else:
                 id_readable = id_readable[:-1]
                 break
+        
+        print("write "+str(word) + " on tag with tag_uid: " + id_readable)
+        
+        #en defines language, english
+        record = ndef.TextRecord(word,"en")
+        payload = b''.join(ndef.message_encoder([record]))
+        #b'\xd1\x01\x0eT\x02enfranziseppi'
 
-        print("write "+str(payload) + " on tag with tag_uid: " + id_readable)
-        payload_enc = (language+payload).encode()
-        full_payload = prefix+payload_enc+suffix #full byte payload
+        #payload + encoding + langauge code (en)
+        #payload_length = hex(len(payload)+3)
+        #length_ndef_msg = hex(len(payload)+7)
+        length_ndef_msg = hex(len(payload))
+        #full_payload = prefix+length_ndef_msg+length_rec_type_field+payload_length+record_type+encoding+language+suffix
+        full_payload = prefix+length_ndef_msg+payload+suffix
+
         data = bytearray(32)
         data[0:len(full_payload)] = full_payload
         
@@ -120,12 +154,12 @@ def write_single(payload):
 
         
         if verify_data == data:
-            print("successfully wrote "+str(payload)+" to tag")
+            print("successfully wrote "+str(word)+" to tag")
             audio.espeaker("Schreiben erfolgreich, Füge Täg zu Datenbank hinzu")
 
             db_file = open('figure_db.txt', 'a')
             # 12-56-128-34;ritter
-            db_file.write(id_readable+";"+payload+"\n")
+            db_file.write(id_readable+";"+word+"\n")
             db_file.close()
         else:
             print("error occured while writing, try again.")
@@ -167,6 +201,8 @@ def write_set():
 
                 while not tag_uid:
                     tag_uid = reader[0].read_passive_target(timeout=1.0)
+
+                # write_on_tag(tag_uid, text)
 
                 for counter, number in enumerate(tag_uid):
                     if counter < 4:
