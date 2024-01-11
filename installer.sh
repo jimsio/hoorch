@@ -15,7 +15,7 @@ apt install -y libsdl2-mixer-2.0-0
 apt install -y git
 
 pip3 install --upgrade setuptools
-pip3 install RPI.GPIO adafruit-circuitpython-pn532 board pygame rpi_ws281x adafruit-circuitpython-neopixel adafruit-circuitpython-debouncer
+pip3 install ndeflib RPI.GPIO adafruit-circuitpython-pn532 board pygame rpi_ws281x adafruit-circuitpython-neopixel adafruit-circuitpython-debouncer
 python3 -m pip install --force-reinstall adafruit-blinka
 pip3 install --upgrade adafruit-python-shell
 

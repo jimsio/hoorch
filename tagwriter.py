@@ -58,7 +58,7 @@ suffix = b'\xFE'
 #--- end payload ---
 #FE - Terminator Last TLV block / suffix
 
-key = b"\xFF\xFF\xFF\xFF\xFF\xFF"
+key = b'\xFF\xFF\xFF\xFF\xFF\xFF'
 
 #write single word to ntag2 (sticker), mifare (cards, chips) not supported yet
 def write_single(word):
@@ -73,7 +73,7 @@ def write_single(word):
 
     if tag_uid:
         # bytearray(b'\x04q\x1b\xea\xa0e\x80')
-        print(tag_uid)
+        #print(tag_uid)
 
         id_readable = ""
 
@@ -86,6 +86,7 @@ def write_single(word):
         
         print("write "+str(word) + " on tag with tag_uid: " + id_readable)
         
+        #record = ndef.TextRecord("frau12345","en")
         #en defines language, english
         record = ndef.TextRecord(word,"en")
         payload = b''.join(ndef.message_encoder([record]))
@@ -94,7 +95,7 @@ def write_single(word):
         #payload + encoding + langauge code (en)
         #payload_length = hex(len(payload)+3)
         #length_ndef_msg = hex(len(payload)+7)
-        length_ndef_msg = hex(len(payload))
+        length_ndef_msg = hex(len(payload))[2:].encode()
         #full_payload = prefix+length_ndef_msg+length_rec_type_field+payload_length+record_type+encoding+language+suffix
         full_payload = prefix+length_ndef_msg+payload+suffix
 
