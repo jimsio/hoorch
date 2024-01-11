@@ -144,6 +144,10 @@ def write_single(word):
             #remove two \x00 \x00 from prefix - not needed for ntag2
             data = bytearray(32)
             data[0:len(data)-2] = data[2:]
+            print(data)
+            #error
+            #bytearray(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00ann12345')
+
             chunk_size = 4
             send = [data[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
 
