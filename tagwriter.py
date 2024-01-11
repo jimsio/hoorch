@@ -151,7 +151,9 @@ def write_single(word):
 
             #reads until block 14, means 8 block x 4 byte = 32 bytes/ascii characters
             for i in range(7, 14):
-                verify_data.extend(reader[0].ntag2xx_read_block(i))
+                kaka = reader[0].ntag2xx_read_block(i)
+                print(kaka)
+                verify_data.extend(kaka)
 
         
         if verify_data == data:
