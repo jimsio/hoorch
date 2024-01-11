@@ -95,7 +95,7 @@ def write_single(word):
         #payload + encoding + langauge code (en)
         #payload_length = hex(len(payload)+3)
         #length_ndef_msg = hex(len(payload)+7)
-        length_ndef_msg = hex(len(payload))[2:].encode()
+        length_ndef_msg = bytearray.fromhex(hex(len(payload))[2:]) #16 = b'\x10'
         #full_payload = prefix+length_ndef_msg+length_rec_type_field+payload_length+record_type+encoding+language+suffix
         full_payload = prefix+length_ndef_msg+payload+suffix
 
