@@ -142,9 +142,12 @@ def write_single(word):
         #ntag2 tags
         else:
             #remove two \x00 \x00 from prefix - not needed for ntag2
-            data = bytearray(32)
-            data[0:len(data)-2] = data[2:]
-            print(data)
+            data2 = bytearray(32)
+            data2[0:len(data)-2] = data[2:]
+
+            data = data2
+
+            print(data2)
             #error
             #bytearray(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00ann12345')
 
