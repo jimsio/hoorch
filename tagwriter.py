@@ -212,6 +212,7 @@ def write_on_tag(tag_uid, word):
             #write 4 bytes to blocks 4 to 11
             #8 blocks x 4 byte = 32 bytes/ascii characters
             for i, s in enumerate(send):
+                print("write to block"+str(4+i))
                 j = reader[0].ntag2xx_write_block(4+i, s)
 
             time.sleep(0.5)
