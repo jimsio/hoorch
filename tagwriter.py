@@ -159,9 +159,10 @@ def write_on_tag(tag_uid, word):
     #en defines language, english
     record = ndef.TextRecord(word,"en")
     payload = b''.join(ndef.message_encoder([record]))
-    
+    print(hex(len(payload)))
+    print(hex(len(payload))[2:])
     length_ndef_msg = bytearray.fromhex(hex(len(payload))[2:]) #16 = b'\x10'
-    
+
     if id_readable.endswith("-"):
         full_payload = mifare_prefix+length_ndef_msg+payload+suffix
     else:
@@ -169,9 +170,9 @@ def write_on_tag(tag_uid, word):
 
     data = bytearray(32)
     data[0:len(full_payload)] = full_payload
-    
+
     chunks = len(full_payload)
-    
+
     verify_data = bytearray(0)
 
     try:
