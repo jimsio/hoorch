@@ -64,6 +64,9 @@ suffix = b'\xFE'
 
 key = b'\xFF\xFF\xFF\xFF\xFF\xFF'
 
+#switch on the amp
+audio.amp_sd.value = True
+
 #write single word to ntag2 (sticker) or mifare (cards, chips)
 #max length of word is 20!
 def write_single(word):
@@ -96,6 +99,7 @@ def write_single(word):
         
         if success:
             print("successfully wrote "+str(word)+" to tag")
+            print("now writing to database")
             audio.espeaker("Schreiben erfolgreich, Füge Täg zu Datenbank hinzu")
 
             db_file = open('figure_db.txt', 'a')
