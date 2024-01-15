@@ -168,8 +168,8 @@ def write_on_tag(tag_uid, word):
 
     data = bytearray(32)
     data[0:len(full_payload)] = full_payload
-    print(data)
-    chunks = len(full_payload)
+    #print(data)
+    chunks = len(data)
 
     verify_data = bytearray(0)
 
@@ -189,7 +189,7 @@ def write_on_tag(tag_uid, word):
 
             chunk_size = 16
             send = [data[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
-            print(send)
+            #print(send)
 
             #write 16 bytes to blocks 4 and 5
             for i, s in enumerate(send):
@@ -201,7 +201,7 @@ def write_on_tag(tag_uid, word):
                 reader[0].mifare_classic_write_block(4+i, s)
 
                 # Read blocks
-                print("Wrote to block "+str(4+i))
+                #print("Wrote to block "+str(4+i))
                 #print("Now reading")
                 verify_data.extend(reader[0].mifare_classic_read_block(4+i))
 
@@ -209,12 +209,11 @@ def write_on_tag(tag_uid, word):
         else:
             chunk_size = 4
             send = [data[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
-            print(send)
-
+            
             #write 4 bytes to blocks 4 to 11
             #8 blocks x 4 byte = 32 bytes/ascii characters
             for i, s in enumerate(send):
-                print("write "+str(s)+" to block"+str(4+i))
+                #print("write "+str(s)+" to block"+str(4+i))
                 j = reader[0].ntag2xx_write_block(4+i, s)
 
             time.sleep(0.5)
