@@ -189,7 +189,8 @@ def write_on_tag(tag_uid, word):
 
             chunk_size = 16
             send = [data[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
-            
+            print(send)
+
             #write 16 bytes to blocks 4 and 5
             for i, s in enumerate(send):
                 print("Authenticating block "+str(4+i))
@@ -208,11 +209,12 @@ def write_on_tag(tag_uid, word):
         else:
             chunk_size = 4
             send = [data[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
+            print(send)
 
             #write 4 bytes to blocks 4 to 11
             #8 blocks x 4 byte = 32 bytes/ascii characters
             for i, s in enumerate(send):
-                print("write to block"+str(4+i))
+                print("write "+str(s)+" to block"+str(4+i))
                 j = reader[0].ntag2xx_write_block(4+i, s)
 
             time.sleep(0.5)
