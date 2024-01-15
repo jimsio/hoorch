@@ -32,7 +32,8 @@ file.close()
 figure_database = []
 
 #nftools franziseppi 00:00:03:!12!:D1:01:0E:54:02:65:6E:66:72:61:6E:7A
-prefix = b'\x00\x00\x03'
+mifare_prefix = b'\x00\x00\x03'
+ntag2_prefix = b'\x03'
 #length_ndef_msg = b''
 #record_header = b'\xD1'
 #length_rec_type_field = b'\x01'
@@ -42,6 +43,7 @@ prefix = b'\x00\x00\x03'
 #language = b'\x65\x6E'
 suffix = b'\xFE'
 
+#testdata = b'\x00\x00\x03\x10\xd1\x0e\x54\x02enHallo\xfe'
 
 #https://community.element14.com/challenges-projects/project14/nfc-rfid/b/blog/posts/nfc-badge---update-your-badge-with-your-smartphone---ndef-and-app
 #00 00 - nur für mifare!
@@ -62,9 +64,10 @@ suffix = b'\xFE'
 
 key = b'\xFF\xFF\xFF\xFF\xFF\xFF'
 
-#write single word to ntag2 (sticker), mifare (cards, chips) not supported yet
+#write single word to ntag2 (sticker) or mifare (cards, chips)
 #max length of word is 20!
 def write_single(word):
+    
     leds.reset()  # reset leds
     leds.switch_on_with_color(0)
     
@@ -78,42 +81,105 @@ def write_single(word):
         # bytearray(b'\x04q\x1b\xea\xa0e\x80')
         #print(tag_uid)
 
-        id_readable = ""
-
-        for counter, number in enumerate(tag_uid):
-            if counter < 4:
-                id_readable += str(number)+"-"
-            else:
-                id_readable = id_readable[:-1]
-                break
+        #print("write "+str(word) + " on tag with tag_uid: " + id_readable)
         
-        print("write "+str(word) + " on tag with tag_uid: " + id_readable)
+        success = write_on_tag(tag_uid, word)
         
-        #record = ndef.TextRecord("frau12345","en")
-        #en defines language, english
-        record = ndef.TextRecord(word,"en")
-        payload = b''.join(ndef.message_encoder([record]))
-        #b'\xd1\x01\x0eT\x02enfranziseppi'
+        if success:
+            print("successfully wrote "+str(word)+" to tag")
+            audio.espeaker("Schreiben erfolgreich, Füge Täg zu Datenbank hinzu")
 
-        #payload + encoding + langauge code (en)
-        #payload_length = hex(len(payload)+3)
-        #length_ndef_msg = hex(len(payload)+7)
-        #full_payload = prefix+length_ndef_msg+length_rec_type_field+payload_length+record_type+encoding+language+suffix
-        length_ndef_msg = bytearray.fromhex(hex(len(payload))[2:]) #16 = b'\x10'
-        full_payload = prefix+length_ndef_msg+payload+suffix
+            db_file = open('figure_db.txt', 'a')
+            # 12-56-128-34;ritter
+            db_file.write(id_readable+";"+tag_text+"\n")
+            db_file.close()
+        else:
+            print("error occured while writing, try again.")
 
-        data = bytearray(32)
-        data[0:len(full_payload)] = full_payload
-        
-        chunks = len(full_payload)
-        
-        verify_data = bytearray(0)
+    else:
+        print("no tag on rfid reader")
+        audio.espeaker(
+            "Du hast keinen Täg auf das Spielfeld platziert. Täg wurde nicht beschrieben.")
 
+
+def write_set():
+    audio.espeaker(
+        "Wir beschreiben das gesamte Spieleset. Stelle die Figuren bei Aufruf auf Spielfeld 1")
+    leds.reset()  # reset leds
+    leds.switch_on_with_color(0)
+
+    for figure in figures:
+        # remove /n at the end - file figure_ids.txt needs an empty line at the end
+        figure = figure[:figure.find("\n")]
+
+        if figure == "+":
+            audio.espeaker("Nächster Abschnitt")
+            figure_database.append(["", ""])
+            continue
+
+        else:
+            success = False
+            audio.espeaker("Nächster Figur:")
+            audio.espeaker(figure)
+            
+            while not success:
+
+                tag_uid = None
+                
+                audio.espeaker("Figur stehen lassen")
+
+                while not tag_uid:
+                    tag_uid = reader[0].read_passive_target(timeout=1.0)
+
+                success = write_on_tag(tag_uid, figure)
+
+            figure_database.append([id_readable, figure])
+            print("added figure to figure db")
+
+    leds.reset()
+    audio.espeaker("Ende der Datei erreicht, schreibe die Datenbank")
+
+    db_file = open('figure_db.txt', 'w')
+    for pair in figure_database:
+        # 12-56-128-34;ritter
+        db_file.write(str(pair[0])+";"+str(pair[1])+"\n")
+
+    db_file.close()
+
+def write_on_tag(tag_uid, word):
+    id_readable = ""
+
+    for counter, number in enumerate(tag_uid):
+        if counter < 4:
+            id_readable += str(number)+"-"
+        else:
+            id_readable = id_readable[:-1]
+            break
+
+    #en defines language, english
+    record = ndef.TextRecord(word,"en")
+    payload = b''.join(ndef.message_encoder([record]))
+    
+    length_ndef_msg = bytearray.fromhex(hex(len(payload))[2:]) #16 = b'\x10'
+    
+    if id_readable.endswith("-"):
+        full_payload = mifare_prefix+length_ndef_msg+payload+suffix
+    else:
+        full_payload = ntag2_prefix+length_ndef_msg+payload+suffix
+
+    data = bytearray(32)
+    data[0:len(full_payload)] = full_payload
+    
+    chunks = len(full_payload)
+    
+    verify_data = bytearray(0)
+
+    try:
         #mifare tags
 
         #mifare 1K layout (chip + card)
         # 1 kByte
-        # 16 Sektoren zu je 4 Blöcken (16 Bytes/16 Ascii Characters pro Block)
+        # 16 sectors with each 4 blocks, 16 Bytes/16 ascii characters per block
 
         #writeable blocks (https://support.ccs.com.ph/portal/en/kb/articles/mifare-classic-1k-memory-structure)
         # 4, 5, 6
@@ -141,180 +207,30 @@ def write_single(word):
 
         #ntag2 tags
         else:
-            #remove two \x00 \x00 from prefix - not needed for ntag2
-            data2 = bytearray(32)
-            data2[0:len(data)-2] = data[2:]
-
-            data = data2
-
-            print(data2)
-            #error
-            #bytearray(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00ann12345')
-
             chunk_size = 4
             send = [data[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
 
-            #write 4 bytes to blocks 4 to 12
+            #write 4 bytes to blocks 4 to 11
+            #8 blocks x 4 byte = 32 bytes/ascii characters
             for i, s in enumerate(send):
                 j = reader[0].ntag2xx_write_block(4+i, s)
 
             time.sleep(0.5)
 
             # Read blocks
-
-            #reads until block 12, means 8 block x 4 byte = 32 bytes/ascii characters
             for i in range(4, 12):
                 verify_data.extend(reader[0].ntag2xx_read_block(i))
+    # if tag was removed before it was properly read
+    except TypeError:
+        print(
+            "Error while reading RFID-tag content. Tag was probably removed before reading was completed.")
+        # Die Figur konnte nicht erkannt werden. Lass sie länger auf dem Feld stehen.
+        audio.play_full("TTS", 199)
 
-        print(verify_data)
-        if verify_data == data:
-            print("successfully wrote "+str(word)+" to tag")
-            audio.espeaker("Schreiben erfolgreich, Füge Täg zu Datenbank hinzu")
+    print(verify_data)
+    
+    return verify_data == data
 
-            db_file = open('figure_db.txt', 'a')
-            # 12-56-128-34;ritter
-            db_file.write(id_readable+";"+word+"\n")
-            db_file.close()
-        else:
-            print("error occured while writing, try again.")
-
-    else:
-        print("no tag on rfid reader")
-        audio.espeaker(
-            "Du hast keinen Täg auf das Spielfeld platziert. Täg wurde nicht beschrieben.")
-
-
-def write_set():
-    audio.espeaker(
-        "Wir beschreiben das gesamte Spieleset. Stelle die Figuren bei Aufruf auf Spielfeld 1")
-    leds.reset()  # reset leds
-    leds.switch_on_with_color(0)
-
-    mifare = False
-
-    for figure in figures:
-        # remove /n at the end - file figure_ids.txt needs an empty line at the end
-        figure = figure[:figure.find("\n")]
-
-        if figure == "+":
-            audio.espeaker("Nächster Abschnitt")
-            figure_database.append(["", ""])
-            continue
-
-        else:
-            valid = False
-
-            while not valid:
-
-                tag_uid = None
-                id_readable = ""
-
-                audio.espeaker("Nächster Figur:")
-                audio.espeaker(figure)
-                audio.espeaker("Figur stehen lassen")
-
-                while not tag_uid:
-                    tag_uid = reader[0].read_passive_target(timeout=1.0)
-
-                # write_on_tag(tag_uid, text)
-
-                for counter, number in enumerate(tag_uid):
-                    if counter < 4:
-                        id_readable += str(number)+"-"
-                    else:
-                        id_readable = id_readable[:-1]
-                        break
-
-                # reader has issues with reading mifare cards, stick with the tag_uid
-                if id_readable.endswith("-"):
-                    print("mifare chip!")
-                    id_readable = id_readable[:-1]
-                    mifare = True
-
-                print(id_readable)
-
-                if not mifare:
-                    # write
-                    message = lang+figure+endofmessage
-                    print("message: " + str(message))
-                    chunks, chunk_size = len(message), 4
-                    send = [message[i:i+chunk_size]
-                            for i in range(0, chunks, chunk_size)]
-                    # print(send)
-
-                    for i, s in enumerate(send):
-                        while len(s) != 4:
-                            s += "#"
-
-                        k = 0
-
-                        while not reader[0].ntag2xx_write_block(7+i, s.encode()):
-                            print(
-                                "Failed to write {0} to at block {1}.".format(s, 7+i))
-
-                            k += 1
-
-                            if k == 6:
-                                print(
-                                    "To many false writings. Terminate for this tag block. try-block will start loop for this tag again")
-                                break
-
-                    time.sleep(0.5)
-
-                    # read for verification
-                    read_message = ""
-
-                    breaker = False
-
-                    try:
-                        for i in range(7, 14):
-                            block = reader[0].ntag2xx_read_block(i)
-                            print(block)
-                            for character in block:
-                                if character != ord(endofmessage):
-                                    read_message += chr(character)
-                                else:
-                                    breaker = True
-                                    break
-
-                            if breaker:
-                                break
-
-                        # remove unicode control characters from read string
-                        read_message = "".join(
-                            ch for ch in read_message if unicodedata.category(ch)[0] != "C")
-
-                        # enFRAGEZEICHEN#
-                        message = message[2:-1]
-                        # read_message has no #/endofmessage at end, this was checked during reading
-                        read_message = read_message[2:]
-
-                    # if tag was removed before it was properly read
-                    except TypeError:
-                        print(
-                            "Error while reading RFID-tag content. Tag was probably removed before reading was completed.")
-                        # audio.espeaker("Täg konnte nicht gelesen werden. Lass ihn länger auf dem Feld stehen!")
-                        # Die Figur konnte nicht erkannt werden. Lass sie länger auf dem Feld stehen.
-                        audio.play_full("TTS", 199)
-
-                    valid = message == read_message
-                    print("valid " + str(valid))
-
-                else:
-                    valid = True
-
-            figure_database.append([id_readable, figure])
-            print("added figure to figure db")
-
-    leds.reset()
-    audio.espeaker("Ende der Datei erreicht, schreibe die Datenbank")
-
-    db_file = open('figure_db.txt', 'w')
-    for pair in figure_database:
-        # 12-56-128-34;ritter
-        db_file.write(str(pair[0])+";"+str(pair[1])+"\n")
-
-    db_file.close()
 
 
 if __name__ == "__main__":
