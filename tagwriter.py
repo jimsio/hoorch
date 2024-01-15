@@ -83,7 +83,16 @@ def write_single(word):
 
         #print("write "+str(word) + " on tag with tag_uid: " + id_readable)
         
-        success = write_on_tag(tag_uid, word)
+        id_readable = ""
+
+        for counter, number in enumerate(tag_uid):
+            if counter < 4:
+                id_readable += str(number)+"-"
+            else:
+                id_readable = id_readable[:-1]
+                break
+
+        success = write_on_tag(tag_uid, word, id_readable)
         
         if success:
             print("successfully wrote "+str(word)+" to tag")
@@ -91,7 +100,7 @@ def write_single(word):
 
             db_file = open('figure_db.txt', 'a')
             # 12-56-128-34;ritter
-            db_file.write(id_readable+";"+tag_text+"\n")
+            db_file.write(id_readable+";"+word+"\n")
             db_file.close()
         else:
             print("error occured while writing, try again.")
@@ -131,7 +140,16 @@ def write_set():
                 while not tag_uid:
                     tag_uid = reader[0].read_passive_target(timeout=1.0)
 
-                success = write_on_tag(tag_uid, figure)
+                id_readable = ""
+
+                for counter, number in enumerate(tag_uid):
+                    if counter < 4:
+                        id_readable += str(number)+"-"
+                    else:
+                        id_readable = id_readable[:-1]
+                        break
+
+                success = write_on_tag(tag_uid, figure, id_readable)
 
             figure_database.append([id_readable, figure])
             print("added figure to figure db")
@@ -146,15 +164,7 @@ def write_set():
 
     db_file.close()
 
-def write_on_tag(tag_uid, word):
-    id_readable = ""
-
-    for counter, number in enumerate(tag_uid):
-        if counter < 4:
-            id_readable += str(number)+"-"
-        else:
-            id_readable = id_readable[:-1]
-            break
+def write_on_tag(tag_uid, word, id_readable):
 
     #en defines language, english
     record = ndef.TextRecord(word,"en")
@@ -228,7 +238,7 @@ def write_on_tag(tag_uid, word):
         # Die Figur konnte nicht erkannt werden. Lass sie länger auf dem Feld stehen.
         audio.play_full("TTS", 199)
 
-    print(verify_data)
+    #print(verify_data)
     
     return verify_data == data
 
