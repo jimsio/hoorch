@@ -168,7 +168,7 @@ def write_on_tag(tag_uid, word):
 
     data = bytearray(32)
     data[0:len(full_payload)] = full_payload
-
+    print(data)
     chunks = len(full_payload)
 
     verify_data = bytearray(0)
