@@ -31,7 +31,11 @@ file.close()
 
 figure_database = []
 
-#nftools franziseppi 00:00:03:!12!:D1:01:0E:54:02:65:6E:66:72:61:6E:7A
+#to write to block 1 and 2
+#14:01:03:E1:03:E1:03:E1:03:E1:03:E1:03:E1:03:E1
+#03:E1:03:E1:03:E1:03:E1:03:E1:03:E1:03:E1:03:E1
+mifare_block1_2 = b'\x14\x01\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1'
+
 mifare_prefix = b'\x00\x00\x03'
 ntag2_prefix = b'\x03'
 #length_ndef_msg = b''
@@ -74,8 +78,8 @@ def write_single(word):
     leds.switch_on_with_color(0)
     
     print("Place tag on reader1. Will write this to tag: "+str(word))
-    #audio.espeaker("Schreibe "+str(word) +
-    #               " auf den Täg. Bitte Täg auf Spielfeld 1 platzieren")
+    audio.espeaker("Schreibe "+str(word) +
+                   " auf den Täg. Bitte Täg auf Spielfeld 1 platzieren")
     time.sleep(2)
     tag_uid = reader[0].read_passive_target(timeout=0.2)
 
@@ -197,24 +201,31 @@ def write_on_tag(tag_uid, word, id_readable):
         # 0C, 0D, 0E,...
         if id_readable.endswith("-"):
             id_readable = id_readable[:-1]
+            
+            #64 byte bytearray
+            data_mifare = mifare_block1_2+data
 
             chunk_size = 16
             send = [data[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
             #print(send)
 
-            #write 16 bytes to blocks 4 and 5
+            #write 16 bytes to block 1 and 2 and blocks 4 and 5
             for i, s in enumerate(send):
-                print("Authenticating block "+str(4+i))
-                authenticated = reader[0].mifare_classic_authenticate_block(tag_uid, 4+i, MIFARE_CMD_AUTH_B, key)
+                if i>1:
+                    i = i+1
+
+                print("Authenticating block "+str(1+i))
+                #print("Authenticating block "+str(4+i))
+                authenticated = reader[0].mifare_classic_authenticate_block(tag_uid, 1+i, MIFARE_CMD_AUTH_B, key)
                 if not authenticated:
                     print("Authentication failed!")
                 
-                reader[0].mifare_classic_write_block(4+i, s)
+                reader[0].mifare_classic_write_block(1+i, s)
 
                 # Read blocks
                 #print("Wrote to block "+str(4+i))
                 #print("Now reading")
-                verify_data.extend(reader[0].mifare_classic_read_block(4+i))
+                verify_data.extend(reader[0].mifare_classic_read_block(1+i))
 
         #ntag2 tags
         else:
