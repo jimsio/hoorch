@@ -204,6 +204,7 @@ def write_on_tag(tag_uid, word, id_readable):
             
             #64 byte bytearray
             data_mifare = mifare_block1_2+data
+            print(data_mifare)
 
             chunk_size = 16
             send = [data_mifare[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
