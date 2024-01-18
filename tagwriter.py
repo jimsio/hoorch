@@ -78,8 +78,8 @@ def write_single(word):
     leds.switch_on_with_color(0)
     
     print("Place tag on reader1. Will write this to tag: "+str(word))
-    audio.espeaker("Schreibe "+str(word) +
-                   " auf den Täg. Bitte Täg auf Spielfeld 1 platzieren")
+    #audio.espeaker("Schreibe "+str(word) +
+    #               " auf den Täg. Bitte Täg auf Spielfeld 1 platzieren")
     time.sleep(2)
     tag_uid = reader[0].read_passive_target(timeout=0.2)
 
@@ -211,20 +211,21 @@ def write_on_tag(tag_uid, word, id_readable):
 
             #write 16 bytes to block 1 and 2 and blocks 4 and 5
             for i, s in enumerate(send):
-                if i>1:
-                    i = i+1
+                x = i+1
+                if x>2:
+                    x = x+1
 
-                print("Authenticating block "+str(1+i))
+                print("Authenticating block "+str(x))
                 #print("Authenticating block "+str(4+i))
-                authenticated = reader[0].mifare_classic_authenticate_block(tag_uid, 1+i, MIFARE_CMD_AUTH_B, key)
+                authenticated = reader[0].mifare_classic_authenticate_block(tag_uid, x, MIFARE_CMD_AUTH_B, key)
                 if not authenticated:
                     print("Authentication failed!")
                 
-                reader[0].mifare_classic_write_block(1+i, s)
+                reader[0].mifare_classic_write_block(x, s)
 
                 # Read blocks 4+5 only!
-                if i>2:
-                    verify_data.extend(reader[0].mifare_classic_read_block(1+i))
+                if x>3:
+                    verify_data.extend(reader[0].mifare_classic_read_block(x))
 
         #ntag2 tags
         else:
