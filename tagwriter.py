@@ -206,7 +206,7 @@ def write_on_tag(tag_uid, word, id_readable):
             data_mifare = mifare_block1_2+data
 
             chunk_size = 16
-            send = [data[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
+            send = [data_mifare[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
             #print(send)
 
             #write 16 bytes to block 1 and 2 and blocks 4 and 5
@@ -222,10 +222,9 @@ def write_on_tag(tag_uid, word, id_readable):
                 
                 reader[0].mifare_classic_write_block(1+i, s)
 
-                # Read blocks
-                #print("Wrote to block "+str(4+i))
-                #print("Now reading")
-                verify_data.extend(reader[0].mifare_classic_read_block(1+i))
+                # Read blocks 4+5 only!
+                if i>2:
+                    verify_data.extend(reader[0].mifare_classic_read_block(1+i))
 
         #ntag2 tags
         else:
