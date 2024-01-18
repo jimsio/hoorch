@@ -184,7 +184,7 @@ def write_on_tag(tag_uid, word, id_readable):
     data = bytearray(32)
     data[0:len(full_payload)] = full_payload
     #print(data)
-    chunks = len(data)
+    
 
     verify_data = bytearray(0)
 
@@ -204,10 +204,9 @@ def write_on_tag(tag_uid, word, id_readable):
             
             #64 byte bytearray
             data_mifare = mifare_block1_2+data
-            print(data_mifare)
-
+            
             chunk_size = 16
-            send = [data_mifare[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
+            send = [data_mifare[i:i+chunk_size] for i in range(0, len(data_mifare), chunk_size)]
             #print(send)
 
             #write 16 bytes to block 1 and 2 and blocks 4 and 5
@@ -231,7 +230,7 @@ def write_on_tag(tag_uid, word, id_readable):
         #ntag2 tags
         else:
             chunk_size = 4
-            send = [data[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
+            send = [data[i:i+chunk_size] for i in range(0, len(data), chunk_size)]
             
             #write 4 bytes to blocks 4 to 11
             #8 blocks x 4 byte = 32 bytes/ascii characters
