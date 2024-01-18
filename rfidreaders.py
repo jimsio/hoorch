@@ -173,7 +173,7 @@ def continuous_read():
     print(tags)
     
 def read_from_mifare(reader, tag_uid):
-    verify_data = bytearray(0)
+    read_data = bytearray(0)
 
     #read 16 bytes from blocks 4 and 5
     for i in range(4, 6):
@@ -185,19 +185,19 @@ def read_from_mifare(reader, tag_uid):
         #reader[0].mifare_classic_write_block(4+i, s)
 
         # Read blocks
-        verify_data.extend(reader.mifare_classic_read_block(4+i))
+        read_data.extend(reader.mifare_classic_read_block(4+i))
 
-    to_decode = verify_data[4:verify_data.find(b'\xfe')]
+    to_decode = read_data[4:read_data.find(b'\xfe')]
 
     return list(ndef.message_decoder(to_decode))[0].text
 
 def read_from_ntag2(reader):
-    verify_data = bytearray(0)
+    read_data = bytearray(0)
     
     try:
         for i in range(4, 12):
-            verify_data.extend(reader.ntag2xx_read_block(i))
-        to_decode = verify_data[2:verify_data.find(b'\xfe')]
+            read_data.extend(reader.ntag2xx_read_block(i))
+        to_decode = read_data[2:read_data.find(b'\xfe')]
         
 
     # if tag was removed before it was properly read

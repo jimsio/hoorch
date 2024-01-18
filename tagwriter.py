@@ -71,7 +71,6 @@ audio.amp_sd.value = True
 #max length of word is 20!
 def write_single(word):
     
-    leds.reset()  # reset leds
     leds.switch_on_with_color(0)
     
     print("Place tag on reader1. Will write this to tag: "+str(word))
@@ -84,8 +83,6 @@ def write_single(word):
         # bytearray(b'\x04q\x1b\xea\xa0e\x80')
         #print(tag_uid)
 
-        #print("write "+str(word) + " on tag with tag_uid: " + id_readable)
-        
         id_readable = ""
 
         for counter, number in enumerate(tag_uid):
