@@ -44,7 +44,7 @@ def init():
         output = None
         while True:
             output = subprocess.run(
-                ['hostname', '-I'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+                ['hostname', '-I'], stdout=subprocess.PIPE, check=False).stdout.decode('utf-8')
 
             if output is None or output == '\n':
                 audio.espeaker("WeiFei nicht verbunden")
@@ -65,8 +65,7 @@ def init():
         time.sleep(1)
         tagwriter.write_set()
         rfidreaders.read_continuously = True
-    
-    rfidreaders.continuous_read()
+        rfidreaders.continuous_read()
 
 
 def initial_hardware_test():

@@ -171,7 +171,11 @@ def continuous_read():
         time.sleep(0.2)
 
     print(tags)
-    
+
+    if read_continuously:
+        # rfidreaders_timer = threading.Timer(0.01,continuous_read).start()
+        threading.Timer(0.02, continuous_read).start()
+        
 def read_from_mifare(reader, tag_uid):
     read_data = bytearray(0)
 
@@ -212,7 +216,3 @@ def read_from_ntag2(reader):
 #except KeyboardInterrupt:
 #   for r in readers:
 #    r.power_down()
-
-if read_continuously:
-    # rfidreaders_timer = threading.Timer(0.01,continuous_read).start()
-    threading.Timer(0.02, continuous_read).start()
