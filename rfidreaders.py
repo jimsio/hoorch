@@ -181,11 +181,14 @@ def read_from_mifare(reader, tag_uid):
 
     #read 16 bytes from blocks 4 and 5
     for i in range(4, 6):
-        print("Authenticating block "+str(i))
-        authenticated = reader.mifare_classic_authenticate_block(tag_uid, i, MIFARE_CMD_AUTH_B, key)
-        if not authenticated:
-            print("Authentication failed!")
-        
+        #print("Authenticating block "+str(i))
+        try:
+            authenticated = reader.mifare_classic_authenticate_block(tag_uid, i, MIFARE_CMD_AUTH_B, key)
+            if not authenticated:
+                print("Authentication failed!")
+        except TypeError:
+            print("Authentication error")
+
         # Read blocks
         read_data.extend(reader.mifare_classic_read_block(i))
 
