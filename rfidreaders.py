@@ -114,7 +114,6 @@ def continuous_read():
 
             # mifare id has minus at the end, remove it here
             if id_readable.endswith("-"):
-                # print("mifare chip!")
                 id_readable = id_readable[:-1]
                 mifare = True
 

@@ -98,6 +98,9 @@ def write_single(word):
 
         success = write_on_tag(tag_uid, word, id_readable)
         
+        if id_readable.endswith("-"):
+            id_readable = id_readable[:-1]
+
         if success:
             print("successfully wrote "+str(word)+" to tag")
             print("now writing to database")
@@ -156,6 +159,9 @@ def write_set():
 
                 success = write_on_tag(tag_uid, figure, id_readable)
 
+            if id_readable.endswith("-"):
+                id_readable = id_readable[:-1]
+                
             figure_database.append([id_readable, figure])
             print("added figure to figure db")
 
