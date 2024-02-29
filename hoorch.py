@@ -195,7 +195,7 @@ def main():
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
 
-        # Schaf6, Ziege5, Wolf6 on readers enters admin menu
+        # if "JA" and "NEIN" on readers enter admin menu
         if "JA" in rfidreaders.tags and "NEIN" in rfidreaders.tags:
             admin.main()
             shutdown_counter = time.time()+shutdown_time

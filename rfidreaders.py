@@ -129,10 +129,10 @@ def continuous_read():
                 else:
                     tag_name = read_from_ntag2(r)
     
-                currently_reading = False
-
                 # power down to safe energy, breaks readers?
                 r.power_down()
+
+                currently_reading = False
 
                 #if tag_name is empty, use id_readable
                 if not tag_name:
@@ -152,7 +152,8 @@ def continuous_read():
                         print(
                             "added new unknown gamer figure to the temporary gamer_figure list")
                     else:
-                        print("unknown gamer figure already in temporary gamer_figure list")
+                        pass
+                        #print("unknown gamer figure already in temporary gamer_figure list")
 
         else:
             tag_name = None
