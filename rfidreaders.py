@@ -178,14 +178,12 @@ def read_from_mifare(reader, tag_uid):
     #read 16 bytes from blocks 4 and 5
     for i in range(4, 6):
         print("Authenticating block "+str(i))
-        authenticated = reader[0].mifare_classic_authenticate_block(tag_uid, 4+i, MIFARE_CMD_AUTH_B, key)
+        authenticated = reader[0].mifare_classic_authenticate_block(tag_uid, i, MIFARE_CMD_AUTH_B, key)
         if not authenticated:
             print("Authentication failed!")
         
-        #reader[0].mifare_classic_write_block(4+i, s)
-
         # Read blocks
-        read_data.extend(reader.mifare_classic_read_block(4+i))
+        read_data.extend(reader.mifare_classic_read_block(i))
 
     to_decode = read_data[4:read_data.find(b'\xfe')]
 
@@ -194,6 +192,7 @@ def read_from_mifare(reader, tag_uid):
 def read_from_ntag2(reader):
     read_data = bytearray(0)
     
+    #read 4 bytes from blocks 4-11
     try:
         for i in range(4, 12):
             read_data.extend(reader.ntag2xx_read_block(i))

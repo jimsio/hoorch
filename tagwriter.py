@@ -31,7 +31,7 @@ file.close()
 
 figure_database = []
 
-#to write to block 1 and 2
+#to write to block 1 and 2 to mifare cards (not chips)
 #14:01:03:E1:03:E1:03:E1:03:E1:03:E1:03:E1:03:E1
 #03:E1:03:E1:03:E1:03:E1:03:E1:03:E1:03:E1:03:E1
 mifare_block1_2 = b'\x14\x01\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1'
@@ -190,6 +190,8 @@ def write_on_tag(tag_uid, word, id_readable):
 
     try:
         #mifare tags
+        #TODO: chips ohne mifare_block1+2! karten mit !
+        #wie kann ich die auseinanderhalten?
 
         #mifare 1K layout (chip + card)
         # 1 kByte
@@ -216,7 +218,6 @@ def write_on_tag(tag_uid, word, id_readable):
                     x = x+1
 
                 print("Authenticating block "+str(x))
-                #print("Authenticating block "+str(4+i))
                 authenticated = reader[0].mifare_classic_authenticate_block(tag_uid, x, MIFARE_CMD_AUTH_B, key)
                 if not authenticated:
                     print("Authentication failed!")
@@ -232,7 +233,7 @@ def write_on_tag(tag_uid, word, id_readable):
             chunk_size = 4
             send = [data[i:i+chunk_size] for i in range(0, len(data), chunk_size)]
             
-            #write 4 bytes to blocks 4 to 11
+            #write 4 bytes to blocks 4-11
             #8 blocks x 4 byte = 32 bytes/ascii characters
             for i, s in enumerate(send):
                 #print("write "+str(s)+" to block"+str(4+i))
