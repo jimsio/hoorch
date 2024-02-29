@@ -84,7 +84,7 @@ def write_single(word):
     tag_uid = reader[0].read_passive_target(timeout=0.2)
 
     if tag_uid:
-        # bytearray(b'\x04q\x1b\xea\xa0e\x80')
+        # bytearray(b'\x04q\x1b\xea\xa0e\x80') #ntag2
         #print(tag_uid)
 
         id_readable = ""
@@ -93,7 +93,7 @@ def write_single(word):
             if counter < 4:
                 id_readable += str(number)+"-"
             else:
-                id_readable = id_readable[:-1]
+                id_readable = id_readable[:-1] = id_readable[:-1]
                 break
 
         success = write_on_tag(tag_uid, word, id_readable)

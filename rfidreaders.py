@@ -112,7 +112,7 @@ def continuous_read():
                     id_readable = id_readable[:-1]
                     break
 
-            # reader has issues with reading mifare cards, stick with the tag_uid
+            # mifare id has minus at the end, remove it here
             if id_readable.endswith("-"):
                 # print("mifare chip!")
                 id_readable = id_readable[:-1]
