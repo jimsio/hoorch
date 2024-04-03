@@ -14,9 +14,9 @@ hoerspiele = {}
 def start():
     print("Wir spielen Hörspiele")
 
-    #TODO Wir spielen Hörspiele ab tts
+    #?TODO Wir spielen Hörspiele ab tts
     #audio.play_full("TTS", xx)
-    audio.espeaker("Wir spielen jetzt Hörspiele ab.")
+    #audio.espeaker("Wir spielen jetzt Hörspiele ab.")
     leds.reset()  # reset leds
 
     if not pygame.mixer.get_init():
@@ -55,11 +55,12 @@ def start():
             hoerspiele[currently_playing].stop()
             currently_playing = None
 
-        if "ENDE" in tags_on_board:
-            # pygame.mixer.stop()
             pygame.mixer.quit()
-            #pygame.mixer.pause()
             break
+
+        #if "ENDE" in tags_on_board:
+            #pygame.mixer.quit()
+            #break
 
         time.sleep(1)
     

@@ -73,7 +73,7 @@ def start():
             recordings_list = os.listdir("./data/figures/")
             figure_dir = "./data/figures/"+figure_id
 
-            # when figure folder and i.e. roboter.mp3 exist
+            # when figure folder and audio file (i.e. roboter.mp3) exist
             if figure_id in recordings_list and figure_id+'.mp3' in os.listdir(figure_dir):
 
                 # Diese Figur hat schon eine Geschichte gespeichert...
@@ -113,6 +113,9 @@ def start():
                             if rfidreaders.tags[i] is None or record_timer < time.time() or "ENDE" in rfidreaders.tags:
                                 error_recording = audio.stop_recording(
                                     figure_id)
+                                #change led color to green
+                                leds.switch_on_with_color(i, (0, 255, 0))
+
                                 # Aufnahme ist zu Ende
                                 audio.play_full("TTS", 57)
                                 new_recording = True

@@ -176,8 +176,7 @@ def main():
         if "Kakophonie" in rfidreaders.tags:
             print("Kakophonie")
             leds.blink = False
-            #game_kakophonie.start()
-            game_hoerspiele.start()
+            game_kakophonie.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
 
@@ -194,8 +193,18 @@ def main():
             game_animals_english.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
+        
+        hoerspiele_list = os.listdir("./data/hoerspiele/")
+        detected_hoerspiel_card = [i for i in hoerspiele_list if i in rfidreaders.tags]
+          
+        if detected_hoerspiel_card:
+            print("Hoerspiele")
+            leds.blink = False
+            game_hoerspiele.start()
+            audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
+            shutdown_counter = time.time()+shutdown_time
 
-        # if "JA" and "NEIN" on readers enter admin menu
+        # if "JA" and "NEIN" chips detected enter admin menu
         if "JA" in rfidreaders.tags and "NEIN" in rfidreaders.tags:
             admin.main()
             shutdown_counter = time.time()+shutdown_time
