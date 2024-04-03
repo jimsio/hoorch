@@ -18,10 +18,17 @@ def main():
     admin_exit_counter = time.time() + 120
 
     audio.espeaker("Sie befinden sich im Admin-Menü.")
+
+    subprocess.run(['git', 'remote', 'update'], stdout=subprocess.PIPE, check=False)
+    #suche nach behind - subprocess outputs something like this if not up to date: "Your branch is behind 'origin/master' by 1 commit..."
+    git_status = subprocess.run(['git', 'status', '-uno'], stdout=subprocess.PIPE, check=False).stdout.decode('utf-8')
+    if "behind" in git_status:
+        audio.espeaker("Es ist ein Update verfügbar")
+
     audio.espeaker(
         "Verwenden Sie die Zahlenkarten um Einstellungen vorzunehmen.")
-    audio.espeaker("1 - WeiFei-Konfiguration.")
-    audio.espeaker("2 - Software aktualisieren.")
+    audio.espeaker("1 - Software aktualisieren.")
+    audio.espeaker("2 - WeiFei-Konfiguration.")
     audio.espeaker("3 - Spielfiguren-Set löschen.")
     audio.espeaker("4 - Alle Geschichten archivieren")
     audio.espeaker("Ende-Täg zum Beenden.")
@@ -33,11 +40,11 @@ def main():
                 op = int(tag_name[-1])  # 1 from Hahn1
 
                 if op == 1:
-                    wifi()
-                    admin_exit_counter = time.time() + 120
-                elif op == 2:
                     # git update
                     git()
+                    admin_exit_counter = time.time() + 120
+                elif op == 2:
+                    wifi()
                     admin_exit_counter = time.time() + 120
                 elif op == 3:
                     # delete figure_db.txt, restart hoorch
@@ -107,9 +114,9 @@ def git():
         # git fetch downloads the latest from remote without trying to merge or rebase anything.
         # git reset resets the master branch to what you just fetched. 
         # The --hard option changes all the files in your working tree to match the files in origin/master.
-        subprocess.run(['git', 'fetch', '--all'], stdout=subprocess.PIPE)
+        subprocess.run(['git', 'fetch', '--all'], stdout=subprocess.PIPE, check=False)
         #subprocess.run(['git', 'branch', 'backup-master'], stdout=subprocess.PIPE)
-        subprocess.run(['git', 'reset', '--hard', 'origin/master'], stdout=subprocess.PIPE)
+        subprocess.run(['git', 'reset', '--hard', 'origin/master'], stdout=subprocess.PIPE, check=False)
 
         audio.espeaker("Aktualisierung beendet. Ich starte jetzt neu.")
         os.system("reboot")
@@ -204,4 +211,4 @@ def wifi():
                 "Internet in wenigen Augenblicken verfügbar. Bitte warten.")
             time.sleep(2)
 
-    audio.espeaker("Weifei-Konfiguration beendet")
+    audio.espeaker("Weifei-Konfiguration b

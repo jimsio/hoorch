@@ -50,7 +50,7 @@ def play_full(folder, audiofile):
 
     file_path = path+folder+"/"+"{:03d}".format(audiofile)+".mp3"
     waitingtime = float(subprocess.run(
-        ['soxi', '-D', file_path], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+        ['soxi', '-D', file_path], stdout=subprocess.PIPE, check=False).stdout.decode('utf-8'))
     subprocess.Popen("play "+file_path+" 2>/dev/null",
                      shell=True, stdout=None, stderr=None)
     time.sleep(waitingtime)
@@ -166,4 +166,4 @@ def espeaker(words):
     
     os.system("espeak -v de+f2 -p 30 -g 12 -s 170 --stdout \"" +
               str(words)+"\" | aplay -D 'default'")
-    # espeak -v de+f2 -p 30 -g 12 -s 150 --stdout "apfelbaum" | aplay -D 'default'
+    # espeak -v de+f2 -p 30 -g 12 -s 150 --stdout "apfelbaum" | aplay -D 'def
