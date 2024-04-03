@@ -2,9 +2,8 @@
 # -*- coding: UTF8 -*-
 
 # require: see installer.sh
-
-import time
 import os
+import time
 import subprocess
 import audio
 import rfidreaders
