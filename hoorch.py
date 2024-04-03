@@ -194,7 +194,8 @@ def main():
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
         
-        hoerspiele_list = os.listdir("./data/hoerspiele/")
+        #list of available hoerspiele without file extension - i.e. ['mutigTR', 'mutigDE', 'mutigHR']
+        hoerspiele_list = [os.path.splitext(h)[0] for h in os.listdir("./data/hoerspiele/")]
         detected_hoerspiel_card = [i for i in hoerspiele_list if i in rfidreaders.tags]
           
         if detected_hoerspiel_card:
