@@ -125,7 +125,7 @@ def git():
 def wifi():
     print("wifi config")
     rfkill_output = subprocess.run(
-        ['rfkill', 'list', 'wifi'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+        ['rfkill', 'list', 'wifi'], stdout=subprocess.PIPE, check=False).stdout.decode('utf-8')
 
     if "yes" in rfkill_output:
         # wifi blocked / off
@@ -138,11 +138,11 @@ def wifi():
                     "Weifei wird gestartet. Dies kann einen Augenblick dauern.")
                 os.system("rfkill unblock wifi")
 
-                while not subprocess.run(['hostname', '-I'], stdout=subprocess.PIPE).stdout.decode('utf-8'):
+                while not subprocess.run(['hostname', '-I'], stdout=subprocess.PIPE, check=False).stdout.decode('utf-8'):
                     time.sleep(2)
 
                 output = subprocess.run(
-                    ['hostname', '-I'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+                    ['hostname', '-I'], stdout=subprocess.PIPE, check=False).stdout.decode('utf-8')
                 ip_adress = output.split(" ", 1)
                 print(ip_adress)
 
@@ -177,14 +177,14 @@ def wifi():
         if state == "HOTSPOT":
             audio.espeaker("Keine Verbindung zum Internet.")
             audio.espeaker(
-                "Verbinde dich am Handy mit dem Hotspot namens {0}. Öffne dann im Brauser {0} Punkt local".format(hostname))
+                f"Verbinde dich am Handy mit dem Hotspot namens {hostname}. Öffne dann im Brauser {hostname} Punkt local")
             audio.espeaker("Stelle dort dein lokales WeLan und Passwort ein")
 
         # connected to a wifi
         elif state == "CONNECTED":
-            audio.espeaker("Mit WeiFei {0} verbunden.".format(connection))
+            audio.espeaker(f"Mit WeiFei {connection} verbunden.")
             output = subprocess.run(
-                ['hostname', '-I'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+                ['hostname', '-I'], stdout=subprocess.PIPE, check=False).stdout.decode('utf-8')
             ip_adress = output.split(" ", 1)
             print(ip_adress)
 
@@ -210,5 +210,3 @@ def wifi():
             audio.espeaker(
                 "Internet in wenigen Augenblicken verfügbar. Bitte warten.")
             time.sleep(2)
-
-    audio.espeaker("Weifei-Konfiguration b
