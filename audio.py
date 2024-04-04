@@ -21,7 +21,8 @@ def init():
     os.environ['AUDIODRIVER'] = "alsa"
 
     # set audio output level to 90%
-    os.system("amixer -q sset PCM 90%")
+    #os.system("amixer -q sset PCM 90%")
+    os.system("amixer -q sset PCM 100%")
     # set mic record level to 95% (92 in alsamixer)
     os.system("amixer -q sset Boost 95%")
 
@@ -52,7 +53,7 @@ def play_file(folder, audiofile):
     # for sounds in /data and subsequent folders (i.e sounds, animal_sounds, TTS/animals_en, hoerspiele, figures)
     wait_for_reader()
 
-    subprocess.Popen(f"play {path}/{folder}/{audiofile}.mp3  2>/dev/null", shell=True, stdout=None, stderr=None)
+    subprocess.Popen(f"play {path}/{folder}/{audiofile}  2>/dev/null", shell=True, stdout=None, stderr=None)
     print("playing file "+str(audiofile))
 
 
