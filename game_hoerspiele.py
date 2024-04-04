@@ -8,8 +8,6 @@ import rfidreaders
 import leds
 import audio
 
-hoerspiele = {}
-
 def start(folder, audiofile):
     
     leds.reset()  # reset leds
@@ -18,6 +16,7 @@ def start(folder, audiofile):
     audio.play_file(folder, f"{audiofile}.mp3")
     waitingtime = time.time() + float(subprocess.run(
                     ['soxi', '-D', f'./data/{folder}/{audiofile}.mp3'], stdout=subprocess.PIPE, check=False).stdout.decode('utf-8')) + 10
+    print(waitingtime)
 
     while True:
         if audiofile not in rfidreaders.tags or waitingtime < time.time():

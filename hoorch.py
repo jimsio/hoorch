@@ -193,7 +193,7 @@ def main():
             game_animals_english.start()
             audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
             shutdown_counter = time.time()+shutdown_time
-        
+       
         #list of available hoerspiele without file extension - i.e. ['mutigTR', 'mutigDE', 'mutigHR']
         hoerspiele_list = [os.path.splitext(h)[0] for h in os.listdir("./data/hoerspiele/")]
         detected_hoerspiel_card = [i for i in hoerspiele_list if i in rfidreaders.tags]
@@ -201,21 +201,21 @@ def main():
         if detected_hoerspiel_card:
             print("Hoerspiele")
             leds.blink = False
-            game_hoerspiele2.start()
+            game_hoerspiele.start(f"hoerspiele/{detected_hoerspiel_card[0]}", detected_hoerspiel_card[0])
             shutdown_counter = time.time()+shutdown_time
-        
-        #list of available figures with a recording
+       
         figure_dir = "./data/figures/"
         #get only folders, not files
         figure_dirs = [name for name in os.listdir(figure_dir) if os.path.isdir(os.path.join(figure_dir, name))]
+        #list of available figures with a recording
         figure_with_recording = [k for k in figure_dirs if f"{k}.mp3" in os.listdir(figure_dir+k)]
         detected_figure_with_recording = [j for j in figure_with_recording if j in rfidreaders.tags]
 
         if detected_figure_with_recording:
-            print("Geschichte abspielen2")
+            print("Geschichte abspielen - from main menu")
             leds.blink = False
             #pick first figure detected
-            game_hoerspiele.start(f"figures/{detected_figure_with_recording[0]}",detected_figure_with_recording[0])
+            game_hoerspiele.start(f"figures/{detected_figure_with_recording[0]}", detected_figure_with_recording[0])
             shutdown_counter = time.time()+shutdown_time
 
         # if "JA" and "NEIN" chips detected enter admin menu

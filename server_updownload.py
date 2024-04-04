@@ -1,12 +1,12 @@
+import os
 from flask import Flask, render_template, request, send_from_directory
 from werkzeug.utils import secure_filename
-import os
 
-'''python your_script_name.py
+'''start server with python3 server_updownload.py
 Now, you can access the file upload/download server from your web browser by visiting http://raspberry_pi_ip:8080/. 
 You can upload files, list the uploaded files, and download them.'''
 
-UPLOAD_FOLDER = '../data/hoerspiele'
+UPLOAD_FOLDER = '/data/hoerspiele'
 ALLOWED_EXTENSIONS = {'mp3'}
 
 app = Flask(__name__)
