@@ -206,7 +206,8 @@ def main():
         
         #list of available figures with a recording
         figure_dir = "./data/figures/"
-        figure_dirs = os.listdir(figure_dir)
+        #get only folders, not files
+        figure_dirs = [name for name in os.listdir(figure_dir) if os.path.isdir(os.path.join(figure_dir, name))]
         figure_with_recording = [k for k in figure_dirs if f"{k}.mp3" in os.listdir(figure_dir+k)]
         detected_figure_with_recording = [j for j in figure_with_recording if j in rfidreaders.tags]
 
