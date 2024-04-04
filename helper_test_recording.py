@@ -1,3 +1,8 @@
+"""
+This helper records 10 seconds of audio
+switches amp off before recording and switches it on afterwards for playing the file
+"""
+
 import time
 import digitalio
 import board

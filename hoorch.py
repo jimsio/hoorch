@@ -16,6 +16,7 @@ import game_geschichten_abspielen
 import game_einmaleins
 import game_animals_english
 import game_hoerspiele
+import game_hoerspiele2
 import admin
 import tagwriter
 
@@ -200,8 +201,20 @@ def main():
         if detected_hoerspiel_card:
             print("Hoerspiele")
             leds.blink = False
-            game_hoerspiele.start()
-            audio.play_full("TTS", 54)  # Das Spiel ist zu Ende
+            game_hoerspiele2.start()
+            shutdown_counter = time.time()+shutdown_time
+        
+        #list of available figures with a recording
+        figure_dir = "./data/figures/"
+        figure_dirs = os.listdir(figure_dir)
+        figure_with_recording = [k for k in figure_dirs if f"{k}.mp3" in os.listdir(figure_dir+k)]
+        detected_figure_with_recording = [j for j in figure_with_recording if j in rfidreaders.tags]
+
+        if detected_figure_with_recording:
+            print("Geschichte abspielen2")
+            leds.blink = False
+            #pick first figure detected
+            game_hoerspiele.start(f"figures/{detected_figure_with_recording[0]}",detected_figure_with_recording[0])
             shutdown_counter = time.time()+shutdown_time
 
         # if "JA" and "NEIN" chips detected enter admin menu

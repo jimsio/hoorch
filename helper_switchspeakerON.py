@@ -1,3 +1,6 @@
+"""
+This helper switches the amp on, helpful for testing
+"""
 import time
 import digitalio
 import board

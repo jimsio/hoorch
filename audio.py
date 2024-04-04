@@ -36,16 +36,8 @@ def wait_for_reader():
             break
         time.sleep(0.01)
 
-def play(folder, audiofile):
-    # non-blocking play
-    wait_for_reader()
-        
-    subprocess.Popen("play "+path+"/"+folder+"/"+"{:03d}".format(
-        audiofile)+".mp3"+"  2>/dev/null", shell=True, stdout=None, stderr=None)
-    # print("playing TTS number "+str(audiofile))
-
 def play_full(folder, audiofile):
-    #blocking play
+    #blocking play, mostly for TTS
     wait_for_reader()
 
     file_path = path+folder+"/"+"{:03d}".format(audiofile)+".mp3"
@@ -56,11 +48,11 @@ def play_full(folder, audiofile):
     time.sleep(waitingtime)
 
 def play_file(folder, audiofile):
-    # for sounds (animals, systemsounds) in /data and subsequent folders, non-blocking
+    # non-blocking
+    # for sounds in /data and subsequent folders (i.e sounds, animal_sounds, TTS/animals_en, hoerspiele, figures)
     wait_for_reader()
 
-    subprocess.Popen("play "+path+folder+"/"+audiofile +
-                     "  2>/dev/null", shell=True, stdout=None, stderr=None)
+    subprocess.Popen(f"play {path}/{folder}/{audiofile}.mp3  2>/dev/null", shell=True, stdout=None, stderr=None)
     print("playing file "+str(audiofile))
 
 
@@ -164,6 +156,5 @@ def stop_recording(figure_id):
 def espeaker(words):
     wait_for_reader()
     
-    os.system("espeak -v de+f2 -p 30 -g 12 -s 170 --stdout \"" +
-              str(words)+"\" | aplay -D 'default'")
+    os.system(f"espeak -v de+f2 -p 30 -g 12 -s 170 --stdout {words} | aplay -D 'default'")
     # espeak -v de+f2 -p 30 -g 12 -s 150 --stdout "apfelbaum" | aplay -D 'def

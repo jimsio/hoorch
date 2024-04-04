@@ -64,7 +64,7 @@ def start():
                 leds.reset()
                 leds.switch_on_with_color(i)
 
-                if r == 0 and isthefirst == True:  # first round
+                if r == 0 and isthefirst is True:  # first round
                     isthefirst = False
                     if figure_count > 1:
                         # Es beginnt die Spielfigur auf Spielfeld x
@@ -126,12 +126,12 @@ def start():
                 tens = copy.deepcopy(rfidreaders.tags[i+1])  # zehnerstelle
                 unit = copy.deepcopy(rfidreaders.tags[ud])  # Einerstelle
 
-                if tens == None:
+                if tens is None:
                     tens = "0"
 
                 # regex (start with capital character, zero or more characters, end with single digit) : ^[A-z]*[0-9]$
                 # search with regex if unit and tens look like Hahn1
-                if unit != None and re.search("^[A-z]*[0-9]$", unit) and re.search("^[A-z]*[0-9]$", tens):
+                if unit is not None and re.search("^[A-z]*[0-9]$", unit) and re.search("^[A-z]*[0-9]$", tens):
 
                     # extract the digit from string (i.e. 1 from Hahn1)
                     tens_digit = int(tens[-1])*10

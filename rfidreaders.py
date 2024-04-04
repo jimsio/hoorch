@@ -61,6 +61,7 @@ def init():
         reader.SAM_configuration()
         print('Initialized and configured RFID/NFC reader '+str(n+1))
         tags.append(None)
+        time.sleep(0.03)
 
     # init figure db
     path = "./figure_db.txt"
@@ -218,4 +219,4 @@ def read_from_ntag2(reader):
 
 #except KeyboardInterrupt:
 #   for r in readers:
-#    r.power_down()
+#    r.power_down(
