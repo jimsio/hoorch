@@ -109,5 +109,9 @@ systemctl enable NetworkManager.service
 #5: #rename the comitup-wifi-name to hoorch-<nn> - https://davesteele.github.io/comitup/man/comitup-conf.5.html
 sed -i "s/# ap_name: comitup-<nnn>/ap_name: hoorch-<nnn>/g" "/etc/comitup.conf"
 
+#6 #add web_service to be started in CONNECTED stage of compitup
+#web_service: This defines a user web service to be controlled by comitup. This service will be disabled in the HOTSPOT state in preference of the comitup web service, and will be enabled in the CONNECTED state. This should be the name of the systemd web service, such as apache2.service or nginx.service. This defaults to a null string, meaning no service is controlled
+sed -i "s/# web_service:/web_service: hoorch-webserver.service/g" "/etc/comitup.conf"
+
 echo "Installation complete, rebooting now"
 reboot

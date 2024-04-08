@@ -48,6 +48,7 @@ def play_full(folder, audiofile):
                      shell=True, stdout=None, stderr=None)
     time.sleep(waitingtime)
 
+
 def play_file(folder, audiofile):
     # non-blocking
     # for sounds in /data and subsequent folders (i.e sounds, animal_sounds, TTS/animals_en, hoerspiele, figures)
@@ -58,12 +59,12 @@ def play_file(folder, audiofile):
 
 
 def play_story(figure_id):
+    #non-blocking
     wait_for_reader()
 
     print("play story of " + str(figure_id))
     # increase volume by -2db for stories as their recording volume is lower
-    subprocess.Popen("play -v2 "+path+"figures/"+figure_id+"/"+figure_id +
-                     ".mp3"+"  2>/dev/null", shell=True, stdout=None, stderr=None)
+    subprocess.Popen(f"play -v2 {path}figures/{figure_id}/{figure_id}.mp3  2>/dev/null", shell=True, stdout=None, stderr=None)
 
 
 def kill_sounds():
@@ -158,4 +159,4 @@ def espeaker(words):
     wait_for_reader()
     
     os.system(f"espeak -v de+f2 -p 30 -g 12 -s 170 --stdout {words} | aplay -D 'default'")
-    # espeak -v de+f2 -p 30 -g 12 -s 150 --stdout "apfelbaum" | aplay -D 'def
+    # espeak -v de+f2 -p 30 -g 12 -s 150 --stdout "apfelbaum" | aplay -D

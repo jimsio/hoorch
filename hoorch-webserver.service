@@ -1,0 +1,12 @@
+[Unit]
+Description=HOORCH Webserver Service
+After=multi-user.target
+DefaultDependencies=false
+
+[Service]
+User=pi
+Type=simple
+ExecStart=/usr/bin/python3 /home/pi/hoorch/server_updownload.py
+
+[Install]
+WantedBy=multi-user.target
