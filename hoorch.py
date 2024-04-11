@@ -16,7 +16,7 @@ import game_geschichten_abspielen
 import game_einmaleins
 import game_animals_english
 import game_hoerspiele
-import game_hoerspiele2
+import game_aufnehmen
 import admin
 import tagwriter
 
@@ -217,6 +217,19 @@ def main():
             #pick first figure detected
             game_hoerspiele.start(f"figures/{detected_figure_with_recording[0]}", detected_figure_with_recording[0])
             shutdown_counter = time.time()+shutdown_time
+        
+        #wenn kein file im folder
+        #figures_without_recording = [k for k in figure_dirs if f"{k}.mp3" not in os.listdir(figure_dir+k)]
+
+        #all defined figure minus the ones with a recording
+        defined_figures = rfidreaders.gamer_figures
+        detected_figure_without_recording = [i for i in defined_figures if i not in figure_with_recording]
+
+        if detected_figure_without_recording:
+            print("Geschichte aufnehmen - from main menu")
+            leds.blink = False
+            game_aufnehmen.start(detected_figure_without_recording[0])
+            shutdown_counter = time.time()+shutdown_time
 
         # if "JA" and "NEIN" chips detected enter admin menu
         if "JA" in rfidreaders.tags and "NEIN" in rfidreaders.tags:
@@ -236,4 +249,4 @@ def main():
 
 if __name__ == "__main__":
     init()
-    main()
+    

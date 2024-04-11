@@ -83,7 +83,7 @@ def start():
 
                 # wait 60 seconds longer than recording otherwise continue to next figure - prevent program from freezing
                 waitingtime = time.time() + float(subprocess.run(
-                    ['soxi', '-D', figure_dir+'/'+figure_id+'.mp3'], stdout=subprocess.PIPE).stdout.decode('utf-8'))+60
+                    ['soxi', '-D', figure_dir+'/'+figure_id+'.mp3'], stdout=subprocess.PIPE, check=False).stdout.decode('utf-8'))+60
 
                 while waitingtime > time.time():
                     if "JA" in rfidreaders.tags:
@@ -168,7 +168,7 @@ def start():
 
                 # wait 60 seconds longer than recording otherwise continue to next figure - prevent program from freezing
                 waitingtime = time.time() + float(subprocess.run(
-                    ['soxi', '-D', figure_dir+'/'+figure_id+'.mp3'], stdout=subprocess.PIPE).stdout.decode('utf-8'))+60
+                    ['soxi', '-D', figure_dir+'/'+figure_id+'.mp3'], stdout=subprocess.PIPE, check=False).stdout.decode('utf-8'))+60
 
                 while waitingtime > time.time():
                     # if rfidreaders.tags[i] == "JA":
@@ -188,8 +188,8 @@ def start():
                         if len(files_in_dir) <= 1:
                             # delete file
                             os.remove(figure_dir+"/"+figure_id+".mp3")
-                            # delete folder
-                            os.rmdir(figure_dir)
+                            # never delete the folder
+                            #os.rmdir(figure_dir)
                         else:
                             # delete file
                             os.remove(figure_dir+"/"+figure_id+".mp3")

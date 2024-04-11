@@ -5,3 +5,9 @@
 !.gitignore
 !/test/
 !/test/*
+!/frau/
+!/koenig/
+!/magierin/
+!/ritter/
+!/roboter/
+!/koenigin/

@@ -3,7 +3,6 @@
 
 import time
 import subprocess
-import pygame
 import rfidreaders
 import leds
 import audio
@@ -11,7 +10,8 @@ import audio
 def start(folder, audiofile):
     
     leds.reset()  # reset leds
-    leds.switch_all_on_with_color()
+    #swith on led where tag is placed
+    leds.switch_on_with_color(rfidreaders.tags.index(audiofile))
 
     audio.play_file(folder, f"{audiofile}.mp3")
     waitingtime = time.time() + float(subprocess.run(
