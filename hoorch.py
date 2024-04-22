@@ -224,7 +224,7 @@ def main():
             shutdown_counter = time.time()+shutdown_time
         
 
-        elif detected_figure_without_recording:
+        if detected_figure_without_recording:
             print("Geschichte aufnehmen - from main menu")
             leds.blink = False
             game_aufnehmen.start(detected_figure_without_recording[0])
