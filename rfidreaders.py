@@ -130,7 +130,7 @@ def continuous_read():
                     tag_name = read_from_ntag2(r)
     
                 # power down to safe energy, breaks readers?
-                #r.power_down()
+                r.power_down()
 
                 currently_reading = False
 
