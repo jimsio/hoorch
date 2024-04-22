@@ -210,3 +210,5 @@ def wifi():
             audio.espeaker(
                 "Internet in wenigen Augenblicken verfügbar. Bitte warten.")
             time.sleep(2)
+
+    audio.espeaker("WeiFei-Konfiguration beendet.")
