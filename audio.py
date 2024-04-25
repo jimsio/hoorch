@@ -21,8 +21,8 @@ def init():
     os.environ['AUDIODRIVER'] = "alsa"
 
     # set audio output level to 90%
-    #os.system("amixer -q sset PCM 90%")
-    os.system("amixer -q sset PCM 100%")
+    os.system("amixer -q sset PCM 90%")
+    #os.system("amixer -q sset PCM 100%")
     # set mic record level to 95% (92 in alsamixer)
     os.system("amixer -q sset Boost 95%")
 
