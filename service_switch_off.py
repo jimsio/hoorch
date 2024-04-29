@@ -10,6 +10,7 @@ import board
 from adafruit_debouncer import Debouncer
 import audio
 import leds
+import time
 
 print("starting switch off")
 
@@ -35,3 +36,5 @@ while True:
             leds.switch_all_on_with_color((255,0,0))
             audio.play_full("TTS", 3)  # Tschüss ich schalte mich jetzt aus
             os.system("shutdown -P now")
+        
+    time.sleep(1)

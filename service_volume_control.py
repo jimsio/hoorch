@@ -7,6 +7,7 @@ from shlex import split
 import board
 import digitalio
 from adafruit_debouncer import Debouncer
+import time
 
 print("starting adjust volume")
 
@@ -53,3 +54,4 @@ while True:
     elif vol_down.fell:
         #volume down button pressed
         volume_down()
+    time.sleep(1)

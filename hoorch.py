@@ -208,27 +208,27 @@ def main():
         #get only folders, not files
         figure_dirs = [name for name in os.listdir(figure_dir) if os.path.isdir(os.path.join(figure_dir, name))]
         #list of available figures with a recording
-        #figure_with_recording = [k for k in figure_dirs if f"{k}.mp3" in os.listdir(figure_dir+k)]
-        #detected_figure_with_recording = [j for j in figure_with_recording if j in rfidreaders.tags]
+        figure_with_recording = [k for k in figure_dirs if f"{k}.mp3" in os.listdir(figure_dir+k)]
+        detected_figure_with_recording = [j for j in figure_with_recording if j in rfidreaders.tags]
 
         #all defined figure minus the ones with a recording
-        #defined_figures = rfidreaders.gamer_figures
-        #detected_figure_without_recording = [i for i in defined_figures if i not in figure_with_recording]
+        defined_figures = rfidreaders.gamer_figures
+        detected_figure_without_recording = [i for i in defined_figures if i not in figure_with_recording]
 
         #prioritize figures with recordings over the ones without
-        #if detected_figure_with_recording:
-            # print("Geschichte abspielen - from main menu")
-            # leds.blink = False
-            # #pick first figure detected
-            # game_hoerspiele.start(f"figures/{detected_figure_with_recording[0]}", detected_figure_with_recording[0])
-            # shutdown_counter = time.time()+shutdown_time
+        if detected_figure_with_recording:
+            print("Geschichte abspielen - from main menu")
+            leds.blink = False
+            #pick first figure detected
+            game_hoerspiele.start(f"figures/{detected_figure_with_recording[0]}", detected_figure_with_recording[0])
+            shutdown_counter = time.time()+shutdown_time
         
 
-        #if detected_figure_without_recording:
-            # print("Geschichte aufnehmen - from main menu")
-            # leds.blink = False
-            # game_aufnehmen.start(detected_figure_without_recording[0])
-            # shutdown_counter = time.time()+shutdown_time
+        if detected_figure_without_recording:
+            print("Geschichte aufnehmen - from main menu")
+            leds.blink = False
+            game_aufnehmen.start(detected_figure_without_recording[0])
+            shutdown_counter = time.time()+shutdown_time
 
         # if "JA" and "NEIN" chips detected enter admin menu
         if "JA" in rfidreaders.tags and "NEIN" in rfidreaders.tags:
