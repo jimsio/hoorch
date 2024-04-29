@@ -213,7 +213,8 @@ def main():
 
         #all defined figure minus the ones with a recording
         defined_figures = rfidreaders.gamer_figures
-        detected_figure_without_recording = [i for i in defined_figures if i not in figure_with_recording]
+        figure_without_recording = [i for i in defined_figures if i not in figure_with_recording]
+        detected_figure_without_recording = [m for m in figure_without_recording if m in rfidreaders.tags]
 
         #prioritize figures with recordings over the ones without
         if detected_figure_with_recording:
