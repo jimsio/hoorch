@@ -128,9 +128,12 @@ def continuous_read():
                     tag_name = read_from_mifare(r, tag_uid)
                 else:
                     tag_name = read_from_ntag2(r)
-    
+
                 # power down to safe energy, breaks readers?
                 r.power_down()
+                
+                if tag_name == "#error#":
+                    continue
 
                 currently_reading = False
 
@@ -181,45 +184,45 @@ def continuous_read():
         
 def read_from_mifare(reader, tag_uid):
     read_data = bytearray(0)
-    to_decode = False
-
-    while not to_decode:
-        try:
-            #read 16 bytes from blocks 4 and 5
-            for i in range(4, 6):
-                #print("Authenticating block "+str(i))
-                    authenticated = reader.mifare_classic_authenticate_block(tag_uid, i, MIFARE_CMD_AUTH_B, auth_key)
-                    if not authenticated:
-                        print("Authentication failed!")
-                    # Read blocks
-                    read_data.extend(reader.mifare_classic_read_block(i))
-            to_decode = read_data[4:read_data.find(b'\xfe')]
+    
+    try:
+        #read 16 bytes from blocks 4 and 5
+        for i in range(4, 6):
+            #print("Authenticating block "+str(i))
+                authenticated = reader.mifare_classic_authenticate_block(tag_uid, i, MIFARE_CMD_AUTH_B, auth_key)
+                if not authenticated:
+                    print("Authentication failed!")
+                # Read blocks
+                read_data.extend(reader.mifare_classic_read_block(i))
         
-        except TypeError:
-            print("Error while reading RFID-tag content. Tag was probably removed before reading was completed.")
-            # Die Figur konnte nicht erkannt werden. Lass sie länger auf dem Feld stehen.
-            audio.play_full("TTS", 199)
+        to_decode = read_data[4:read_data.find(b'\xfe')]
+        return list(ndef.message_decoder(to_decode))[0].text
+    
+    except TypeError:
+        print("Error while reading RFID-tag content. Tag was probably removed before reading was completed.")
+        # Die Figur konnte nicht erkannt werden. Lass sie länger auf dem Feld stehen.
+        audio.play_full("TTS", 199)
 
-    return list(ndef.message_decoder(to_decode))[0].text
+        return "#error#"
 
 def read_from_ntag2(reader):
     read_data = bytearray(0)
-    to_decode = False
+    
+    #read 4 bytes from blocks 4-11
+    try:
+        for i in range(4, 12):
+            read_data.extend(reader.ntag2xx_read_block(i))
+        to_decode = read_data[2:read_data.find(b'\xfe')]
+    
+        return list(ndef.message_decoder(to_decode))[0].text
 
-    while not to_decode:
-        #read 4 bytes from blocks 4-11
-        try:
-            for i in range(4, 12):
-                read_data.extend(reader.ntag2xx_read_block(i))
-            to_decode = read_data[2:read_data.find(b'\xfe')]
-
-        # if tag was removed before it was properly read
-        except TypeError:
-            print("Error while reading RFID-tag content. Tag was probably removed before reading was completed.")
-            # Die Figur konnte nicht erkannt werden. Lass sie länger auf dem Feld stehen.
-            audio.play_full("TTS", 199)
-
-    return list(ndef.message_decoder(to_decode))[0].text
+    # if tag was removed before it was properly read
+    except TypeError:
+        print("Error while reading RFID-tag content. Tag was probably removed before reading was completed.")
+        # Die Figur konnte nicht erkannt werden. Lass sie länger auf dem Feld stehen.
+        audio.play_full("TTS", 199)
+        
+        return "#error#"
 
 
 #except KeyboardInterrupt:
