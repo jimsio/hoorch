@@ -204,6 +204,11 @@ def read_from_mifare(reader, tag_uid):
         audio.play_full("TTS", 199)
 
         return "#error#"
+    
+    except ndef.record.DecodeError as e:
+        print(e)
+
+        return "error#"
 
 def read_from_ntag2(reader):
     read_data = bytearray(0)
@@ -223,6 +228,11 @@ def read_from_ntag2(reader):
         audio.play_full("TTS", 199)
         
         return "#error#"
+    
+    except ndef.record.DecodeError as e:
+        print(e)
+        
+        return "error#"
 
 
 #except KeyboardInterrupt:
