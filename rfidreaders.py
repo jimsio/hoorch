@@ -206,6 +206,7 @@ def read_from_mifare(reader, tag_uid):
         return "#error#"
     
     except ndef.record.DecodeError as e:
+        print("ndeflib Error while decoding")
         print(e)
 
         return "error#"
@@ -230,6 +231,7 @@ def read_from_ntag2(reader):
         return "#error#"
     
     except ndef.record.DecodeError as e:
+        print("ndeflib Error while decoding")
         print(e)
         
         return "error#"
