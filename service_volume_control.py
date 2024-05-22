@@ -35,7 +35,7 @@ def volume_up():
     cv = int(get_volume[position-2:position].replace("[", ""))
     print(cv)
 
-    if cv <= 100:
+    if cv <= 90:
         print("volume up")
         os.system("amixer -q sset PCM 10+")
 
@@ -54,4 +54,4 @@ while True:
     elif vol_down.fell:
         #volume down button pressed
         volume_down()
-    time.sleep(1)
+    time.sleep(0.1)

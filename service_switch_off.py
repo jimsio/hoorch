@@ -37,4 +37,4 @@ while True:
             audio.play_full("TTS", 3)  # Tschüss ich schalte mich jetzt aus
             os.system("shutdown -P now")
         
-    time.sleep(1)
+    time.sleep(0.1)
