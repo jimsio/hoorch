@@ -201,7 +201,7 @@ def main():
         if detected_hoerspiel_card:
             print("Hoerspiele")
             leds.blink = False
-            game_hoerspiele.start(f"hoerspiele/{detected_hoerspiel_card[0]}", detected_hoerspiel_card[0])
+            game_hoerspiele.start("hoerspiele/", detected_hoerspiel_card[0])
             shutdown_counter = time.time()+shutdown_time
        
         figure_dir = "./data/figures/"
