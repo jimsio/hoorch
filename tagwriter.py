@@ -36,7 +36,7 @@ figure_database = []
 #03:E1:03:E1:03:E1:03:E1:03:E1:03:E1:03:E1:03:E1
 mifare_block1_2 = b'\x14\x01\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1'
 
-mifare_prefix = b'\x00\x00\x03'
+#mifare_prefix = b'\x00\x00\x03'
 ntag2_prefix = b'\x03'
 #length_ndef_msg = b''
 #record_header = b'\xD1'
@@ -50,7 +50,7 @@ suffix = b'\xFE'
 #testdata = b'\x00\x00\x03\x10\xd1\x0e\x54\x02enHallo\xfe'
 
 #https://community.element14.com/challenges-projects/project14/nfc-rfid/b/blog/posts/nfc-badge---update-your-badge-with-your-smartphone---ndef-and-app
-#00 00 - nur für mifare!
+(#00 00 - nur für mifare!)
 #x03 = TLV Block tag field - 0x03=NDEF message
 #!12! = length of the NDEF message 12 = 18 Bytes )
 #--ndef record starts here
@@ -182,10 +182,11 @@ def write_on_tag(tag_uid, word, id_readable):
     payload = b''.join(ndef.message_encoder([record]))
     length_ndef_msg = bytearray([len(payload)])
 
-    if id_readable.endswith("-"):
-        full_payload = mifare_prefix+length_ndef_msg+payload+suffix
-    else:
-        full_payload = ntag2_prefix+length_ndef_msg+payload+suffix
+    full_payload = ntag2_prefix+length_ndef_msg+payload+suffix
+    #if id_readable.endswith("-"):
+    #    full_payload = mifare_prefix+length_ndef_msg+payload+suffix
+    #else:
+    #    full_payload = ntag2_prefix+length_ndef_msg+payload+suffix
 
     data = bytearray(32)
     data[0:len(full_payload)] = full_payload
@@ -196,7 +197,7 @@ def write_on_tag(tag_uid, word, id_readable):
 
     try:
         #mifare tags
-        #TODO: NFC Tools Android app schreibt blaue chips ohne \x00\x00 bei mifare_prefix; karten mit!
+        #TODO: NFC Tools Android app schreibt karten und blaue chips ohne \x00\x00 bei mifare_prefix
         #ich kann in der NFC tools app den text der chips auslesen
         #Achtung: beim Beschreiben der Chips mit der NFC Tools app, diese erkennt Hoorch dann nicht. stimmt das?
 

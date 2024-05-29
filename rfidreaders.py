@@ -195,7 +195,8 @@ def read_from_mifare(reader, tag_uid):
                 # Read blocks
                 read_data.extend(reader.mifare_classic_read_block(i))
         
-        to_decode = read_data[4:read_data.find(b'\xfe')]
+        #to_decode = read_data[4:read_data.find(b'\xfe')]
+        to_decode = read_data[2:read_data.find(b'\xfe')]
         return list(ndef.message_decoder(to_decode))[0].text
     
     except TypeError:

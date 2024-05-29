@@ -42,13 +42,6 @@ def start():
                 if re.search("^[A-z]*[0-9]$", tag):
                     found_digits.append(tag[-1])  # get digit
 
-        # reduce amp flickering when too loud
-        # if len(found_digits) <= 3:
-        if len(found_digits) <= 6:  # for new RED amp
-            volume = 1
-        else:
-            volume = 0.3
-
         for i in range(0, 6):
             if str(i+1) not in found_digits:
                 phones[i].set_volume(0)
