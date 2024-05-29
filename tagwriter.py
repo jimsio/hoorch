@@ -50,7 +50,7 @@ suffix = b'\xFE'
 #testdata = b'\x00\x00\x03\x10\xd1\x0e\x54\x02enHallo\xfe'
 
 #https://community.element14.com/challenges-projects/project14/nfc-rfid/b/blog/posts/nfc-badge---update-your-badge-with-your-smartphone---ndef-and-app
-(#00 00 - nur für mifare!)
+#(00 00 - nur für mifare!)
 #x03 = TLV Block tag field - 0x03=NDEF message
 #!12! = length of the NDEF message 12 = 18 Bytes )
 #--ndef record starts here
