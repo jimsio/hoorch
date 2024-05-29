@@ -31,7 +31,7 @@ file.close()
 
 figure_database = []
 
-#to write to block 1 and 2 to mifare cards (not chips)
+#to write to block 1 and 2 to mifare cards
 #14:01:03:E1:03:E1:03:E1:03:E1:03:E1:03:E1:03:E1
 #03:E1:03:E1:03:E1:03:E1:03:E1:03:E1:03:E1:03:E1
 mifare_block1_2 = b'\x14\x01\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1\x03\xE1'
@@ -93,7 +93,7 @@ def write_single(word):
             if counter < 4:
                 id_readable += str(number)+"-"
             else:
-                id_readable = id_readable[:-1] = id_readable[:-1]
+                id_readable = id_readable[:-1]
                 break
 
         success = write_on_tag(tag_uid, word, id_readable)
@@ -196,8 +196,9 @@ def write_on_tag(tag_uid, word, id_readable):
 
     try:
         #mifare tags
-        #TODO: chips ohne mifare_block1+2! karten mit !
-        #wie kann ich die auseinanderhalten?
+        #TODO: NFC Tools Android app schreibt blaue chips ohne \x00\x00 bei mifare_prefix; karten mit!
+        #ich kann in der NFC tools app den text der chips auslesen
+        #Achtung: beim Beschreiben der Chips mit der NFC Tools app, diese erkennt Hoorch dann nicht. stimmt das?
 
         #mifare 1K layout (chip + card)
         # 1 kByte

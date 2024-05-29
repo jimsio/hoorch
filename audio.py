@@ -158,5 +158,6 @@ def stop_recording(figure_id):
 def espeaker(words):
     wait_for_reader()
     
-    os.system(f"espeak -v de+f2 -p 30 -g 12 -s 170 --stdout \"{words}\" | aplay -D 'default'")
+    #-v language, -p pitch, -g word gap, -s speed, -a amplitude (volume)
+    os.system(f"espeak -v de+f2 -p 30 -g 12 -s 170 -a 80 --stdout \"{words}\" | aplay -D 'default'")
     # espeak -v de+f2 -p 30 -g 12 -s 150 --stdout "apfelbaum" | aplay -D 'default'
